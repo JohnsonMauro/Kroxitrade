@@ -195,12 +195,29 @@ body.bt-has-kroxitrade-sidebar.bt-sidebar-minimized {
   transition: opacity 0.12s ease;
 }
 
+.results.compact #btns-finer {
+  display: none;
+  position: static !important;
+  transform: none !important;
+  top: auto !important;
+  right: auto !important;
+  left: auto !important;
+  margin: 0 0 0 4px !important;
+}
+
 #btns-finer .btn-finer {
   border-radius: 2px !important;
 }
 
-.item-popup__content .item-mod:hover #btns-finer,
-#btns-finer:hover {
+.item-popup__content .item-mod:hover #btns-finer {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.results.compact .item-popup__content .item-mod .lc.r.su:hover #btns-finer,
+.results.compact .item-popup__content .item-mod .lc.r.pr:hover #btns-finer,
+.results.compact .item-popup__content .item-mod .lc.r:hover #btns-finer {
+  display: inline-flex;
   opacity: 1;
   pointer-events: auto;
 }
