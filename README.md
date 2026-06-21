@@ -4,10 +4,10 @@
   <p><em>Browser extension for a faster, cleaner Path of Exile Trade workflow</em></p>
   
   <a href="https://chromewebstore.google.com/detail/poe-trade-plus/igofmcebdienfacijkhdppcfiglcbffb">
-    <img src="assets/chrome-button.webp" alt="Available in the Chrome Web Store" width="248" height="75" />
+    <img src="assets/chrome-button.webp" alt="Available in the Chrome Web Store" style="height:85px; width:auto;" />
   </a>
   <a href="https://addons.mozilla.org/en-US/firefox/addon/poe-trade-plus/" target="_blank" rel="noreferrer">
-    <img src="assets/firefox-addon-badge.png" alt="Available on Firefox Add-ons" width="285" height="85" />
+    <img src="assets/firefox-addon-badge.png" alt="Available on Firefox Add-ons" style="height:85px; width:auto;" />
   </a>
 </div>
 
