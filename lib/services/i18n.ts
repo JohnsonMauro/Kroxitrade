@@ -223,10 +223,12 @@ const translations = {
     "about.description":
       "Poe Trade Plus is a companion for Path of Exile Trade built to save searches, organize folders, track history, and keep recurring trade workflows fast, visual, and easy to manage inside the official site.",
     "about.github": "GitHub",
+    "about.patreon": "Patreon",
     "about.version": ({ version }) =>
       `Version ${version} • Developed by KroxiLabs`,
     "bulk.empty":
       "No bulk sellers detected yet. Open a trade result list where the same seller appears more than once.",
+    "bulk.price": "Price:",
     "bulk.find": "Find",
     "bulk.buy": "Buy",
     "bulk.findError": "Couldn't locate that listing in the current results.",
@@ -542,10 +544,12 @@ const translations = {
     "about.description":
       "Poe Trade Plus es un complemento para Path of Exile Trade creado para guardar búsquedas, organizar carpetas, seguir el historial y hacer que los flujos de trade repetidos sean rápidos, visuales y fáciles de manejar dentro del sitio oficial.",
     "about.github": "GitHub",
+    "about.patreon": "Patreon",
     "about.version": ({ version }) =>
       `Versión ${version} • Desarrollado por KroxiLabs`,
     "bulk.empty":
       "Todavía no se detectaron vendedores bulk. Abrí una lista de resultados donde el mismo vendedor aparezca más de una vez.",
+    "bulk.price": "Precio:",
     "bulk.find": "Buscar",
     "bulk.buy": "Comprar",
     "bulk.findError":
@@ -706,10 +710,12 @@ const portugueseTranslations: Record<string, TranslationValue> = {
   "about.eyebrow": "Sobre",
   "about.description":
     "Poe Trade Plus é um complemento para o Path of Exile Trade criado para salvar buscas, organizar pastas, acompanhar o histórico e manter fluxos de trade recorrentes rápidos, visuais e fáceis de gerenciar dentro do site oficial.",
+  "about.patreon": "Patreon",
   "about.version": ({ version }) =>
     `Versão ${version} • Desenvolvido por KroxiLabs`,
   "bulk.empty":
     "Nenhum vendedor bulk detectado ainda. Abra uma lista de resultados onde o mesmo vendedor apareça mais de uma vez.",
+  "bulk.price": "Preço:",
   "bulk.find": "Buscar",
   "bulk.buy": "Comprar",
   "bulk.findError":
@@ -836,10 +842,12 @@ const germanTranslations: Record<string, TranslationValue> = {
   "settings.compactTradeActionToggle": "Abgeschlossen / Offen",
   "about.description":
     "Poe Trade Plus ist ein Begleiter für Path of Exile Trade, entwickelt zum Speichern von Suchen, Organisieren von Ordnern, Nachverfolgen des Verlaufs und für schnelle, übersichtliche wiederkehrende Handelsabläufe direkt auf der offiziellen Seite.",
+  "about.patreon": "Patreon",
   "about.version": ({ version }) =>
     `Version ${version} • Entwickelt von KroxiLabs`,
   "bulk.empty":
     "Noch keine Bulk-Verkäufer erkannt. Öffne eine Ergebnisliste, in der derselbe Verkäufer mehr als einmal erscheint.",
+  "bulk.price": "Preis:",
   "bulk.find": "Finden",
   "bulk.buy": "Kaufen",
   "bulk.findError":
@@ -962,10 +970,12 @@ const frenchTranslations: Record<string, TranslationValue> = {
   "about.eyebrow": "À propos",
   "about.description":
     "Poe Trade Plus est un compagnon pour Path of Exile Trade conçu pour sauvegarder des recherches, organiser des dossiers, suivre l’historique et garder les routines de trade rapides, visuelles et faciles à gérer directement sur le site officiel.",
+  "about.patreon": "Patreon",
   "about.version": ({ version }) =>
     `Version ${version} • Développé par KroxiLabs`,
   "bulk.empty":
     "Aucun vendeur bulk détecté pour le moment. Ouvrez une liste de résultats où le même vendeur apparaît plus d’une fois.",
+  "bulk.price": "Prix :",
   "bulk.find": "Trouver",
   "bulk.buy": "Acheter",
   "bulk.findError":
@@ -1090,9 +1100,11 @@ const russianTranslations: Record<string, TranslationValue> = {
   "about.eyebrow": "О проекте",
   "about.description":
     "Poe Trade Plus — это дополнение для торговли Path of Exile, созданное для сохранения поисков, организации папок, отслеживания истории и удобной работы с повторяющимися торговыми сценариями прямо на официальном сайте.",
+  "about.patreon": "Patreon",
   "about.version": ({ version }) => `Версия ${version} • Разработано KroxiLabs`,
   "bulk.empty":
     "Продавцы bulk пока не обнаружены. Откройте список результатов, где один и тот же продавец встречается больше одного раза.",
+  "bulk.price": "Цена:",
   "bulk.find": "Найти",
   "bulk.buy": "Купить",
   "bulk.findError": "Не удалось найти этот лот в текущих результатах.",
@@ -1212,9 +1224,11 @@ const thaiTranslations: Record<string, TranslationValue> = {
   "about.eyebrow": "เกี่ยวกับ",
   "about.description":
     "Poe Trade Plus เป็นส่วนเสริมสำหรับ Path of Exile Trade ที่สร้างขึ้นเพื่อบันทึกการค้นหา จัดระเบียบโฟลเดอร์ ติดตามประวัติ และทำให้การซื้อขายที่ทำซ้ำบ่อยรวดเร็ว มองเห็นได้ง่าย และจัดการได้สะดวกภายในเว็บไซต์ทางการ",
+  "about.patreon": "Patreon",
   "about.version": ({ version }) => `เวอร์ชัน ${version} • พัฒนาโดย KroxiLabs`,
   "bulk.empty":
     "ยังไม่พบผู้ขายแบบ bulk เปิดหน้าผลลัพธ์ที่มีผู้ขายคนเดิมมากกว่าหนึ่งรายการ",
+  "bulk.price": "ราคา:",
   "bulk.find": "ค้นหา",
   "bulk.buy": "ซื้อ",
   "bulk.findError": "ไม่พบรายการนี้ในผลลัพธ์ปัจจุบัน",
@@ -1339,9 +1353,11 @@ const japaneseTranslations: Record<string, TranslationValue> = {
   "about.eyebrow": "概要",
   "about.description":
     "Poe Trade Plus は Path of Exile Trade 用の補助ツールで、検索の保存、フォルダー整理、履歴管理を行い、繰り返し使うトレード作業を公式サイト上で素早く見やすく簡単に管理できるようにします。",
+  "about.patreon": "Patreon",
   "about.version": ({ version }) => `バージョン ${version} • KroxiLabs 開発`,
   "bulk.empty":
     "まだ Bulk 販売者は検出されていません。同じ販売者が複数回表示される結果一覧を開いてください。",
+  "bulk.price": "価格:",
   "bulk.find": "検索",
   "bulk.buy": "購入",
   "bulk.findError": "現在の結果内でこの出品を見つけられませんでした。",
@@ -1471,9 +1487,11 @@ const koreanTranslations: Record<string, TranslationValue> = {
   "about.eyebrow": "정보",
   "about.description":
     "Poe Trade Plus는 Path of Exile Trade용 보조 도구로, 검색 저장, 폴더 정리, 기록 추적을 지원하며 반복적인 거래 작업을 공식 사이트 안에서 빠르고 보기 쉽게 관리할 수 있게 해줍니다.",
+  "about.patreon": "Patreon",
   "about.version": ({ version }) => `버전 ${version} • KroxiLabs 개발`,
   "bulk.empty":
     "아직 Bulk 판매자가 감지되지 않았습니다. 같은 판매자가 두 번 이상 나타나는 결과 목록을 열어 주세요.",
+  "bulk.price": "가격:",
   "bulk.find": "찾기",
   "bulk.buy": "구매",
   "bulk.findError": "현재 결과에서 해당 목록을 찾을 수 없습니다.",
