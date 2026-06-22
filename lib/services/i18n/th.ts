@@ -123,5 +123,33 @@ export const thaiTranslations: Record<string, TranslationValue> = {
   "finer.title": "เพิ่มไปยังตัวกรอง",
   "finer.modifiers": "ม็อด",
   "finer.attackWeapon": "อาวุธโจมตี",
-  "finer.spellWeapon": "อาวุธเวท"
+  "finer.spellWeapon": "อาวุธเวท",
+  "settings.onboardingTitle": "บทช่วยสอน",
+  "settings.onboardingDescription":
+    "เปิดคู่มือเริ่มต้นอย่างรวดเร็วอีกครั้งเพื่อทบทวนการทำงานและแท็บหลัก",
+  "settings.reopenTutorial": "เปิดบทช่วยสอน",
+  "settings.equivalentSource":
+    "ใช้เรตจาก poe.ninja ที่แคชทุก 15 นาที",
+  "settings.equivalentRefresh": "รีเฟรชเรต",
+  "settings.equivalentRefreshLoading": "กำลังรีเฟรช...",
+  "settings.equivalentRefreshSuccess": ({ league }) =>
+    `รีเฟรชราคาสมมูลสำหรับ ${league} แล้ว`,
+  "settings.equivalentRefreshError":
+    "ไม่สามารถรีเฟรชเรต poe.ninja ได้ในตอนนี้",
+  "settings.equivalentRefreshUnavailable":
+    "เปิดลีกเทรดก่อน เพื่อรีเฟรชเรต poe.ninja",
+  "settings.bulkTitle": "ผู้ขาย Bulk",
+  "settings.bulkDescription":
+    "แสดงหรือซ่อนแท็บ Bulk ที่รวมผู้ขายที่ซ้ำกันจากผลลัพธ์ปัจจุบัน",
+  "settings.historyTitle": "ประวัติ",
+  "settings.historyDescription":
+    "แสดงหรือซ่อนแท็บประวัติที่เก็บการค้นหาที่เปิดล่าสุด",
+  "settings.finerFiltersTitle": "เพิ่มไปยังตัวกรอง",
+  "settings.finerFiltersDescription":
+    "แสดงหรือซ่อนแผงเพิ่มไปยังตัวกรองที่ด้านล่างของแถบด้านข้าง",
+  "settings.on": "เปิด",
+  "settings.off": "ปิด",
+  "settings.tradeActionsTitle": "การทำงานเทรดที่แสดงอยู่",
+  "settings.tradeActionsDescription":
+    "เลือกการทำงานของการค้นหาที่บันทึกไว้ซึ่งจะแสดงนอกเมนูในทั้งเลย์เอาต์แบบคลาสสิกและแบบกะทัดรัด หากไม่เลือกเลย จะแสดงเฉพาะเมนูสามจุด"
 }

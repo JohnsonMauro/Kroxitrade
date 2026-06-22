@@ -130,5 +130,33 @@ export const frenchTranslations: Record<string, TranslationValue> = {
   "finer.pseudoResLife": "Pseudo Résistances/Vie",
   "finer.explicitResLife": "Résistances/Vie explicites",
   "finer.attackWeapon": "Arme d’attaque",
-  "finer.spellWeapon": "Arme de sort"
+  "finer.spellWeapon": "Arme de sort",
+  "settings.onboardingTitle": "Tutoriel",
+  "settings.onboardingDescription":
+    "Rouvrez le guide rapide pour revoir les actions et onglets principaux.",
+  "settings.reopenTutorial": "Ouvrir le tutoriel",
+  "settings.equivalentSource":
+    "Utilise des taux poe.ninja mis en cache toutes les 15 minutes.",
+  "settings.equivalentRefresh": "Actualiser le taux",
+  "settings.equivalentRefreshLoading": "Actualisation...",
+  "settings.equivalentRefreshSuccess": ({ league }) =>
+    `Les prix équivalents ont été actualisés pour ${league}.`,
+  "settings.equivalentRefreshError":
+    "Impossible d’actualiser le taux poe.ninja pour le moment.",
+  "settings.equivalentRefreshUnavailable":
+    "Ouvrez d’abord une ligue de trade pour actualiser le taux poe.ninja.",
+  "settings.bulkTitle": "Vendeurs bulk",
+  "settings.bulkDescription":
+    "Afficher ou masquer l’onglet Bulk qui regroupe les vendeurs répétés des résultats actuels.",
+  "settings.historyTitle": "Historique",
+  "settings.historyDescription":
+    "Afficher ou masquer l’onglet Historique qui enregistre vos recherches récemment ouvertes.",
+  "settings.finerFiltersTitle": "Ajouter aux filtres",
+  "settings.finerFiltersDescription":
+    "Afficher ou masquer le panneau Ajouter aux filtres en bas de la barre latérale.",
+  "settings.on": "Activé",
+  "settings.off": "Désactivé",
+  "settings.tradeActionsTitle": "Actions de trade visibles",
+  "settings.tradeActionsDescription":
+    "Choisissez quelles actions de recherche sauvegardée restent visibles hors du menu dans les dispositions classique et compacte. Si rien n’est sélectionné, seul le menu à trois points est affiché."
 }

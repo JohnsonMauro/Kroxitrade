@@ -125,5 +125,33 @@ export const germanTranslations: Record<string, TranslationValue> = {
   "finer.pseudoResLife": "Pseudo Widerstände/Leben",
   "finer.explicitResLife": "Explizite Widerstände/Leben",
   "finer.attackWeapon": "Angriffswaffe",
-  "finer.spellWeapon": "Zauberwaffe"
+  "finer.spellWeapon": "Zauberwaffe",
+  "settings.onboardingTitle": "Tutorial",
+  "settings.onboardingDescription":
+    "Öffne das Schnell-Tutorial erneut, um die wichtigsten Aktionen und Tabs zu prüfen.",
+  "settings.reopenTutorial": "Tutorial öffnen",
+  "settings.equivalentSource":
+    "Nutzt poe.ninja-Kurse, die alle 15 Minuten zwischengespeichert werden.",
+  "settings.equivalentRefresh": "Kurs aktualisieren",
+  "settings.equivalentRefreshLoading": "Aktualisiere...",
+  "settings.equivalentRefreshSuccess": ({ league }) =>
+    `Äquivalenzpreise für ${league} aktualisiert.`,
+  "settings.equivalentRefreshError":
+    "Der poe.ninja-Kurs konnte gerade nicht aktualisiert werden.",
+  "settings.equivalentRefreshUnavailable":
+    "Öffne zuerst eine Handelsliga, um den poe.ninja-Kurs zu aktualisieren.",
+  "settings.bulkTitle": "Bulk-Verkäufer",
+  "settings.bulkDescription":
+    "Zeige oder verberge den Bulk-Tab, der wiederholte Verkäufer aus den aktuellen Suchergebnissen gruppiert.",
+  "settings.historyTitle": "Verlauf",
+  "settings.historyDescription":
+    "Zeige oder verberge den Verlauf-Tab, der zuletzt geöffnete Suchen speichert.",
+  "settings.finerFiltersTitle": "Zu Filtern hinzufügen",
+  "settings.finerFiltersDescription":
+    "Zeige oder verberge das Zu-Filtern-Panel am unteren Rand der Seitenleiste.",
+  "settings.on": "Ein",
+  "settings.off": "Aus",
+  "settings.tradeActionsTitle": "Sichtbare Handelsaktionen",
+  "settings.tradeActionsDescription":
+    "Wähle aus, welche Aktionen gespeicherter Suchen in klassischem und kompaktem Layout außerhalb des Menüs sichtbar bleiben. Wenn nichts ausgewählt ist, wird nur das Drei-Punkte-Menü angezeigt."
 }

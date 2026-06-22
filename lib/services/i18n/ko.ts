@@ -130,5 +130,33 @@ export const koreanTranslations: Record<string, TranslationValue> = {
   "finer.pseudoResLife": "의사 저항/생명력",
   "finer.explicitResLife": "명시 저항/생명력",
   "finer.attackWeapon": "공격 무기",
-  "finer.spellWeapon": "주문 무기"
+  "finer.spellWeapon": "주문 무기",
+  "settings.onboardingTitle": "튜토리얼",
+  "settings.onboardingDescription":
+    "주요 작업과 탭을 다시 보려면 빠른 가이드를 다시 엽니다.",
+  "settings.reopenTutorial": "튜토리얼 열기",
+  "settings.equivalentSource":
+    "15분마다 캐시되는 poe.ninja 환율을 사용합니다.",
+  "settings.equivalentRefresh": "환율 새로고침",
+  "settings.equivalentRefreshLoading": "새로고침 중...",
+  "settings.equivalentRefreshSuccess": ({ league }) =>
+    `${league}의 환산 가격 환율을 새로고침했습니다.`,
+  "settings.equivalentRefreshError":
+    "지금은 poe.ninja 환율을 새로고침할 수 없습니다.",
+  "settings.equivalentRefreshUnavailable":
+    "먼저 거래 리그를 연 다음 poe.ninja 환율을 새로고침하세요.",
+  "settings.bulkTitle": "Bulk 판매자",
+  "settings.bulkDescription":
+    "현재 결과에서 같은 판매자가 여러 번 나올 때 묶어 보여주는 Bulk 탭을 표시하거나 숨깁니다.",
+  "settings.historyTitle": "기록",
+  "settings.historyDescription":
+    "최근에 연 검색을 저장하는 기록 탭을 표시하거나 숨깁니다.",
+  "settings.finerFiltersTitle": "필터에 추가",
+  "settings.finerFiltersDescription":
+    "사이드바 아래쪽의 필터에 추가 패널을 표시하거나 숨깁니다.",
+  "settings.on": "켜짐",
+  "settings.off": "꺼짐",
+  "settings.tradeActionsTitle": "표시할 거래 작업",
+  "settings.tradeActionsDescription":
+    "클래식과 컴팩트 레이아웃 모두에서 메뉴 밖에 보일 저장된 검색 작업을 선택하세요. 아무것도 선택하지 않으면 점 세 개 메뉴만 보입니다."
 }

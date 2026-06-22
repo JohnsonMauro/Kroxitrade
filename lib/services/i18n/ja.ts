@@ -133,5 +133,33 @@ export const japaneseTranslations: Record<string, TranslationValue> = {
   "finer.pseudoResLife": "疑似耐性/ライフ",
   "finer.explicitResLife": "明示耐性/ライフ",
   "finer.attackWeapon": "攻撃武器",
-  "finer.spellWeapon": "スペル武器"
+  "finer.spellWeapon": "スペル武器",
+  "settings.onboardingTitle": "チュートリアル",
+  "settings.onboardingDescription":
+    "主要な操作とタブを見直すために、クイックガイドをもう一度開きます。",
+  "settings.reopenTutorial": "チュートリアルを開く",
+  "settings.equivalentSource":
+    "15分ごとにキャッシュされる poe.ninja のレートを使用します。",
+  "settings.equivalentRefresh": "レートを更新",
+  "settings.equivalentRefreshLoading": "更新中...",
+  "settings.equivalentRefreshSuccess": ({ league }) =>
+    `${league} の等価価格レートを更新しました。`,
+  "settings.equivalentRefreshError":
+    "今は poe.ninja のレートを更新できませんでした。",
+  "settings.equivalentRefreshUnavailable":
+    "まずトレードリーグを開いてから poe.ninja のレートを更新してください。",
+  "settings.bulkTitle": "Bulk 売り手",
+  "settings.bulkDescription":
+    "現在の結果で同じ売り手が複数回出る場合にまとめる Bulk タブの表示/非表示を切り替えます。",
+  "settings.historyTitle": "履歴",
+  "settings.historyDescription":
+    "最近開いた検索を保存する履歴タブの表示/非表示を切り替えます。",
+  "settings.finerFiltersTitle": "フィルターに追加",
+  "settings.finerFiltersDescription":
+    "サイドバー下部の「フィルターに追加」パネルを表示/非表示にします。",
+  "settings.on": "オン",
+  "settings.off": "オフ",
+  "settings.tradeActionsTitle": "表示するトレード操作",
+  "settings.tradeActionsDescription":
+    "クラシック/コンパクト両方のレイアウトで、メニュー外に表示しておく保存済み検索の操作を選択します。何も選ばない場合は3点メニューのみ表示されます。"
 }

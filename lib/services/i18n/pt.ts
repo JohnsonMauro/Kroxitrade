@@ -135,5 +135,33 @@ export const portugueseTranslations: Record<string, TranslationValue> = {
   "finer.pseudoResLife": "Pseudo Res/Vida",
   "finer.explicitResLife": "Res/Vida explícita",
   "finer.attackWeapon": "Arma de ataque",
-  "finer.spellWeapon": "Arma de feitiços"
+  "finer.spellWeapon": "Arma de feitiços",
+  "settings.onboardingTitle": "Tutorial",
+  "settings.onboardingDescription":
+    "Abra o onboarding rápido de novo para rever as ações e abas principais.",
+  "settings.reopenTutorial": "Abrir tutorial",
+  "settings.equivalentSource":
+    "Usa taxas do poe.ninja em cache a cada 15 minutos.",
+  "settings.equivalentRefresh": "Atualizar taxa",
+  "settings.equivalentRefreshLoading": "Atualizando...",
+  "settings.equivalentRefreshSuccess": ({ league }) =>
+    `Taxas de preço equivalente atualizadas para ${league}.`,
+  "settings.equivalentRefreshError":
+    "Não foi possível atualizar a taxa do poe.ninja agora.",
+  "settings.equivalentRefreshUnavailable":
+    "Abra uma liga de trade primeiro para atualizar a taxa do poe.ninja.",
+  "settings.bulkTitle": "Vendedores bulk",
+  "settings.bulkDescription":
+    "Mostre ou oculte a aba de vendedores bulk que agrupa vendedores repetidos dos resultados atuais.",
+  "settings.historyTitle": "Histórico",
+  "settings.historyDescription":
+    "Mostre ou oculte a aba de histórico que guarda suas buscas abertas recentemente.",
+  "settings.finerFiltersTitle": "Adicionar aos filtros",
+  "settings.finerFiltersDescription":
+    "Mostre ou oculte o painel Adicionar aos filtros na parte de baixo da barra lateral.",
+  "settings.on": "Ligado",
+  "settings.off": "Desligado",
+  "settings.tradeActionsTitle": "Ações visíveis de trade",
+  "settings.tradeActionsDescription":
+    "Escolha quais ações de busca salva ficam visíveis fora do menu no layout clássico e no compacto. Se nenhuma for selecionada, apenas o menu de três pontos aparece."
 }

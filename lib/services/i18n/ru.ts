@@ -123,5 +123,33 @@ export const russianTranslations: Record<string, TranslationValue> = {
   "finer.pseudoResLife": "Псевдо резы/жизнь",
   "finer.explicitResLife": "Явные резы/жизнь",
   "finer.attackWeapon": "Оружие атаки",
-  "finer.spellWeapon": "Оружие заклинаний"
+  "finer.spellWeapon": "Оружие заклинаний",
+  "settings.onboardingTitle": "Обучение",
+  "settings.onboardingDescription":
+    "Снова откройте быстрый гид, чтобы еще раз посмотреть основные действия и вкладки.",
+  "settings.reopenTutorial": "Открыть обучение",
+  "settings.equivalentSource":
+    "Использует курсы poe.ninja, кэшированные каждые 15 минут.",
+  "settings.equivalentRefresh": "Обновить курс",
+  "settings.equivalentRefreshLoading": "Обновление...",
+  "settings.equivalentRefreshSuccess": ({ league }) =>
+    `Эквивалентные цены обновлены для ${league}.`,
+  "settings.equivalentRefreshError":
+    "Сейчас не удалось обновить курс poe.ninja.",
+  "settings.equivalentRefreshUnavailable":
+    "Сначала откройте торговую лигу, чтобы обновить курс poe.ninja.",
+  "settings.bulkTitle": "Bulk-продавцы",
+  "settings.bulkDescription":
+    "Показывать или скрывать вкладку Bulk, которая группирует повторяющихся продавцов из текущих результатов.",
+  "settings.historyTitle": "История",
+  "settings.historyDescription":
+    "Показывать или скрывать вкладку истории, которая хранит недавно открытые поиски.",
+  "settings.finerFiltersTitle": "Добавить в фильтры",
+  "settings.finerFiltersDescription":
+    "Показывать или скрывать панель «Добавить в фильтры» внизу боковой панели.",
+  "settings.on": "Вкл",
+  "settings.off": "Выкл",
+  "settings.tradeActionsTitle": "Видимые действия трейда",
+  "settings.tradeActionsDescription":
+    "Выберите, какие действия сохраненного поиска будут видны вне меню в классическом и компактном режиме. Если ничего не выбрано, отображается только меню из трех точек."
 }
