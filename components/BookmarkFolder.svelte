@@ -228,9 +228,11 @@ import gripVerticalIcon from "lucide-static/icons/grip-vertical.svg?raw"
 
   let draggedIndex: number | null = null
   let dragOverIndex: number | null = null
+  let suppressNextTradeOpen = false
 
   const handleDragStart = (e: DragEvent, index: number) => {
     draggedIndex = index
+    suppressNextTradeOpen = true
     if (e.dataTransfer) {
       e.dataTransfer.effectAllowed = "move"
       e.dataTransfer.setData("text/plain", index.toString())
@@ -265,6 +267,9 @@ import gripVerticalIcon from "lucide-static/icons/grip-vertical.svg?raw"
   const handleDragEnd = () => {
     draggedIndex = null
     dragOverIndex = null
+    window.setTimeout(() => {
+      suppressNextTradeOpen = false
+    }, 0)
   }
 
   const createTradeFromCurrent = async () => {
@@ -395,12 +400,16 @@ import gripVerticalIcon from "lucide-static/icons/grip-vertical.svg?raw"
 
   let editingTradeId: string | null = null
   let tradeEditTitle = ""
+  let tradeEditInputEl: HTMLInputElement | null = null
   let savingTradeId: string | null = null
 
-  const startEditingTrade = (trade: BookmarksTradeStruct) => {
+  const startEditingTrade = async (trade: BookmarksTradeStruct) => {
     if (!trade.id) return
     editingTradeId = trade.id
     tradeEditTitle = trade.title
+    await tick()
+    tradeEditInputEl?.focus()
+    tradeEditInputEl?.select()
   }
 
   const saveTradeTitle = async (trade: BookmarksTradeStruct) => {
@@ -423,6 +432,11 @@ import gripVerticalIcon from "lucide-static/icons/grip-vertical.svg?raw"
 
   const cancelTradeEdit = () => {
     editingTradeId = null
+  }
+
+  const openTradeFromCard = (trade: BookmarksTradeStruct) => {
+    if (suppressNextTradeOpen || editingTradeId === trade.id) return
+    void openTrade(trade)
   }
 
   const icons = {
@@ -499,6 +513,7 @@ import gripVerticalIcon from "lucide-static/icons/grip-vertical.svg?raw"
           bind:this={folderEditInputEl}
           bind:value={folderEditTitle}
           on:keydown={(e) => {
+            e.stopPropagation()
             if (e.key === "Enter") saveFolderTitle()
             if (e.key === "Escape") cancelFolderEdit()
           }}
@@ -589,11 +604,7 @@ import gripVerticalIcon from "lucide-static/icons/grip-vertical.svg?raw"
         <ul class="trades-list">
           {#each trades as trade, i (trade.id)}
             <li
-              class="trade-item"
               animate:flip={{ duration: 180 }}
-              class:is-completed={!!trade.completedAt}
-              class:is-dragging={draggedIndex === i}
-              class:is-drag-over={dragOverIndex === i}
               draggable="true"
               on:dragstart={(e) => handleDragStart(e, i)}
               on:dragenter={(e) => handleDragEnter(e, i)}
@@ -601,19 +612,38 @@ import gripVerticalIcon from "lucide-static/icons/grip-vertical.svg?raw"
               on:drop|preventDefault={(e) => handleDrop(e, i)}
               on:dragend={handleDragEnd}>
               <div
+                class="trade-item"
+                class:is-completed={!!trade.completedAt}
+                class:is-dragging={draggedIndex === i}
+                class:is-drag-over={dragOverIndex === i}
+                role="button"
+                tabindex="0"
+                aria-label={trade.title}
+                on:click={() => openTradeFromCard(trade)}
+                on:keydown={(e) => {
+                  if (e.key === "Enter" || e.key === " ") {
+                    e.preventDefault()
+                    openTradeFromCard(trade)
+                  }
+                }}>
+              <button
+                type="button"
                 class="drag-handle"
-                title={translate($languageStore, "folder.dragTrade")}>
+                title={translate($languageStore, "folder.dragTrade")}
+                on:click|stopPropagation>
                 ≡
-              </div>
+              </button>
               <div class="trade-content">
                 <div class="trade-top">
                   {#if editingTradeId === trade.id}
                     <input
                       type="text"
                       class="inline-edit-input trade-edit"
+                      bind:this={tradeEditInputEl}
                       bind:value={tradeEditTitle}
                       on:blur={() => saveTradeTitle(trade)}
                       on:keydown={(e) => {
+                        e.stopPropagation()
                         if (e.key === "Enter") saveTradeTitle(trade)
                         if (e.key === "Escape") cancelTradeEdit()
                       }}
@@ -631,7 +661,7 @@ import gripVerticalIcon from "lucide-static/icons/grip-vertical.svg?raw"
                             "Standard"
                         )}
                         title={trade.title}
-                        on:click|preventDefault={() => void openTrade(trade)}>
+                        on:click|preventDefault|stopPropagation={() => void openTrade(trade)}>
                         {trade.title}
                       </a>
                     </div>
@@ -642,7 +672,7 @@ import gripVerticalIcon from "lucide-static/icons/grip-vertical.svg?raw"
                       <TradeActionsMenu
                         {trade}
                         compactText={formatTradeMeta(trade)}
-                        onEdit={() => startEditingTrade(trade)}
+                        onEdit={() => void startEditingTrade(trade)}
                         onReplace={() => void replaceSearchWithCurrent(trade)}
                         onCopy={() => copyTrade(trade)}
                         onOpenLive={() => void openTradeLive(trade)}
@@ -657,7 +687,7 @@ import gripVerticalIcon from "lucide-static/icons/grip-vertical.svg?raw"
                     <div class="trade-actions">
                       <TradeActionsMenu
                         {trade}
-                        onEdit={() => startEditingTrade(trade)}
+                        onEdit={() => void startEditingTrade(trade)}
                         onReplace={() => void replaceSearchWithCurrent(trade)}
                         onCopy={() => copyTrade(trade)}
                         onOpenLive={() => void openTradeLive(trade)}
@@ -666,6 +696,7 @@ import gripVerticalIcon from "lucide-static/icons/grip-vertical.svg?raw"
                     </div>
                   </div>
                 {/if}
+              </div>
               </div>
             </li>
           {/each}
@@ -1009,6 +1040,7 @@ import gripVerticalIcon from "lucide-static/icons/grip-vertical.svg?raw"
     border: 1px solid rgba($white, 0.06);
     border-radius: 6px;
     background: rgba($black, 0.34);
+    cursor: pointer;
     transition:
       background-color 0.2s,
       border-color 0.2s,
@@ -1019,6 +1051,12 @@ import gripVerticalIcon from "lucide-static/icons/grip-vertical.svg?raw"
       background-color: rgba($white, 0.05);
       border-color: rgba($gold, 0.16);
       transform: translateY(-1px);
+    }
+
+    &:focus-visible {
+      border-color: rgba($gold, 0.42);
+      box-shadow: 0 0 0 2px rgba($gold, 0.14);
+      outline: none;
     }
 
     &.is-dragging {
@@ -1039,6 +1077,9 @@ import gripVerticalIcon from "lucide-static/icons/grip-vertical.svg?raw"
   }
 
   .drag-handle {
+    padding: 0;
+    border: 0;
+    background: transparent;
     cursor: grab;
     color: rgba($white, 0.3);
     font-size: 15px;
