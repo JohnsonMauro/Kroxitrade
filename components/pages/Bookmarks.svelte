@@ -45,7 +45,7 @@
   let expandedFolderIds: string[] = $state([]);
   let isLoading = false;
   let showArchived = $state(false);
-  let loadedExpandedStateKey: string | null = $state(null);
+  let hasLoadedExpandedState = $state(false);
   
   let isImportingText = $state(false);
   let importText = $state("");
@@ -60,21 +60,52 @@
   let toolbarRepairAttempts = 0;
 
 
-  const loadExpandedState = (storageKey: string) => {
-    const raw = storageService.getLocalValue(storageKey);
+  const normalizeExpandedFolderIds = (value: unknown): string[] => {
+    if (Array.isArray(value)) {
+      return value.filter((id): id is string => typeof id === "string");
+    }
+
+    if (value && typeof value === "object") {
+      const parsed = value as Record<string, unknown>;
+      const legacyEntry = parsed[currentVersion];
+      if (Array.isArray(legacyEntry)) {
+        return legacyEntry.filter((id): id is string => typeof id === "string");
+      }
+    }
+
+    return [];
+  };
+
+  const loadExpandedState = () => {
+    const globalRaw = storageService.getLocalValue(EXPANDED_FOLDERS_STORAGE_KEY);
 
     try {
-      const parsed = raw ? JSON.parse(raw) : [];
-      expandedFolderIds = Array.isArray(parsed) ? parsed.filter((id): id is string => typeof id === "string") : [];
+      const parsed = globalRaw ? JSON.parse(globalRaw) : null;
+      const nextExpanded = normalizeExpandedFolderIds(parsed);
+      if (nextExpanded.length > 0) {
+        expandedFolderIds = nextExpanded;
+        hasLoadedExpandedState = true;
+        return;
+      }
+    } catch {
+      // Fall through to the legacy per-version key.
+    }
+
+    const legacyStorageKey = `${EXPANDED_FOLDERS_STORAGE_KEY}-${currentVersion}`;
+    const legacyRaw = storageService.getLocalValue(legacyStorageKey);
+
+    try {
+      const parsed = legacyRaw ? JSON.parse(legacyRaw) : [];
+      expandedFolderIds = normalizeExpandedFolderIds(parsed);
     } catch {
       expandedFolderIds = [];
     }
 
-    loadedExpandedStateKey = storageKey;
+    hasLoadedExpandedState = true;
   };
 
-  const persistExpandedState = (storageKey: string, folderIds: string[]) => {
-    storageService.setLocalValue(storageKey, JSON.stringify(folderIds));
+  const persistExpandedState = (folderIds: string[]) => {
+    storageService.setLocalValue(EXPANDED_FOLDERS_STORAGE_KEY, JSON.stringify(folderIds));
   };
 
   const toggleExpansion = (id: string) => {
@@ -281,14 +312,17 @@
   let displayedFolderIndexById = $derived(new Map(
     displayedFolders.map((folder, index) => [folder.id, index])
   ));
-  let expandedFoldersStorageKey = $derived(`${EXPANDED_FOLDERS_STORAGE_KEY}-${currentVersion}`);
   let validFolderIds = $derived(new Set(
-    versionFolders.map((folder) => folder.id).filter(Boolean)
+    $bookmarksService.map((folder) => folder.id).filter(Boolean)
   ));
   let tutorialTargetFolderId = $derived(tutorialStep === "save-search"
     ? tutorialFolderId || displayedFolders[0]?.id || null
     : null);
   $effect(() => {
+    if (validFolderIds.size === 0) {
+      return;
+    }
+
     const nextExpandedFolderIds = expandedFolderIds.filter((id) => validFolderIds.has(id));
     if (nextExpandedFolderIds.length !== expandedFolderIds.length) {
       expandedFolderIds = nextExpandedFolderIds;
@@ -300,14 +334,13 @@
     }
   });
   $effect(() => {
-    if (expandedFoldersStorageKey && loadedExpandedStateKey !== expandedFoldersStorageKey) {
-      loadExpandedState(expandedFoldersStorageKey);
+    if (hasLoadedExpandedState) {
+      persistExpandedState(expandedFolderIds);
     }
   });
-  $effect(() => {
-    if (loadedExpandedStateKey === expandedFoldersStorageKey) {
-      persistExpandedState(expandedFoldersStorageKey, expandedFolderIds);
-    }
+
+  onMount(() => {
+    loadExpandedState();
   });
 </script>
 
