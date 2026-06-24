@@ -893,11 +893,12 @@
 
   .header-label {
     flex: 1;
-    font-family: "Fontin", serif;
+    font-family: $primary-font;
     font-size: 14px;
     font-weight: 700;
     letter-spacing: 0.02em;
     color: rgba($white, 0.96);
+    text-transform: uppercase;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -912,6 +913,7 @@
     color: $white;
     font-family: $primary-font;
     font-size: 14px;
+    text-transform: uppercase;
     padding: 2px 6px;
     border-radius: 2px;
     margin-right: 8px;
