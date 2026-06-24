@@ -205,6 +205,7 @@ import Experimental from "./pages/Experimental.svelte";
     tradeLocationService.startPolling();
     const unsubscribeLocation = tradeLocationService.locationStore.subscribe((location) => {
       currentTradeVersion = location.version;
+      void settings.useVersion(location.version);
     });
     welcomeLanguage = $settings.language;
     isDevBuild = import.meta.env.DEV;
@@ -503,7 +504,7 @@ import Experimental from "./pages/Experimental.svelte";
   <OnboardingModal
     open={showOnboarding}
     showHistoryStep={$settings.showHistory}
-    showEquivalentStep={currentTradeVersion !== '2'}
+    showEquivalentStep={true}
     onClose={closeOnboarding}
     onStepChange={handleOnboardingStepChange} />
 
