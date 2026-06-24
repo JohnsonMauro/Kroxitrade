@@ -1,5 +1,7 @@
 import { writable } from "svelte/store";
+import { get } from "svelte/store";
 import { getActiveTradeTab } from "./active-trade-tab";
+import { languageStore, translate } from "./i18n";
 import { storageService } from "./storage";
 import { searchPanelService } from "./search-panel";
 import { hasValidExtensionContext, isExtensionContextInvalidatedError } from "../utilities/extension-context";
@@ -217,7 +219,7 @@ export class TradeLocationService {
     history.unshift({
       ...location,
       id: uniqueId(),
-      title: searchPanelService.recommendTitle() || "Untitled Search",
+      title: searchPanelService.recommendTitle() || translate(get(languageStore), "history.untitledSearch"),
       createdAt: new Date().toISOString()
     } as TradeLocationHistoryStruct);
 

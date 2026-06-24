@@ -223,6 +223,9 @@ export const spanishTranslations: Record<string, TranslationValue> = {
     "bulk.visited": "VISITADO",
     "bulk.emptyTitle": "Todavía no hay vendedores repetidos",
     "bulk.refresh": "Actualizar resultados",
+    "bulk.listingFallback": ({ index }) => `Listado ${index}`,
+    "bulk.priceUnavailable": "Precio no disponible",
+    "search.tradeFallback": "Trade",
     "bookmarks.newFolder": "Nueva carpeta",
     "bookmarks.folderCreated": "¡Carpeta creada!",
     "bookmarks.folderDeleted": "¡Carpeta eliminada!",
@@ -264,6 +267,7 @@ export const spanishTranslations: Record<string, TranslationValue> = {
       "Guardá una copia en archivo de tus carpetas o restaurá una que hayas exportado antes.",
     "bookmarks.saveFile": "Guardar archivo",
     "bookmarks.restoreFile": "Restaurar desde archivo",
+    "bookmarks.folderCopyTitle": ({ title }) => `${title} (copia)`,
     "confirm.cancel": "Cancelar",
     "confirm.delete": "Eliminar",
     "confirm.deleteFolderTitle": "¿Eliminar carpeta?",
@@ -278,6 +282,7 @@ export const spanishTranslations: Record<string, TranslationValue> = {
       `El historial está vacío para PoE ${version}.`,
     "history.emptyDescription":
       "Tus búsquedas recientes de trade van a aparecer acá cuando las abras desde el sitio oficial.",
+    "history.untitledSearch": "Búsqueda sin título",
     "history.today": "Hoy",
     "history.yesterday": "Ayer",
     "history.standardLeague": "Standard",
@@ -289,6 +294,7 @@ export const spanishTranslations: Record<string, TranslationValue> = {
     "folder.missingTradeType":
       "Falta el tipo de trade para la búsqueda actual.",
     "folder.addedToFolder": ({ title }) => `Se agregó "${title}" a la carpeta`,
+    "folder.tradeFallback": "Trade",
     "folder.copiedFolder":
       "¡Los datos de la carpeta se copiaron al portapapeles!",
     "folder.copyFolderError": "No se pudieron copiar los datos de la carpeta.",

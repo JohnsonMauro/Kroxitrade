@@ -23,7 +23,7 @@
     BookmarksTradeStruct
   } from "../lib/types/bookmarks"
   import { copyToClipboard } from "../lib/utilities/copy-to-clipboard"
-  import { getTradeUrl } from "../lib/utilities/trade-url"
+  import { resolveTradeLeague, resolveTradeUrl } from "../lib/utilities/trade-url"
   import { normalizeIcon } from "../lib/utilities/icons"
   import { formatLeagueLabel } from "../lib/utilities/league"
   import Button from "./Button.svelte"
@@ -140,8 +140,7 @@
 
   const formatTradeMeta = (trade: BookmarksTradeStruct) => {
     const meta: string[] = []
-    const league =
-      trade.location.league || tradeLocationService.current.league || "Standard"
+    const league = resolveTradeLeague(trade.location.league)
 
     meta.push(formatLeagueLabel(league))
 
@@ -155,12 +154,7 @@
   }
 
   const copyTrade = (trade: BookmarksTradeStruct) => {
-    const url = getTradeUrl(
-      trade.location.version,
-      trade.location.type,
-      trade.location.slug,
-      trade.location.league || tradeLocationService.current.league || "Standard"
-    )
+    const url = resolveTradeUrl(trade.location)
     void copyToClipboard(url)
       .then(() => {
         flashMessages.success(
@@ -176,15 +170,7 @@
 
   const openTradeLive = async (trade: BookmarksTradeStruct) => {
     await openUrlInActiveTab(
-      getTradeUrl(
-        trade.location.version,
-        trade.location.type,
-        trade.location.slug,
-        trade.location.league ||
-          tradeLocationService.current.league ||
-          "Standard",
-        "/live"
-      )
+      resolveTradeUrl(trade.location, "/live")
     )
   }
 
@@ -294,7 +280,7 @@
       (activeTabTitle || document.title)
         .replace(" - Path of Exile", "")
         .replace(/⚡ /g, "") ||
-      "Trade"
+      translate($languageStore, "folder.tradeFallback")
     await bookmarksService.persistTrade(trade, folder.id)
     await refreshTrades()
     flashMessages.success(
@@ -303,16 +289,7 @@
   }
 
   const openTrade = async (trade: BookmarksTradeStruct) => {
-    await openUrlInActiveTab(
-      getTradeUrl(
-        trade.location.version,
-        trade.location.type,
-        trade.location.slug,
-        trade.location.league ||
-          tradeLocationService.current.league ||
-          "Standard"
-      )
-    )
+    await openUrlInActiveTab(resolveTradeUrl(trade.location))
   }
 
   const exportFolder = () => {

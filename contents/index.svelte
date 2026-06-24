@@ -5,6 +5,7 @@
   import { itemResultsService } from "~lib/services/item-results"
   import { settings } from "~lib/services/settings"
   import { hasValidExtensionContext, isExtensionContextInvalidatedError } from "~lib/utilities/extension-context"
+  import { escapeCssAttributeValue } from "~lib/utilities/css"
   import { onMount } from "svelte"
 
   const EXTENSION_WIDTH = "360px"
@@ -39,7 +40,7 @@
         return
       }
 
-      const el = document.querySelector<HTMLElement>(`.row[data-id="${request.itemId}"]`)
+      const el = document.querySelector<HTMLElement>(`.row[data-id="${escapeCssAttributeValue(request.itemId)}"]`)
       if (!el) {
         return
       }

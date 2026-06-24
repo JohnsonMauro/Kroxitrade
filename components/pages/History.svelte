@@ -5,7 +5,7 @@
   import { openUrlInActiveTab } from "../../lib/services/active-trade-tab";
   import { flashMessages } from "../../lib/services/flash";
   import { languageStore, translate } from "../../lib/services/i18n";
-  import { getTradeUrl } from "../../lib/utilities/trade-url";
+  import { resolveTradeUrl } from "../../lib/utilities/trade-url";
   import type { TradeLocationHistoryStruct, TradeSiteVersion } from "../../lib/types/trade-location";
 
   import Button from "../Button.svelte";
@@ -160,9 +160,7 @@
   };
 
   const openHistoryEntry = async (entry: TradeLocationHistoryStruct) => {
-    await openUrlInActiveTab(
-      getTradeUrl(entry.version, entry.type, entry.slug, entry.league || "Standard")
-    );
+    await openUrlInActiveTab(resolveTradeUrl(entry));
   };
 </script>
 
@@ -181,7 +179,7 @@
                 <li class="history-item">
                   <a
                     class="history-link"
-                    href={getTradeUrl(entry.version, entry.type, entry.slug, entry.league || "Standard")}
+                    href={resolveTradeUrl(entry)}
                     onclick={(event) => {
                       event.preventDefault();
                       void openHistoryEntry(entry);

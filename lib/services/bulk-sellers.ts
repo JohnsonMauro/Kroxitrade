@@ -1,4 +1,7 @@
 import { writable } from "svelte/store";
+import { get } from "svelte/store";
+import { languageStore, translate } from "./i18n";
+import { escapeCssAttributeValue } from "../utilities/css";
 import type { BulkSellerGroup, BulkSellerItem } from "../types/bulk-sellers";
 
 const RESULT_SELECTOR = ".search-results .row, .search-results .result-item, .result-list .row, .result-list .result-item, .row[data-id]";
@@ -141,8 +144,9 @@ export class BulkSellersService {
       return null;
     }
 
-    const safeItemName = itemName || `Listing ${index + 1}`;
-    const safePriceLabel = priceLabel || "Price unavailable";
+    const language = get(languageStore);
+    const safeItemName = itemName || translate(language, "bulk.listingFallback", { index: index + 1 });
+    const safePriceLabel = priceLabel || translate(language, "bulk.priceUnavailable");
     const itemKey = `${safeItemName}__${safePriceLabel}`;
 
     return {
@@ -249,7 +253,8 @@ export class BulkSellersService {
   }
 
   private resolveRow(itemId: string) {
-    const direct = document.querySelector<HTMLElement>(`.row[data-id="${itemId}"], .result-item[data-id="${itemId}"]`);
+    const escapedItemId = escapeCssAttributeValue(itemId);
+    const direct = document.querySelector<HTMLElement>(`.row[data-id="${escapedItemId}"], .result-item[data-id="${escapedItemId}"]`);
     if (direct) return direct;
 
     const currentGroups = this.snapshot();

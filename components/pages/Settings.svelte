@@ -7,6 +7,7 @@
   import { tradeLocationService } from "../../lib/services/trade-location";
   import { normalizeIcon } from "../../lib/utilities/icons";
   import Button from "../Button.svelte";
+  import ToggleRow from "../ToggleRow.svelte";
   import { onDestroy, onMount } from "svelte";
   import flagBR from "../../assets/BR.png?inline";
   import flagDE from "../../assets/DE.png?inline";
@@ -423,20 +424,12 @@
                 </button>
               </div>
             </div>
-            <button
-              type="button"
-              class="toggle-row toggle-row--inline"
-              class:is-active={$settings.showEquivalentPricing}
-              role="switch"
-              aria-checked={$settings.showEquivalentPricing}
-              aria-label={translate($languageStore, "settings.equivalentTitle")}
-              onclick={() => handleEquivalentPricingChange(!$settings.showEquivalentPricing)}
-            >
-              <span class="toggle-switch">
-                <span class="toggle-switch__thumb"></span>
-              </span>
-              <span class="toggle-state">{toggleSwitchLabel($settings.showEquivalentPricing)}</span>
-            </button>
+          <ToggleRow
+            checked={$settings.showEquivalentPricing}
+            label={translate($languageStore, "settings.equivalentTitle")}
+            stateLabel={toggleSwitchLabel($settings.showEquivalentPricing)}
+            onToggle={() => handleEquivalentPricingChange(!$settings.showEquivalentPricing)}
+          />
           </div>
         {/if}
 
@@ -445,20 +438,12 @@
             <div class="settings-row__title">{translate($languageStore, "settings.bulkTitle")}</div>
             <div class="settings-row__description">{translate($languageStore, "settings.bulkDescription")}</div>
           </div>
-          <button
-            type="button"
-            class="toggle-row toggle-row--inline"
-            class:is-active={$settings.showBulkSellers}
-            role="switch"
-            aria-checked={$settings.showBulkSellers}
-            aria-label={translate($languageStore, "settings.bulkTitle")}
-            onclick={() => handleBulkSellersChange(!$settings.showBulkSellers)}
-          >
-            <span class="toggle-switch">
-              <span class="toggle-switch__thumb"></span>
-            </span>
-            <span class="toggle-state">{toggleSwitchLabel($settings.showBulkSellers)}</span>
-          </button>
+          <ToggleRow
+            checked={$settings.showBulkSellers}
+            label={translate($languageStore, "settings.bulkTitle")}
+            stateLabel={toggleSwitchLabel($settings.showBulkSellers)}
+            onToggle={() => handleBulkSellersChange(!$settings.showBulkSellers)}
+          />
         </div>
 
         <div class="settings-row" data-tutorial="settings-history">
@@ -466,20 +451,12 @@
             <div class="settings-row__title">{translate($languageStore, "settings.historyTitle")}</div>
             <div class="settings-row__description">{translate($languageStore, "settings.historyDescription")}</div>
           </div>
-          <button
-            type="button"
-            class="toggle-row toggle-row--inline"
-            class:is-active={$settings.showHistory}
-            role="switch"
-            aria-checked={$settings.showHistory}
-            aria-label={translate($languageStore, "settings.historyTitle")}
-            onclick={() => handleHistoryChange(!$settings.showHistory)}
-          >
-            <span class="toggle-switch">
-              <span class="toggle-switch__thumb"></span>
-            </span>
-            <span class="toggle-state">{toggleSwitchLabel($settings.showHistory)}</span>
-          </button>
+          <ToggleRow
+            checked={$settings.showHistory}
+            label={translate($languageStore, "settings.historyTitle")}
+            stateLabel={toggleSwitchLabel($settings.showHistory)}
+            onToggle={() => handleHistoryChange(!$settings.showHistory)}
+          />
         </div>
 
         <div class="settings-row" data-tutorial="settings-filters">
@@ -487,20 +464,12 @@
             <div class="settings-row__title">{translate($languageStore, "settings.finerFiltersTitle")}</div>
             <div class="settings-row__description">{translate($languageStore, "settings.finerFiltersDescription")}</div>
           </div>
-          <button
-            type="button"
-            class="toggle-row toggle-row--inline"
-            class:is-active={$settings.showFinerFilters}
-            role="switch"
-            aria-checked={$settings.showFinerFilters}
-            aria-label={translate($languageStore, "settings.finerFiltersTitle")}
-            onclick={() => handleFinerFiltersChange(!$settings.showFinerFilters)}
-          >
-            <span class="toggle-switch">
-              <span class="toggle-switch__thumb"></span>
-            </span>
-            <span class="toggle-state">{toggleSwitchLabel($settings.showFinerFilters)}</span>
-          </button>
+          <ToggleRow
+            checked={$settings.showFinerFilters}
+            label={translate($languageStore, "settings.finerFiltersTitle")}
+            stateLabel={toggleSwitchLabel($settings.showFinerFilters)}
+            onToggle={() => handleFinerFiltersChange(!$settings.showFinerFilters)}
+          />
         </div>
       </div>
     </section>
@@ -707,80 +676,6 @@
 
   .settings-actions-row {
     margin-top: 14px;
-  }
-
-  .toggle-row {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-    padding: 0;
-    border: none;
-    background: transparent;
-    cursor: pointer;
-
-    &:focus-visible {
-      .toggle-switch {
-        box-shadow:
-          0 0 0 1px rgba($gold, 0.28),
-          0 0 0 3px rgba($gold, 0.12);
-      }
-
-      .toggle-state {
-        color: $white;
-      }
-    }
-  }
-
-  .toggle-row--inline {
-    width: auto;
-    flex: 0 0 auto;
-  }
-
-  .toggle-switch {
-    position: relative;
-    width: 38px;
-    height: 20px;
-    border-radius: 999px;
-    background: rgba($blue, 0.4);
-    transition: background 0.16s ease, box-shadow 0.16s ease;
-    flex: 0 0 auto;
-  }
-
-  .toggle-row:hover .toggle-switch {
-    box-shadow: 0 0 0 1px rgba($blue, 0.2);
-  }
-
-  .toggle-row.is-active .toggle-switch {
-    background: rgba($gold, 0.5);
-  }
-
-  .toggle-switch__thumb {
-    position: absolute;
-    top: 2px;
-    left: 2px;
-    width: 16px;
-    height: 16px;
-    border-radius: 999px;
-    background: rgba($blue-alt, 0.95);
-    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.28);
-    transition: transform 0.16s ease, background 0.16s ease;
-  }
-
-  .toggle-state {
-    min-width: 28px;
-    color: rgba($white, 0.68);
-    font-family: $primary-font;
-    font-size: 10px;
-    font-weight: 600;
-    letter-spacing: 0.08em;
-    text-align: right;
-    text-transform: uppercase;
-  }
-
-  .toggle-row.is-active .toggle-switch__thumb {
-    transform: translateX(18px);
-    background: #f7d08a;
   }
 
   :global(.side-btn) {
@@ -1051,15 +946,10 @@
       align-items: stretch;
     }
 
-    .toggle-row--inline {
-      width: 100%;
-    }
   }
 
   @media (prefers-reduced-motion: reduce) {
     .settings-page,
-    .toggle-switch,
-    .toggle-switch__thumb,
     .language-select,
     .language-menu__item,
     .compact-option {

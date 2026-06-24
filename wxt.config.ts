@@ -1,18 +1,7 @@
 import { resolve } from "node:path"
 
 import { defineConfig } from "wxt"
-
-const tradeMatches = [
-  "https://www.pathofexile.com/*",
-  "https://br.pathofexile.com/*",
-  "https://ru.pathofexile.com/*",
-  "https://th.pathofexile.com/*",
-  "https://de.pathofexile.com/*",
-  "https://fr.pathofexile.com/*",
-  "https://es.pathofexile.com/*",
-  "https://jp.pathofexile.com/*",
-  "https://poe2.kakaogames.com/*"
-]
+import { tradeHostPermissions } from "./lib/config/trade-hosts"
 
 const iconMap = {
   16: "/icon.png",
@@ -42,7 +31,7 @@ export default defineConfig({
     description:
       "Poe Trade Plus enhances the Path of Exile trade site with bookmarks, history and result tools.",
     permissions: ["storage", "tabs"],
-    host_permissions: [...tradeMatches, "https://poe.ninja/*"],
+    host_permissions: [...tradeHostPermissions, "https://poe.ninja/*"],
     icons: iconMap,
     action: {
       default_title: "Poe Trade Plus",
