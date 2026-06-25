@@ -203,7 +203,7 @@ export const spanishTranslations: Record<string, TranslationValue> = {
       "Muestra el botón Copy nativo de PoE2 y copia el objeto para Path of Building. Usa el mismo comportamiento hover que Refresh y Filter by Item Stats.",
     "experimental.poe2CoeTitle": "Habilitar botón Craft of Exile",
     "experimental.poe2CoeBody":
-      "Agrega un botón CoE a los resultados de PoE2 que copia el objeto en el formato avanzado de importación.",
+      "Agrega un botón CoE a los resultados de PoE1 y PoE2 que copia el objeto en el formato avanzado de importación.",
     "settings.hidden": "Oculto",
     "settings.visible": "Visible",
     "settings.on": "On",

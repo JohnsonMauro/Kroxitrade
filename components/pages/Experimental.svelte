@@ -3,7 +3,7 @@
   import {
     experimentalSettings,
     poe2CopyButtonSetting,
-    poe2CoeButtonSetting
+    coeButtonSetting
   } from "../../lib/services/experimental";
   import ToggleRow from "../ToggleRow.svelte";
 
@@ -59,10 +59,10 @@
       <p>{translate($languageStore, "experimental.poe2CoeBody")}</p>
     </div>
     <ToggleRow
-      checked={$poe2CoeButtonSetting}
+      checked={$coeButtonSetting}
       label={translate($languageStore, "experimental.poe2CoeTitle")}
-      stateLabel={toggleLabel($poe2CoeButtonSetting)}
-      onToggle={() => experimentalSettings.setPoe2CoeVisible(!$poe2CoeButtonSetting)}
+      stateLabel={toggleLabel($coeButtonSetting)}
+      onToggle={() => experimentalSettings.setCoeVisible(!$coeButtonSetting)}
     />
   </div>
 </section>

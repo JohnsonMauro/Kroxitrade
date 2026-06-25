@@ -6,6 +6,7 @@ import { slugify } from "../utilities/slugify";
 import { escapeRegex } from "../utilities/escape-regex";
 import { emitPageDebug } from "../utilities/page-debug";
 import { getCurrencyIconUrl } from "../data/currency-icons";
+import coeButtonImage from "../../assets/coe-button.png?inline";
 import { copyItemForPob } from "../utilities/copy-item-for-pob";
 import {
   buildCraftOfExileText,
@@ -68,7 +69,7 @@ export class ItemResultsService {
     if (
       coeButton &&
       tradeLocationService.current.version === "2" &&
-      experimentalSettings.isPoe2CoeVisible()
+      experimentalSettings.isCoeVisible()
     ) {
       event.preventDefault();
       event.stopImmediatePropagation();
@@ -441,7 +442,7 @@ export class ItemResultsService {
     results.forEach((row: Element) => {
       const typedRow = row as HTMLElement;
       this.enablePoe2CopyButton(typedRow);
-      this.syncPoe2CoeButton(typedRow);
+      this.syncCoeButton(typedRow);
       this.injectEquivalentPricing(typedRow);
 
       if (typedRow.hasAttribute("bt-enhanced")) {
@@ -463,14 +464,14 @@ export class ItemResultsService {
     experimentalSettings.applyPoe2CopyButton(copyButton);
   }
 
-  private syncPoe2CoeButton(row: HTMLElement) {
+  private syncCoeButton(row: HTMLElement) {
     if (tradeLocationService.current.version !== "2") return;
 
     const left = row.querySelector<HTMLElement>(".left");
     if (!left) return;
 
     let button = left.querySelector<HTMLButtonElement>("button.bt-copy-coe");
-    if (!experimentalSettings.isPoe2CoeVisible()) {
+    if (!experimentalSettings.isCoeVisible()) {
       button?.remove();
       return;
     }
@@ -482,7 +483,11 @@ export class ItemResultsService {
     button.className = "bt-copy-coe";
     button.title = "Copy for Craft of Exile";
     button.setAttribute("aria-label", "Copy for Craft of Exile");
-    button.textContent = "CoE";
+    const image = document.createElement("img");
+    image.src = coeButtonImage;
+    image.alt = "";
+    image.setAttribute("aria-hidden", "true");
+    button.appendChild(image);
     left.appendChild(button);
   }
 

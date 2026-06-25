@@ -5,11 +5,11 @@ import { storageService } from "./storage";
 const BODY_CLASS = "bt-dev-result-actions-visible";
 const POE2_COPY_BODY_CLASS = "bt-dev-poe2-copy-visible";
 const POE2_BODY_CLASS = "bt-trade-poe2";
-const POE2_COE_BODY_CLASS = "bt-dev-poe2-coe-visible";
+const COE_BODY_CLASS = "bt-dev-coe-visible";
 const storageKey = (version: TradeSiteVersion) =>
   `experimental-result-actions-visible-poe${version}`;
 const POE2_COPY_STORAGE_KEY = "experimental-poe2-copy-visible";
-const POE2_COE_STORAGE_KEY = "experimental-poe2-coe-visible";
+const COE_STORAGE_KEY = "experimental-coe-visible";
 
 let activeVersion: TradeSiteVersion = "1";
 const { subscribe, set } = writable(false);
@@ -19,10 +19,10 @@ const {
 } = writable(false);
 let isPoe2CopyVisible = false;
 const {
-  subscribe: subscribePoe2Coe,
-  set: setPoe2Coe
+  subscribe: subscribeCoe,
+  set: setCoe
 } = writable(false);
-let isPoe2CoeVisible = false;
+let isCoeVisible = false;
 
 function apply(value: boolean) {
   set(value);
@@ -41,17 +41,17 @@ function applyPoe2CopyVisibility(value: boolean) {
   }
 }
 
-function applyPoe2CoeVisibility(value: boolean) {
-  isPoe2CoeVisible = activeVersion === "2" && value;
-  setPoe2Coe(isPoe2CoeVisible);
-  document.body?.classList.toggle(POE2_COE_BODY_CLASS, isPoe2CoeVisible);
+function applyCoeVisibility(value: boolean) {
+  isCoeVisible = value;
+  setCoe(isCoeVisible);
+  document.body?.classList.toggle(COE_BODY_CLASS, isCoeVisible);
   document.dispatchEvent(new CustomEvent("poe-trade-plus:experimental-change"));
 }
 
 export const experimentalSettings = {
   subscribe,
   subscribePoe2Copy,
-  subscribePoe2Coe,
+  subscribeCoe,
   useVersion(version: TradeSiteVersion) {
     activeVersion = version;
     document.body?.classList.toggle(POE2_BODY_CLASS, version === "2");
@@ -59,8 +59,8 @@ export const experimentalSettings = {
     applyPoe2CopyVisibility(
       storageService.getLocalValue(POE2_COPY_STORAGE_KEY) === "true"
     );
-    applyPoe2CoeVisibility(
-      storageService.getLocalValue(POE2_COE_STORAGE_KEY) === "true"
+    applyCoeVisibility(
+      storageService.getLocalValue(COE_STORAGE_KEY) === "true"
     );
   },
   setResultActionsVisible(value: boolean) {
@@ -71,12 +71,12 @@ export const experimentalSettings = {
     storageService.setLocalValue(POE2_COPY_STORAGE_KEY, String(value));
     applyPoe2CopyVisibility(value);
   },
-  setPoe2CoeVisible(value: boolean) {
-    storageService.setLocalValue(POE2_COE_STORAGE_KEY, String(value));
-    applyPoe2CoeVisibility(value);
+  setCoeVisible(value: boolean) {
+    storageService.setLocalValue(COE_STORAGE_KEY, String(value));
+    applyCoeVisibility(value);
   },
-  isPoe2CoeVisible() {
-    return isPoe2CoeVisible;
+  isCoeVisible() {
+    return isCoeVisible;
   },
   isPoe2CopyVisible() {
     return isPoe2CopyVisible;
@@ -105,7 +105,7 @@ export const experimentalSettings = {
     document.body?.classList.remove(BODY_CLASS);
     document.body?.classList.remove(POE2_COPY_BODY_CLASS);
     document.body?.classList.remove(POE2_BODY_CLASS);
-    document.body?.classList.remove(POE2_COE_BODY_CLASS);
+    document.body?.classList.remove(COE_BODY_CLASS);
   }
 };
 
@@ -113,6 +113,6 @@ export const poe2CopyButtonSetting = {
   subscribe: subscribePoe2Copy
 };
 
-export const poe2CoeButtonSetting = {
-  subscribe: subscribePoe2Coe
+export const coeButtonSetting = {
+  subscribe: subscribeCoe
 };
