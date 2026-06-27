@@ -51,7 +51,11 @@ export const initFilterPanel = () => {
     return t.content.firstElementChild
   }
 
-  const listModifiers = []
+  const listModifiers: Array<{
+    name: string
+    types: string[]
+    prefix: string
+  }> = []
   listModifiers.push({
     name: "Pseudo Res/Life",
     types: ["life", "cold", "fire", "light", "chaos"],
@@ -116,6 +120,12 @@ export const initFilterPanel = () => {
       <span class="btn-finer rm"  data-action="rmv-filter"  title="remove this mod from your search results">-</span>
       <span class="btn-finer add" data-action="add-filter"  title="add this mod to your search filters">+</span>
     </span>`)
+  const globalPresetsTemplate = () =>
+    h(`
+    <div class="krox-filter-presets" data-krox-filter-presets="true">
+      <div class="krox-filter-presets__title">Quick filter presets</div>
+      <div class="krox-filter-presets__list"></div>
+    </div>`)
 
   // ---------- map ----------
   const modMap: Record<string, string> = {
@@ -373,6 +383,81 @@ export const initFilterPanel = () => {
       getGlobalApp().save(true)
     }
   }
+
+  const findStatFiltersGroup = () =>
+    Array.from(
+      document.querySelectorAll<HTMLElement>(".search-advanced-pane .filter-group")
+    ).find((group) =>
+      group
+        .querySelector(".filter-group-header .filter-title")
+        ?.textContent?.trim()
+        .toLowerCase()
+        .includes("stat filters")
+    )
+
+  const injectSearchPanelQuickFilters = () => {
+    const group = findStatFiltersGroup()
+    if (!group || group.querySelector('[data-krox-filter-presets="true"]')) {
+      return
+    }
+
+    const panel = globalPresetsTemplate() as HTMLElement | null
+    const list = panel?.querySelector(".krox-filter-presets__list")
+    if (!panel || !list) return
+
+    listModifiers.forEach((modifier) => {
+      const row = document.createElement("div")
+      row.className = "krox-filter-preset"
+
+      const label = document.createElement("span")
+      label.className = "krox-filter-preset__name"
+      label.textContent = modifier.name
+
+      const minus = document.createElement("button")
+      minus.type = "button"
+      minus.className = "krox-filter-preset__btn krox-filter-preset__btn--minus"
+      minus.textContent = "-"
+      minus.title = `Reduce ${modifier.name}`
+      minus.dataset.action = "krox-global-minus"
+      minus.dataset.types = modifier.types.join(",")
+      minus.dataset.prefix = modifier.prefix
+
+      const plus = document.createElement("button")
+      plus.type = "button"
+      plus.className = "krox-filter-preset__btn krox-filter-preset__btn--plus"
+      plus.textContent = "+"
+      plus.title = `Add ${modifier.name}`
+      plus.dataset.action = "krox-global-plus"
+      plus.dataset.types = modifier.types.join(",")
+      plus.dataset.prefix = modifier.prefix
+
+      row.append(label, minus, plus)
+      list.appendChild(row)
+    })
+
+    const header = group.querySelector(".filter-group-header")
+    header?.insertAdjacentElement("afterend", panel)
+  }
+
+  on("click", ".krox-filter-preset__btn", (e: any, el: HTMLElement) => {
+    e.preventDefault()
+    e.stopPropagation()
+
+    applyFinerFiltersAction({
+      action:
+        el.dataset.action === "krox-global-minus"
+          ? "global-minus"
+          : "global-plus",
+      types: el.dataset.types || "",
+      prefix: el.dataset.prefix || "pseudo.pseudo_"
+    })
+  })
+
+  injectSearchPanelQuickFilters()
+  const quickFiltersObserver = new MutationObserver(() => {
+    injectSearchPanelQuickFilters()
+  })
+  quickFiltersObserver.observe(document.body, { childList: true, subtree: true })
 
   // listener for actions dispatched from the Svelte sidebar
   const handleFinerFiltersMessage = (e: MessageEvent<unknown>) => {

@@ -485,6 +485,80 @@ body.bt-dev-result-actions-visible.bt-dev-coe-visible .row > .left > button.bt-c
   filter: brightness(1.4);
 }
 
+.krox-filter-presets {
+  margin: 6px 10px 8px;
+  padding: 8px;
+  border: 1px solid rgba(168, 129, 73, 0.22);
+  border-radius: 3px;
+  background: rgba(0, 0, 0, 0.18);
+}
+
+.krox-filter-presets__title {
+  margin-bottom: 6px;
+  color: #a38d6d;
+  font-family: FontinSmallcaps, serif;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.krox-filter-presets__list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 5px;
+}
+
+.krox-filter-preset {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 24px 24px;
+  gap: 4px;
+  align-items: center;
+  min-height: 28px;
+  padding: 2px 4px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 3px;
+  background: rgba(255, 255, 255, 0.025);
+}
+
+.krox-filter-preset__name {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: rgba(238, 238, 238, 0.88);
+  font-family: FontinSmallcaps, serif;
+  font-size: 11px;
+}
+
+.krox-filter-preset__btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 22px;
+  padding: 0;
+  border: 0;
+  border-radius: 2px;
+  color: #eeeeee;
+  font-size: 14px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.krox-filter-preset__btn--plus {
+  background: rgba(40, 167, 69, 0.34);
+}
+
+.krox-filter-preset__btn--minus {
+  background: rgba(220, 53, 69, 0.34);
+}
+
+.krox-filter-preset__btn:hover,
+.krox-filter-preset__btn:focus-visible {
+  filter: brightness(1.25);
+  outline: 1px solid rgba(168, 129, 73, 0.42);
+}
+
 .hidden {
   display: none !important;
 }
