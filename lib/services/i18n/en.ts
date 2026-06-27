@@ -260,7 +260,9 @@ export const englishTranslations: Record<string, TranslationValue> = {
     "settings.tabs.sidebar": "Sidebar",
     "settings.tabs.results": "Results",
     "settings.tabs.bookmarks": "Bookmarks",
-    "settings.tabs.history": "History",
+    "settings.sidebarModulesTitle": "Sidebar Modules",
+    "settings.sidebarModulesDescription":
+      "Choose which extra tabs and helper panels appear in the sidebar.",
     "settings.resultActionsTitle": "Always show result actions",
     "settings.resultActionsBody":
       "Keep Refresh, Copy Item, and Filter by Item Stats visible without hovering a result.",

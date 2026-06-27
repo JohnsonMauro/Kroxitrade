@@ -38,7 +38,7 @@
   let { onOpenTutorial = () => {}, tutorialStep = null }: Props = $props();
 
   const DEFAULT_SIDEBAR_WIDTH = 450;
-  type SettingsTab = "interface" | "sidebar" | "results" | "bookmarks" | "history";
+  type SettingsTab = "interface" | "sidebar" | "results" | "bookmarks";
   let activeTab = $state<SettingsTab>("interface");
 
   const tabs: Array<{ id: SettingsTab; labelKey: string }> = [
@@ -46,17 +46,16 @@
     { id: "sidebar", labelKey: "settings.tabs.sidebar" },
     { id: "results", labelKey: "settings.tabs.results" },
     { id: "bookmarks", labelKey: "settings.tabs.bookmarks" },
-    { id: "history", labelKey: "settings.tabs.history" }
   ];
 
   const tutorialStepTabs: Record<string, SettingsTab> = {
     "settings-tutorial": "interface",
-    "settings-sidebar": "sidebar",
+    "settings-sidebar": "interface",
     "settings-language": "interface",
     "settings-equivalent": "results",
-    "settings-bulk": "results",
-    "settings-history": "history",
-    "settings-filters": "results",
+    "settings-bulk": "sidebar",
+    "settings-history": "sidebar",
+    "settings-filters": "sidebar",
     "settings-bookmarks": "bookmarks"
   };
   const compactTradeActionOptions: Array<{ id: BookmarkTradeActionId; labelKey: string; icon: string }> = [
@@ -366,7 +365,7 @@
           />
         </div>
       </section>
-    {:else if activeTab === "sidebar"}
+
       <section class="settings-section settings-section--wide" data-tutorial="settings-sidebar">
       <div class="section-heading">
         <h3 class="section-title">{translate($languageStore, "settings.sidebarTitle")}</h3>
@@ -393,6 +392,55 @@
           onClick={handleSidebarWidthReset}
         />
       </div>
+      </section>
+
+    {:else if activeTab === "sidebar"}
+      <section class="settings-section settings-section--wide">
+        <div class="section-heading">
+          <h3 class="section-title">{translate($languageStore, "settings.sidebarModulesTitle")}</h3>
+        </div>
+        <p class="section-description">{translate($languageStore, "settings.sidebarModulesDescription")}</p>
+
+        <div class="settings-row-list settings-row-list--spaced">
+          <div class="settings-row" data-tutorial="settings-bulk">
+            <div class="settings-row__copy">
+              <div class="settings-row__title">{translate($languageStore, "settings.bulkTitle")}</div>
+              <div class="settings-row__description">{translate($languageStore, "settings.bulkDescription")}</div>
+            </div>
+            <ToggleRow
+              checked={$settings.showBulkSellers}
+              label={translate($languageStore, "settings.bulkTitle")}
+              stateLabel={toggleSwitchLabel($settings.showBulkSellers)}
+              onToggle={() => handleBulkSellersChange(!$settings.showBulkSellers)}
+            />
+          </div>
+
+          <div class="settings-row" data-tutorial="settings-history">
+            <div class="settings-row__copy">
+              <div class="settings-row__title">{translate($languageStore, "settings.historyTitle")}</div>
+              <div class="settings-row__description">{translate($languageStore, "settings.historyDescription")}</div>
+            </div>
+            <ToggleRow
+              checked={$settings.showHistory}
+              label={translate($languageStore, "settings.historyTitle")}
+              stateLabel={toggleSwitchLabel($settings.showHistory)}
+              onToggle={() => handleHistoryChange(!$settings.showHistory)}
+            />
+          </div>
+
+          <div class="settings-row" data-tutorial="settings-filters">
+            <div class="settings-row__copy">
+              <div class="settings-row__title">{translate($languageStore, "settings.finerFiltersTitle")}</div>
+              <div class="settings-row__description">{translate($languageStore, "settings.finerFiltersDescription")}</div>
+            </div>
+            <ToggleRow
+              checked={$settings.showFinerFilters}
+              label={translate($languageStore, "settings.finerFiltersTitle")}
+              stateLabel={toggleSwitchLabel($settings.showFinerFilters)}
+              onToggle={() => handleFinerFiltersChange(!$settings.showFinerFilters)}
+            />
+          </div>
+        </div>
       </section>
 
     {:else if activeTab === "bookmarks"}
@@ -500,32 +548,6 @@
           />
         </div>
 
-        <div class="settings-row" data-tutorial="settings-bulk">
-          <div class="settings-row__copy">
-            <div class="settings-row__title">{translate($languageStore, "settings.bulkTitle")}</div>
-            <div class="settings-row__description">{translate($languageStore, "settings.bulkDescription")}</div>
-          </div>
-          <ToggleRow
-            checked={$settings.showBulkSellers}
-            label={translate($languageStore, "settings.bulkTitle")}
-            stateLabel={toggleSwitchLabel($settings.showBulkSellers)}
-            onToggle={() => handleBulkSellersChange(!$settings.showBulkSellers)}
-          />
-        </div>
-
-        <div class="settings-row" data-tutorial="settings-filters">
-          <div class="settings-row__copy">
-            <div class="settings-row__title">{translate($languageStore, "settings.finerFiltersTitle")}</div>
-            <div class="settings-row__description">{translate($languageStore, "settings.finerFiltersDescription")}</div>
-          </div>
-          <ToggleRow
-            checked={$settings.showFinerFilters}
-            label={translate($languageStore, "settings.finerFiltersTitle")}
-            stateLabel={toggleSwitchLabel($settings.showFinerFilters)}
-            onToggle={() => handleFinerFiltersChange(!$settings.showFinerFilters)}
-          />
-        </div>
-
         <div class="settings-row">
           <div class="settings-row__copy">
             <div class="settings-row__title">{translate($languageStore, "settings.resultActionsTitle")}</div>
@@ -566,26 +588,6 @@
         </div>
       </div>
       </section>
-    {:else if activeTab === "history"}
-      <section class="settings-section settings-section--wide">
-        <div class="section-heading">
-          <h3 class="section-title">{translate($languageStore, "settings.historyTitle")}</h3>
-        </div>
-        <div class="settings-row-list">
-          <div class="settings-row" data-tutorial="settings-history">
-            <div class="settings-row__copy">
-              <div class="settings-row__title">{translate($languageStore, "settings.historyTitle")}</div>
-              <div class="settings-row__description">{translate($languageStore, "settings.historyDescription")}</div>
-            </div>
-            <ToggleRow
-              checked={$settings.showHistory}
-              label={translate($languageStore, "settings.historyTitle")}
-              stateLabel={toggleSwitchLabel($settings.showHistory)}
-              onToggle={() => handleHistoryChange(!$settings.showHistory)}
-            />
-          </div>
-        </div>
-      </section>
     {/if}
   </div>
 </div>
@@ -610,7 +612,7 @@
 
   .settings-tabs {
     display: grid;
-    grid-template-columns: repeat(5, minmax(0, 1fr));
+    grid-template-columns: repeat(4, minmax(0, 1fr));
     gap: 4px;
     padding: 4px;
     border: 1px solid rgba($white, 0.07);
@@ -716,6 +718,10 @@
     display: flex;
     flex-direction: column;
     gap: 10px;
+  }
+
+  .settings-row-list--spaced {
+    margin-top: 12px;
   }
 
   .settings-row {

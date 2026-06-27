@@ -260,7 +260,9 @@ export const spanishTranslations: Record<string, TranslationValue> = {
     "settings.tabs.sidebar": "Panel",
     "settings.tabs.results": "Resultados",
     "settings.tabs.bookmarks": "Favoritos",
-    "settings.tabs.history": "Historial",
+    "settings.sidebarModulesTitle": "Módulos del panel",
+    "settings.sidebarModulesDescription":
+      "Elegí qué pestañas extra y paneles auxiliares aparecen en la sidebar.",
     "settings.resultActionsTitle": "Mostrar siempre acciones del resultado",
     "settings.resultActionsBody":
       "Mantiene visibles Actualizar, Copiar objeto y Filtrar por estadísticas sin hacer hover.",
