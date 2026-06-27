@@ -386,7 +386,23 @@ export const initFilterPanel = () => {
 
   const injectSearchPanelQuickFilters = () => {
     const pane = document.querySelector<HTMLElement>(".search-advanced-pane.brown")
-    if (!pane || pane.querySelector('[data-krox-filter-presets="true"]')) {
+    const existing = pane?.querySelector('[data-krox-filter-presets="true"]')
+    const storageKey = window.location.pathname.startsWith("/trade2/")
+      ? "bt-quick-filters-visible-poe2"
+      : "bt-quick-filters-visible-poe1"
+    const placementKey = window.location.pathname.startsWith("/trade2/")
+      ? "bt-quick-filters-placement-poe2"
+      : "bt-quick-filters-placement-poe1"
+
+    if (
+      window.localStorage.getItem(storageKey) === "false" ||
+      window.localStorage.getItem(placementKey) === "sidebar"
+    ) {
+      existing?.remove()
+      return
+    }
+
+    if (!pane || existing) {
       return
     }
 
@@ -447,6 +463,17 @@ export const initFilterPanel = () => {
     injectSearchPanelQuickFilters()
   })
   quickFiltersObserver.observe(document.body, { childList: true, subtree: true })
+  window.addEventListener("storage", (event) => {
+    if (
+      event.key?.startsWith("bt-quick-filters-visible-poe") ||
+      event.key?.startsWith("bt-quick-filters-placement-poe")
+    ) {
+      injectSearchPanelQuickFilters()
+    }
+  })
+  window.addEventListener("poe-trade-plus:quick-filters-change", () => {
+    injectSearchPanelQuickFilters()
+  })
 
   // listener for actions dispatched from the Svelte sidebar
   const handleFinerFiltersMessage = (e: MessageEvent<unknown>) => {

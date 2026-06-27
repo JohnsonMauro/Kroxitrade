@@ -210,6 +210,12 @@ export const englishTranslations: Record<string, TranslationValue> = {
       "Could not refresh the poe.ninja ratio right now.",
     "settings.equivalentRefreshUnavailable":
       "Open a trade league first to refresh the poe.ninja ratio.",
+    "settings.quickFiltersTitle": "Quick Filter Presets",
+    "settings.quickFiltersDescription":
+      "Show or hide preset buttons injected above the trade site's Stat Filters.",
+    "settings.quickFiltersPlacementTitle": "Display location",
+    "settings.quickFiltersPlacementPage": "Trade Page",
+    "settings.quickFiltersPlacementSidebar": "Sidebar",
     "settings.bulkTitle": "Bulk Sellers",
     "settings.bulkDescription":
       "Show or hide the bulk sellers tab that groups repeated sellers from the current trade results.",

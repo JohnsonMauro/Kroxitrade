@@ -8,7 +8,7 @@
   } from "../../lib/services/experimental";
   import { flashMessages } from "../../lib/services/flash";
   import { itemResultsService } from "../../lib/services/item-results";
-  import { settings, type BookmarkTradeActionId, type SidebarSide } from "../../lib/services/settings";
+  import { settings, type BookmarkTradeActionId, type QuickFiltersPlacement, type SidebarSide } from "../../lib/services/settings";
   import { tradeLocationService } from "../../lib/services/trade-location";
   import type { BookmarksTradeStruct } from "../../lib/types/bookmarks";
   import { normalizeIcon } from "../../lib/utilities/icons";
@@ -148,6 +148,18 @@
 
   async function handleHistoryChange(showHistory: boolean) {
     if (!(await settings.updateHistoryVisibility(showHistory))) {
+      flashMessages.alert(translate($languageStore, "settings.saveFailed"));
+    }
+  }
+
+  async function handleQuickFiltersChange(showQuickFilters: boolean) {
+    if (!(await settings.updateQuickFiltersVisibility(showQuickFilters))) {
+      flashMessages.alert(translate($languageStore, "settings.saveFailed"));
+    }
+  }
+
+  async function handleQuickFiltersPlacementChange(quickFiltersPlacement: QuickFiltersPlacement) {
+    if (!(await settings.updateQuickFiltersPlacement(quickFiltersPlacement))) {
       flashMessages.alert(translate($languageStore, "settings.saveFailed"));
     }
   }
@@ -400,6 +412,47 @@
           onClick={handleSidebarWidthReset}
         />
       </div>
+      </section>
+
+      <section class="settings-section settings-section--wide">
+        <div class="section-heading">
+          <h3 class="section-title">{translate($languageStore, "settings.quickFiltersTitle")}</h3>
+        </div>
+        <div class="settings-row-list">
+          <div class="settings-row">
+            <div class="settings-row__copy">
+              <div class="settings-row__title">{translate($languageStore, "settings.quickFiltersTitle")}</div>
+              <div class="settings-row__description">{translate($languageStore, "settings.quickFiltersDescription")}</div>
+            </div>
+            <ToggleRow
+              checked={$settings.showQuickFilters}
+              label={translate($languageStore, "settings.quickFiltersTitle")}
+              stateLabel={toggleSwitchLabel($settings.showQuickFilters)}
+              onToggle={() => handleQuickFiltersChange(!$settings.showQuickFilters)}
+            />
+          </div>
+          {#if $settings.showQuickFilters}
+            <div class="settings-placement">
+              <div class="settings-placement__label">
+                {translate($languageStore, "settings.quickFiltersPlacementTitle")}
+              </div>
+              <div class="side-selector side-selector--inline">
+                <Button
+                  label={translate($languageStore, "settings.quickFiltersPlacementPage")}
+                  theme={$settings.quickFiltersPlacement === 'page' ? 'gold' : 'blue'}
+                  class="side-btn"
+                  onClick={() => handleQuickFiltersPlacementChange('page')}
+                />
+                <Button
+                  label={translate($languageStore, "settings.quickFiltersPlacementSidebar")}
+                  theme={$settings.quickFiltersPlacement === 'sidebar' ? 'gold' : 'blue'}
+                  class="side-btn"
+                  onClick={() => handleQuickFiltersPlacementChange('sidebar')}
+                />
+              </div>
+            </div>
+          {/if}
+        </div>
       </section>
 
     {:else if activeTab === "sidebar"}
@@ -1147,6 +1200,24 @@
     display: block;
     overflow: visible;
     stroke-width: 1.7;
+  }
+
+  .settings-placement {
+    margin-top: -2px;
+    padding: 10px 0 12px;
+    border-top: 1px solid rgba($white, 0.07);
+  }
+
+  .settings-placement__label {
+    color: rgba($gold, 0.78);
+    font-family: $primary-font;
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .side-selector--inline {
+    margin-top: 8px;
   }
 
   .bookmark-layout-preview {

@@ -13,6 +13,7 @@ import beakerIcon from "lucide-static/icons/beaker.svg?raw";
 import Settings from "./pages/Settings.svelte";
 import About from "./pages/About.svelte";
 import Experimental from "./pages/Experimental.svelte";
+  import FinerFilters from "./FinerFilters.svelte";
   import WhatsNewDialog from "./WhatsNewDialog.svelte";
   import WelcomeDialog from "./WelcomeDialog.svelte";
   import logoUrl from "~assets/logo.webp?inline";
@@ -516,6 +517,10 @@ import Experimental from "./pages/Experimental.svelte";
         <About onOpenWhatsNew={openWhatsNew} />
     {/if}
   </main>
+
+  {#if $settings.showQuickFilters && $settings.quickFiltersPlacement === 'sidebar'}
+    <FinerFilters />
+  {/if}
 
   <OnboardingModal
     open={showOnboarding}

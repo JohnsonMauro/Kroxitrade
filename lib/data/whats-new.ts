@@ -34,6 +34,10 @@ export const latestWhatsNew: WhatsNewEntry = {
           description: "New releases can show a compact update prompt, plus a full release notes modal from About."
         },
         {
+          title: "Quick Filter Presets can live where you work",
+          description: "Enable them from Results settings, then choose whether they appear in the sidebar or directly above the trade site's Stat Filters."
+        },
+        {
           title: "Craft of Exile export is easier to reach",
           description: "PoE1 and PoE2 result rows can now expose a CoE action that copies items in Craft of Exile’s advanced import format."
         },
@@ -44,10 +48,6 @@ export const latestWhatsNew: WhatsNewEntry = {
         {
           title: "Equivalent pricing works across both games",
           description: "poe.ninja ratios now support PoE1 and PoE2 so chaos/divine conversion stays useful on either trade site."
-        },
-        {
-          title: "Result-action visibility can be tested in dev builds",
-          description: "Development builds include a toggle for keeping result actions visible while tuning hover behavior."
         }
       ]
     },
@@ -67,6 +67,10 @@ export const latestWhatsNew: WhatsNewEntry = {
           description: "Compact result layouts and item filter buttons now behave more consistently."
         },
         {
+          title: "Bookmark text opens saved searches again",
+          description: "Clicking the saved-search title now opens the bookmark instead of being ignored."
+        },
+        {
           title: "Extension dependencies were hardened",
           description: "Dependency overrides and validation changes reduce known package and request risks."
         }
@@ -78,6 +82,10 @@ export const latestWhatsNew: WhatsNewEntry = {
         {
           title: "Sidebar and result options were separated",
           description: "Visible sidebar modules now live under Sidebar, while injected trade-result tools stay under Results."
+        },
+        {
+          title: "Add To Filters moved out of the sidebar by default",
+          description: "Quick filter presets can now be injected into the trade page, keeping the sidebar focused on navigation and saved searches."
         },
         {
           title: "Settings now respect the active trade version",

@@ -210,6 +210,12 @@ export const spanishTranslations: Record<string, TranslationValue> = {
       "No se pudo recargar el ratio de poe.ninja ahora mismo.",
     "settings.equivalentRefreshUnavailable":
       "Abrí primero una liga de trade para recargar el ratio de poe.ninja.",
+    "settings.quickFiltersTitle": "Presets rápidos de filtros",
+    "settings.quickFiltersDescription":
+      "Mostrá u ocultá los botones de presets inyectados arriba de Stat Filters.",
+    "settings.quickFiltersPlacementTitle": "Ubicación",
+    "settings.quickFiltersPlacementPage": "Página de trade",
+    "settings.quickFiltersPlacementSidebar": "Sidebar",
     "settings.bulkTitle": "Bulk Sellers",
     "settings.bulkDescription":
       "Mostrá u ocultá la pestaña Bulk que agrupa vendedores repetidos de los resultados actuales.",
