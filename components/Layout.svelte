@@ -209,9 +209,7 @@ import Experimental from "./pages/Experimental.svelte";
     const unsubscribeLocation = tradeLocationService.locationStore.subscribe((location) => {
       currentTradeVersion = location.version;
       void settings.useVersion(location.version);
-      if (import.meta.env.DEV) {
-        experimentalSettings.useVersion(location.version);
-      }
+      experimentalSettings.useVersion(location.version);
     });
     welcomeLanguage = $settings.language;
     isDevBuild = import.meta.env.DEV;
@@ -512,7 +510,9 @@ import Experimental from "./pages/Experimental.svelte";
     {:else if currentPage === 'history' && $settings.showHistory}
         <History />
     {:else if currentPage === 'settings'}
-        <Settings onOpenTutorial={openOnboarding} />
+        <Settings
+          onOpenTutorial={openOnboarding}
+          tutorialStep={showOnboarding ? onboardingCurrentStepId : null} />
     {:else if currentPage === 'experimental' && isDevBuild}
         <Experimental />
     {:else if currentPage === 'about'}

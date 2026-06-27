@@ -225,7 +225,10 @@ export const englishTranslations: Record<string, TranslationValue> = {
       "Temporary playground for features we are testing before they reach the main UI.",
     "experimental.devOnlyTitle": "Development build only",
     "experimental.devOnlyBody":
-      "This space only appears in development builds so we can try ideas without affecting production users.",
+      "Stable result customization moved into Settings. This space only appears in development builds for future hidden flags and temporary tests.",
+    "experimental.emptyTitle": "No active experiments",
+    "experimental.emptyBody":
+      "Result action, PoE2 copy, and Craft of Exile controls now live in Settings under Results.",
     "experimental.resultActionsTitle": "Always show result actions",
     "experimental.resultActionsBody":
       "Keep Refresh, Copy Item, and Filter by Item Stats visible without hovering a result.",
@@ -252,6 +255,21 @@ export const englishTranslations: Record<string, TranslationValue> = {
       "Choose which saved-search actions stay visible outside the menu in both classic and compact layouts. If none are selected, only the three-dot menu is shown.",
     "settings.compactTradeActionToggle": "Complete / Pending",
     "settings.saveFailed": "Could not save settings. Please try again.",
+    "settings.tabs.label": "Settings categories",
+    "settings.tabs.interface": "Interface",
+    "settings.tabs.sidebar": "Sidebar",
+    "settings.tabs.results": "Results",
+    "settings.tabs.bookmarks": "Bookmarks",
+    "settings.tabs.history": "History",
+    "settings.resultActionsTitle": "Always show result actions",
+    "settings.resultActionsBody":
+      "Keep Refresh, Copy Item, and Filter by Item Stats visible without hovering a result.",
+    "settings.poe2CopyTitle": "PoE2 Copy button",
+    "settings.poe2CopyBody":
+      "Show PoE2's native Copy button and make it copy the item for Path of Building.",
+    "settings.coeTitle": "Craft of Exile button",
+    "settings.coeBody":
+      "Add a CoE button to PoE1 and PoE2 results that copies the item in Craft of Exile's advanced import format.",
     "about.eyebrow": "About",
     "about.description":
       "Poe Trade Plus is a companion for Path of Exile Trade built to save searches, organize folders, track history, and keep recurring trade workflows fast, visual, and easy to manage inside the official site.",

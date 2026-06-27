@@ -1,16 +1,5 @@
 <script lang="ts">
   import { languageStore, translate } from "../../lib/services/i18n";
-  import {
-    experimentalSettings,
-    poe2CopyButtonSetting,
-    coeButtonSetting
-  } from "../../lib/services/experimental";
-  import ToggleRow from "../ToggleRow.svelte";
-
-  const toggleLabel = (value: boolean) =>
-    value
-      ? translate($languageStore, "settings.on")
-      : translate($languageStore, "settings.off");
 </script>
 
 <section class="experimental-page">
@@ -27,43 +16,11 @@
     </div>
   </div>
 
-  <div class="panel panel--setting">
+  <div class="panel">
     <div class="panel__copy">
-      <h2>{translate($languageStore, "experimental.resultActionsTitle")}</h2>
-      <p>{translate($languageStore, "experimental.resultActionsBody")}</p>
+      <h2>{translate($languageStore, "experimental.emptyTitle")}</h2>
+      <p>{translate($languageStore, "experimental.emptyBody")}</p>
     </div>
-    <ToggleRow
-      checked={$experimentalSettings}
-      label={translate($languageStore, "experimental.resultActionsTitle")}
-      stateLabel={toggleLabel($experimentalSettings)}
-      onToggle={() => experimentalSettings.setResultActionsVisible(!$experimentalSettings)}
-    />
-  </div>
-
-  <div class="panel panel--setting">
-    <div class="panel__copy">
-      <h2>{translate($languageStore, "experimental.poe2CopyTitle")}</h2>
-      <p>{translate($languageStore, "experimental.poe2CopyBody")}</p>
-    </div>
-    <ToggleRow
-      checked={$poe2CopyButtonSetting}
-      label={translate($languageStore, "experimental.poe2CopyTitle")}
-      stateLabel={toggleLabel($poe2CopyButtonSetting)}
-      onToggle={() => experimentalSettings.setPoe2CopyVisible(!$poe2CopyButtonSetting)}
-    />
-  </div>
-
-  <div class="panel panel--setting">
-    <div class="panel__copy">
-      <h2>{translate($languageStore, "experimental.poe2CoeTitle")}</h2>
-      <p>{translate($languageStore, "experimental.poe2CoeBody")}</p>
-    </div>
-    <ToggleRow
-      checked={$coeButtonSetting}
-      label={translate($languageStore, "experimental.poe2CoeTitle")}
-      stateLabel={toggleLabel($coeButtonSetting)}
-      onToggle={() => experimentalSettings.setCoeVisible(!$coeButtonSetting)}
-    />
   </div>
 </section>
 
@@ -122,10 +79,4 @@
     min-width: 0;
   }
 
-  .panel--setting {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 16px;
-  }
 </style>

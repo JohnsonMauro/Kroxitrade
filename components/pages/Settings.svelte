@@ -1,6 +1,11 @@
 <script lang="ts">
   import { languageStore, translate, type AppLanguage } from "../../lib/services/i18n";
   import { bookmarksService } from "../../lib/services/bookmarks";
+  import {
+    coeButtonSetting,
+    experimentalSettings,
+    poe2CopyButtonSetting
+  } from "../../lib/services/experimental";
   import { flashMessages } from "../../lib/services/flash";
   import { itemResultsService } from "../../lib/services/item-results";
   import { settings, type BookmarkTradeActionId, type SidebarSide } from "../../lib/services/settings";
@@ -27,11 +32,33 @@
 
   interface Props {
     onOpenTutorial?: () => void;
+    tutorialStep?: string | null;
   }
 
-  let { onOpenTutorial = () => {} }: Props = $props();
+  let { onOpenTutorial = () => {}, tutorialStep = null }: Props = $props();
 
   const DEFAULT_SIDEBAR_WIDTH = 450;
+  type SettingsTab = "interface" | "sidebar" | "results" | "bookmarks" | "history";
+  let activeTab = $state<SettingsTab>("interface");
+
+  const tabs: Array<{ id: SettingsTab; labelKey: string }> = [
+    { id: "interface", labelKey: "settings.tabs.interface" },
+    { id: "sidebar", labelKey: "settings.tabs.sidebar" },
+    { id: "results", labelKey: "settings.tabs.results" },
+    { id: "bookmarks", labelKey: "settings.tabs.bookmarks" },
+    { id: "history", labelKey: "settings.tabs.history" }
+  ];
+
+  const tutorialStepTabs: Record<string, SettingsTab> = {
+    "settings-tutorial": "interface",
+    "settings-sidebar": "sidebar",
+    "settings-language": "interface",
+    "settings-equivalent": "results",
+    "settings-bulk": "results",
+    "settings-history": "history",
+    "settings-filters": "results",
+    "settings-bookmarks": "bookmarks"
+  };
   const compactTradeActionOptions: Array<{ id: BookmarkTradeActionId; labelKey: string; icon: string }> = [
     { id: "edit", labelKey: "folder.editSearchName", icon: normalizeIcon(editIcon, { size: 15, className: "settings-option-svg" }) },
     { id: "replace", labelKey: "folder.replaceCurrentSearch", icon: normalizeIcon(replaceIcon, { size: 15, className: "settings-option-svg" }) },
@@ -193,6 +220,18 @@
     return value ? translate($languageStore, "settings.on") : translate($languageStore, "settings.off");
   }
 
+  function handleResultActionsVisibleChange(value: boolean) {
+    experimentalSettings.setResultActionsVisible(value);
+  }
+
+  function handlePoe2CopyVisibleChange(value: boolean) {
+    experimentalSettings.setPoe2CopyVisible(value);
+  }
+
+  function handleCoeVisibleChange(value: boolean) {
+    experimentalSettings.setCoeVisible(value);
+  }
+
   function toggleLanguageMenu(event: MouseEvent) {
     event.stopPropagation();
     isLanguageMenuOpen = !isLanguageMenuOpen;
@@ -233,11 +272,33 @@
 
   let selectedLanguage =
     $derived(languages.find((language) => language.code === $settings.language) ?? languages[0]);
+
+  $effect(() => {
+    if (tutorialStep && tutorialStepTabs[tutorialStep]) {
+      activeTab = tutorialStepTabs[tutorialStep];
+    }
+  });
 </script>
 
 <div class="settings-page">
+  <div class="settings-tabs" role="tablist" aria-label={translate($languageStore, "settings.tabs.label")}>
+    {#each tabs as tab (tab.id)}
+      <button
+        type="button"
+        class="settings-tab"
+        class:is-active={activeTab === tab.id}
+        role="tab"
+        aria-selected={activeTab === tab.id}
+        onclick={() => activeTab = tab.id}
+      >
+        {translate($languageStore, tab.labelKey)}
+      </button>
+    {/each}
+  </div>
+
   <div class="settings-grid">
-    <section class="settings-section settings-section--feature settings-section--wide" data-tutorial="settings-language">
+    {#if activeTab === "interface"}
+      <section class="settings-section settings-section--feature settings-section--wide" data-tutorial="settings-language">
       <div class="section-heading">
         <h3 class="section-title">{translate($languageStore, "settings.languageTitle")}</h3>
       </div>
@@ -288,9 +349,25 @@
           {/if}
         </div>
       </div>
-    </section>
+      </section>
 
-    <section class="settings-section settings-section--wide" data-tutorial="settings-sidebar">
+      <section class="settings-section settings-section--feature settings-section--wide" data-tutorial="settings-tutorial">
+        <div class="section-heading">
+          <h3 class="section-title">{translate($languageStore, "settings.onboardingTitle")}</h3>
+        </div>
+        <p class="section-description">{translate($languageStore, "settings.onboardingDescription")}</p>
+
+        <div class="section-actions">
+          <Button
+            label={translate($languageStore, "settings.reopenTutorial")}
+            theme="gold"
+            class="side-btn"
+            onClick={onOpenTutorial}
+          />
+        </div>
+      </section>
+    {:else if activeTab === "sidebar"}
+      <section class="settings-section settings-section--wide" data-tutorial="settings-sidebar">
       <div class="section-heading">
         <h3 class="section-title">{translate($languageStore, "settings.sidebarTitle")}</h3>
       </div>
@@ -316,9 +393,10 @@
           onClick={handleSidebarWidthReset}
         />
       </div>
-    </section>
+      </section>
 
-    <section class="settings-section settings-section--wide settings-section--bookmarks-layout" data-tutorial="settings-bookmarks">
+    {:else if activeTab === "bookmarks"}
+      <section class="settings-section settings-section--wide settings-section--bookmarks-layout" data-tutorial="settings-bookmarks">
       <div class="section-heading">
         <h3 class="section-title">{translate($languageStore, "settings.compactActionsTitle")}</h3>
       </div>
@@ -362,9 +440,9 @@
           {/each}
         </div>
       </div>
-    </section>
+      </section>
 
-    <section class="settings-section settings-section--wide">
+      <section class="settings-section settings-section--wide">
       <div class="section-heading">
         <h3 class="section-title">{translate($languageStore, "bookmarks.backupTitle")}</h3>
       </div>
@@ -385,9 +463,10 @@
           fileAccept=".txt"
         />
       </div>
-    </section>
+      </section>
 
-    <section class="settings-section settings-section--wide">
+    {:else if activeTab === "results"}
+      <section class="settings-section settings-section--wide">
       <div class="section-heading">
         <h3 class="section-title">{translate($languageStore, "settings.resultsTitle")}</h3>
       </div>
@@ -434,19 +513,6 @@
           />
         </div>
 
-        <div class="settings-row" data-tutorial="settings-history">
-          <div class="settings-row__copy">
-            <div class="settings-row__title">{translate($languageStore, "settings.historyTitle")}</div>
-            <div class="settings-row__description">{translate($languageStore, "settings.historyDescription")}</div>
-          </div>
-          <ToggleRow
-            checked={$settings.showHistory}
-            label={translate($languageStore, "settings.historyTitle")}
-            stateLabel={toggleSwitchLabel($settings.showHistory)}
-            onToggle={() => handleHistoryChange(!$settings.showHistory)}
-          />
-        </div>
-
         <div class="settings-row" data-tutorial="settings-filters">
           <div class="settings-row__copy">
             <div class="settings-row__title">{translate($languageStore, "settings.finerFiltersTitle")}</div>
@@ -459,24 +525,68 @@
             onToggle={() => handleFinerFiltersChange(!$settings.showFinerFilters)}
           />
         </div>
-      </div>
-    </section>
 
-    <section class="settings-section settings-section--feature settings-section--wide" data-tutorial="settings-tutorial">
-      <div class="section-heading">
-        <h3 class="section-title">{translate($languageStore, "settings.onboardingTitle")}</h3>
-      </div>
-      <p class="section-description">{translate($languageStore, "settings.onboardingDescription")}</p>
+        <div class="settings-row">
+          <div class="settings-row__copy">
+            <div class="settings-row__title">{translate($languageStore, "settings.resultActionsTitle")}</div>
+            <div class="settings-row__description">{translate($languageStore, "settings.resultActionsBody")}</div>
+          </div>
+          <ToggleRow
+            checked={$experimentalSettings}
+            label={translate($languageStore, "settings.resultActionsTitle")}
+            stateLabel={toggleSwitchLabel($experimentalSettings)}
+            onToggle={() => handleResultActionsVisibleChange(!$experimentalSettings)}
+          />
+        </div>
 
-      <div class="section-actions">
-        <Button
-          label={translate($languageStore, "settings.reopenTutorial")}
-          theme="gold"
-          class="side-btn"
-          onClick={onOpenTutorial}
-        />
+        <div class="settings-row">
+          <div class="settings-row__copy">
+            <div class="settings-row__title">{translate($languageStore, "settings.poe2CopyTitle")}</div>
+            <div class="settings-row__description">{translate($languageStore, "settings.poe2CopyBody")}</div>
+          </div>
+          <ToggleRow
+            checked={$poe2CopyButtonSetting}
+            label={translate($languageStore, "settings.poe2CopyTitle")}
+            stateLabel={toggleSwitchLabel($poe2CopyButtonSetting)}
+            onToggle={() => handlePoe2CopyVisibleChange(!$poe2CopyButtonSetting)}
+          />
+        </div>
+
+        <div class="settings-row">
+          <div class="settings-row__copy">
+            <div class="settings-row__title">{translate($languageStore, "settings.coeTitle")}</div>
+            <div class="settings-row__description">{translate($languageStore, "settings.coeBody")}</div>
+          </div>
+          <ToggleRow
+            checked={$coeButtonSetting}
+            label={translate($languageStore, "settings.coeTitle")}
+            stateLabel={toggleSwitchLabel($coeButtonSetting)}
+            onToggle={() => handleCoeVisibleChange(!$coeButtonSetting)}
+          />
+        </div>
       </div>
-    </section>
+      </section>
+    {:else if activeTab === "history"}
+      <section class="settings-section settings-section--wide">
+        <div class="section-heading">
+          <h3 class="section-title">{translate($languageStore, "settings.historyTitle")}</h3>
+        </div>
+        <div class="settings-row-list">
+          <div class="settings-row" data-tutorial="settings-history">
+            <div class="settings-row__copy">
+              <div class="settings-row__title">{translate($languageStore, "settings.historyTitle")}</div>
+              <div class="settings-row__description">{translate($languageStore, "settings.historyDescription")}</div>
+            </div>
+            <ToggleRow
+              checked={$settings.showHistory}
+              label={translate($languageStore, "settings.historyTitle")}
+              stateLabel={toggleSwitchLabel($settings.showHistory)}
+              onToggle={() => handleHistoryChange(!$settings.showHistory)}
+            />
+          </div>
+        </div>
+      </section>
+    {/if}
   </div>
 </div>
 
@@ -496,6 +606,52 @@
   .settings-grid {
     display: grid;
     gap: 14px;
+  }
+
+  .settings-tabs {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 4px;
+    padding: 4px;
+    border: 1px solid rgba($white, 0.07);
+    border-radius: 6px;
+    background: rgba($white, 0.025);
+  }
+
+  .settings-tab {
+    min-width: 0;
+    min-height: 30px;
+    padding: 0 6px;
+    border: 1px solid transparent;
+    border-radius: 4px;
+    background: transparent;
+    color: rgba($white, 0.62);
+    font-family: $primary-font;
+    font-size: 10px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    cursor: pointer;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    transition:
+      border-color 0.16s ease,
+      background-color 0.16s ease,
+      color 0.16s ease;
+
+    &:hover,
+    &:focus-visible {
+      border-color: rgba($gold, 0.22);
+      background: rgba($gold, 0.06);
+      color: rgba($white, 0.88);
+      outline: none;
+    }
+
+    &.is-active {
+      border-color: rgba($gold, 0.34);
+      background: rgba($gold, 0.1);
+      color: $gold;
+    }
   }
 
   @keyframes fade-in {
@@ -925,6 +1081,10 @@
   }
 
   @media (max-width: 430px) {
+    .settings-tabs {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
     .settings-grid {
       gap: 12px;
     }

@@ -225,7 +225,10 @@ export const spanishTranslations: Record<string, TranslationValue> = {
       "Espacio temporal para probar ideas antes de que lleguen a la interfaz principal.",
     "experimental.devOnlyTitle": "Solo en build de desarrollo",
     "experimental.devOnlyBody":
-      "Este espacio aparece únicamente en builds de desarrollo para probar cosas sin afectar a usuarios de producción.",
+      "La personalización estable de resultados pasó a Ajustes. Este espacio aparece en builds de desarrollo para futuras flags ocultas y pruebas temporales.",
+    "experimental.emptyTitle": "Sin experimentos activos",
+    "experimental.emptyBody":
+      "Las opciones de acciones de resultado, Copy de PoE2 y Craft of Exile ahora viven en Ajustes, dentro de Resultados.",
     "experimental.resultActionsTitle": "Mostrar siempre acciones del resultado",
     "experimental.resultActionsBody":
       "Mantiene visibles Actualizar, Copiar objeto y Filtrar por estadísticas sin hacer hover.",
@@ -252,6 +255,21 @@ export const spanishTranslations: Record<string, TranslationValue> = {
       "Elegí qué acciones de cada búsqueda guardada quedan visibles fuera del menú tanto en el diseño clásico como en el compacto. Si no seleccionás ninguna, solo se ven los tres puntos.",
     "settings.compactTradeActionToggle": "Completar / Pendiente",
     "settings.saveFailed": "No se pudieron guardar los ajustes. Probá de nuevo.",
+    "settings.tabs.label": "Categorías de ajustes",
+    "settings.tabs.interface": "Interfaz",
+    "settings.tabs.sidebar": "Panel",
+    "settings.tabs.results": "Resultados",
+    "settings.tabs.bookmarks": "Favoritos",
+    "settings.tabs.history": "Historial",
+    "settings.resultActionsTitle": "Mostrar siempre acciones del resultado",
+    "settings.resultActionsBody":
+      "Mantiene visibles Actualizar, Copiar objeto y Filtrar por estadísticas sin hacer hover.",
+    "settings.poe2CopyTitle": "Botón Copy de PoE2",
+    "settings.poe2CopyBody":
+      "Muestra el botón Copy nativo de PoE2 y copia el objeto para Path of Building.",
+    "settings.coeTitle": "Botón Craft of Exile",
+    "settings.coeBody":
+      "Agrega un botón CoE a resultados de PoE1 y PoE2 que copia el objeto en formato avanzado de Craft of Exile.",
     "about.eyebrow": "Acerca de",
     "about.description":
       "Poe Trade Plus es un complemento para Path of Exile Trade creado para guardar búsquedas, organizar carpetas, seguir el historial y hacer que los flujos de trade repetidos sean rápidos, visuales y fáciles de manejar dentro del sitio oficial.",
