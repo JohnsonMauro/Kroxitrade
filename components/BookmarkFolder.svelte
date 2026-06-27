@@ -411,7 +411,7 @@
   }
 
   const shouldIgnoreTradeCardClick = (target: EventTarget | null) => {
-    const element = target instanceof HTMLElement ? target : null
+    const element = target instanceof Element ? target : null
     return !!element?.closest("button, a, input, textarea, select, [data-no-card-open]")
   }
 
@@ -658,8 +658,7 @@
                       <div class="trade-copy">
                         <span
                           class="trade-link"
-                          title={trade.title}
-                          data-no-card-open="true">
+                          title={trade.title}>
                           {trade.title}
                         </span>
                       </div>

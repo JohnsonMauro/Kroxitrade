@@ -17,7 +17,38 @@ export const spanishTranslations: Record<string, TranslationValue> = {
     "layout.versionNoticeEyebrow": "Nueva versión",
     "layout.versionNoticeMessage": ({ version }) =>
       `Poe Trade Plus se actualizó a la versión ${version}.`,
+    "layout.versionNoticeOpen": "Novedades",
     "layout.versionNoticeClose": "Cerrar aviso de nueva versión",
+    "whatsNew.eyebrow": "Notas de versión",
+    "whatsNew.title": ({ version }) => `Novedades de ${version}`,
+    "whatsNew.intro":
+      "Un repaso rápido de las mejoras incluidas en esta versión.",
+    "whatsNew.releaseBadge": "Generado desde cambios recientes",
+    "whatsNew.close": "Cerrar novedades",
+    "whatsNew.dismiss": "Entendido",
+    "whatsNew.section.bookmarks": "Favoritos",
+    "whatsNew.section.features": "Nuevas funciones",
+    "whatsNew.section.fixes": "Correcciones",
+    "whatsNew.section.tradeTools": "Herramientas de trade",
+    "whatsNew.section.polish": "Ajustes",
+    "whatsNew.item.versionFolders":
+      "Los favoritos quedan separados por versión de Path of Exile Trade.",
+    "whatsNew.item.compactActions":
+      "Las búsquedas guardadas pueden usar acciones compactas con menú más limpio.",
+    "whatsNew.item.backupRestore":
+      "El respaldo y restauración de carpetas facilita mover configuraciones entre navegadores.",
+    "whatsNew.item.bulkSellers":
+      "Bulk Sellers agrupa vendedores repetidos de la lista de resultados actual.",
+    "whatsNew.item.equivalentPricing":
+      "Precio equivalente muestra conversiones a chaos y divine usando ratios de poe.ninja.",
+    "whatsNew.item.finerFilters":
+      "Agregar a filtros ayuda a pasar modificadores del objeto a los filtros de trade.",
+    "whatsNew.item.onboarding":
+      "El tutorial guiado señala las acciones y ajustes principales.",
+    "whatsNew.item.resizableSidebar":
+      "El panel se puede redimensionar y fijar a cualquiera de los lados del sitio de trade.",
+    "whatsNew.item.languages":
+      "La interfaz incluye cobertura de más idiomas.",
     "welcome.title": "Bienvenido a Poe Trade Plus",
     "welcome.message":
       "Elegí el idioma que querés usar para la extensión antes de empezar.",
@@ -179,6 +210,12 @@ export const spanishTranslations: Record<string, TranslationValue> = {
       "No se pudo recargar el ratio de poe.ninja ahora mismo.",
     "settings.equivalentRefreshUnavailable":
       "Abrí primero una liga de trade para recargar el ratio de poe.ninja.",
+    "settings.quickFiltersTitle": "Presets rápidos de filtros",
+    "settings.quickFiltersDescription":
+      "Mostrá u ocultá los botones de presets inyectados arriba de Stat Filters.",
+    "settings.quickFiltersPlacementTitle": "Ubicación",
+    "settings.quickFiltersPlacementPage": "Página de trade",
+    "settings.quickFiltersPlacementSidebar": "Sidebar",
     "settings.bulkTitle": "Bulk Sellers",
     "settings.bulkDescription":
       "Mostrá u ocultá la pestaña Bulk que agrupa vendedores repetidos de los resultados actuales.",
@@ -194,7 +231,10 @@ export const spanishTranslations: Record<string, TranslationValue> = {
       "Espacio temporal para probar ideas antes de que lleguen a la interfaz principal.",
     "experimental.devOnlyTitle": "Solo en build de desarrollo",
     "experimental.devOnlyBody":
-      "Este espacio aparece únicamente en builds de desarrollo para probar cosas sin afectar a usuarios de producción.",
+      "La personalización estable de resultados pasó a Ajustes. Este espacio aparece en builds de desarrollo para futuras flags ocultas y pruebas temporales.",
+    "experimental.emptyTitle": "Sin experimentos activos",
+    "experimental.emptyBody":
+      "Las opciones de acciones de resultado, Copy de PoE2 y Craft of Exile ahora viven en Ajustes, dentro de Resultados.",
     "experimental.resultActionsTitle": "Mostrar siempre acciones del resultado",
     "experimental.resultActionsBody":
       "Mantiene visibles Actualizar, Copiar objeto y Filtrar por estadísticas sin hacer hover.",
@@ -220,12 +260,38 @@ export const spanishTranslations: Record<string, TranslationValue> = {
     "settings.tradeActionsDescription":
       "Elegí qué acciones de cada búsqueda guardada quedan visibles fuera del menú tanto en el diseño clásico como en el compacto. Si no seleccionás ninguna, solo se ven los tres puntos.",
     "settings.compactTradeActionToggle": "Completar / Pendiente",
+    "settings.bookmarkPreviewTitle": "Vista en vivo",
+    "settings.bookmarkPreviewDescription":
+      "Mirá cómo se va a ver una búsqueda guardada con el diseño actual de favoritos.",
+    "settings.bookmarkPreviewFolder": "Equipo favorito",
+    "settings.bookmarkPreviewTrade": "Botas con resistencias altas",
     "settings.saveFailed": "No se pudieron guardar los ajustes. Probá de nuevo.",
+    "settings.tabs.label": "Categorías de ajustes",
+    "settings.tabs.interface": "Interfaz",
+    "settings.tabs.sidebar": "Panel",
+    "settings.tabs.results": "Resultados",
+    "settings.tabs.bookmarks": "Favoritos",
+    "settings.sidebarModulesTitle": "Módulos del panel",
+    "settings.sidebarModulesDescription":
+      "Elegí qué pestañas extra y paneles auxiliares aparecen en la sidebar.",
+    "settings.resultActionsTitle": "Mostrar siempre acciones del resultado",
+    "settings.resultActionsBody":
+      "Mantiene visibles Actualizar, Copiar objeto y Filtrar por estadísticas sin hacer hover.",
+    "settings.poe2CopyTitle": "Botón Copy de PoE2",
+    "settings.poe2CopyBody":
+      "Muestra el botón Copy nativo de PoE2 y copia el objeto para Path of Building.",
+    "settings.coeTitle": "Botón Craft of Exile",
+    "settings.coeBody":
+      "Agrega un botón CoE a resultados de PoE1 y PoE2 que copia el objeto en formato avanzado de Craft of Exile.",
     "about.eyebrow": "Acerca de",
     "about.description":
       "Poe Trade Plus es un complemento para Path of Exile Trade creado para guardar búsquedas, organizar carpetas, seguir el historial y hacer que los flujos de trade repetidos sean rápidos, visuales y fáciles de manejar dentro del sitio oficial.",
     "about.github": "GitHub",
     "about.patreon": "Patreon",
+    "about.whatsNewTitle": "Novedades",
+    "about.whatsNewDescription":
+      "Revisá las notas de la última versión cuando quieras.",
+    "about.whatsNewButton": "Abrir novedades",
     "about.version": ({ version }) =>
       `Versión ${version} • Desarrollado por KroxiLabs`,
     "bulk.empty":

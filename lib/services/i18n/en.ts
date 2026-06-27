@@ -17,7 +17,38 @@ export const englishTranslations: Record<string, TranslationValue> = {
     "layout.versionNoticeEyebrow": "New Version",
     "layout.versionNoticeMessage": ({ version }) =>
       `Poe Trade Plus was updated to ${version}.`,
+    "layout.versionNoticeOpen": "What's New",
     "layout.versionNoticeClose": "Close new version message",
+    "whatsNew.eyebrow": "Release Notes",
+    "whatsNew.title": ({ version }) => `What's New in ${version}`,
+    "whatsNew.intro":
+      "A quick look at the newest improvements bundled with this release.",
+    "whatsNew.releaseBadge": "Generated from recent changes",
+    "whatsNew.close": "Close what's new",
+    "whatsNew.dismiss": "Got it",
+    "whatsNew.section.bookmarks": "Bookmarks",
+    "whatsNew.section.features": "New features",
+    "whatsNew.section.fixes": "Fixes",
+    "whatsNew.section.tradeTools": "Trade tools",
+    "whatsNew.section.polish": "Polish",
+    "whatsNew.item.versionFolders":
+      "Bookmarks stay separated by Path of Exile trade version.",
+    "whatsNew.item.compactActions":
+      "Saved searches can use a compact action layout with a cleaner menu.",
+    "whatsNew.item.backupRestore":
+      "Folder backup and restore make it easier to move setups between browsers.",
+    "whatsNew.item.bulkSellers":
+      "Bulk Sellers groups repeated sellers from the current result list.",
+    "whatsNew.item.equivalentPricing":
+      "Equivalent Pricing shows chaos and divine conversions using poe.ninja ratios.",
+    "whatsNew.item.finerFilters":
+      "Add To Filters helps move item modifiers into trade filters faster.",
+    "whatsNew.item.onboarding":
+      "The guided tutorial points at the main actions and settings.",
+    "whatsNew.item.resizableSidebar":
+      "The sidebar can be resized and pinned to either side of the trade site.",
+    "whatsNew.item.languages":
+      "The interface now includes broader language coverage.",
     "welcome.title": "Welcome to Poe Trade Plus",
     "welcome.message":
       "Choose the language you want to use for the extension before you start.",
@@ -179,6 +210,12 @@ export const englishTranslations: Record<string, TranslationValue> = {
       "Could not refresh the poe.ninja ratio right now.",
     "settings.equivalentRefreshUnavailable":
       "Open a trade league first to refresh the poe.ninja ratio.",
+    "settings.quickFiltersTitle": "Quick Filter Presets",
+    "settings.quickFiltersDescription":
+      "Show or hide preset buttons injected above the trade site's Stat Filters.",
+    "settings.quickFiltersPlacementTitle": "Display location",
+    "settings.quickFiltersPlacementPage": "Trade Page",
+    "settings.quickFiltersPlacementSidebar": "Sidebar",
     "settings.bulkTitle": "Bulk Sellers",
     "settings.bulkDescription":
       "Show or hide the bulk sellers tab that groups repeated sellers from the current trade results.",
@@ -194,7 +231,10 @@ export const englishTranslations: Record<string, TranslationValue> = {
       "Temporary playground for features we are testing before they reach the main UI.",
     "experimental.devOnlyTitle": "Development build only",
     "experimental.devOnlyBody":
-      "This space only appears in development builds so we can try ideas without affecting production users.",
+      "Stable result customization moved into Settings. This space only appears in development builds for future hidden flags and temporary tests.",
+    "experimental.emptyTitle": "No active experiments",
+    "experimental.emptyBody":
+      "Result action, PoE2 copy, and Craft of Exile controls now live in Settings under Results.",
     "experimental.resultActionsTitle": "Always show result actions",
     "experimental.resultActionsBody":
       "Keep Refresh, Copy Item, and Filter by Item Stats visible without hovering a result.",
@@ -220,12 +260,38 @@ export const englishTranslations: Record<string, TranslationValue> = {
     "settings.tradeActionsDescription":
       "Choose which saved-search actions stay visible outside the menu in both classic and compact layouts. If none are selected, only the three-dot menu is shown.",
     "settings.compactTradeActionToggle": "Complete / Pending",
+    "settings.bookmarkPreviewTitle": "Live Preview",
+    "settings.bookmarkPreviewDescription":
+      "See how a saved search will look with the current bookmark layout settings.",
+    "settings.bookmarkPreviewFolder": "Favorite Gear",
+    "settings.bookmarkPreviewTrade": "High resistance boots",
     "settings.saveFailed": "Could not save settings. Please try again.",
+    "settings.tabs.label": "Settings categories",
+    "settings.tabs.interface": "Interface",
+    "settings.tabs.sidebar": "Sidebar",
+    "settings.tabs.results": "Results",
+    "settings.tabs.bookmarks": "Bookmarks",
+    "settings.sidebarModulesTitle": "Sidebar Modules",
+    "settings.sidebarModulesDescription":
+      "Choose which extra tabs and helper panels appear in the sidebar.",
+    "settings.resultActionsTitle": "Always show result actions",
+    "settings.resultActionsBody":
+      "Keep Refresh, Copy Item, and Filter by Item Stats visible without hovering a result.",
+    "settings.poe2CopyTitle": "PoE2 Copy button",
+    "settings.poe2CopyBody":
+      "Show PoE2's native Copy button and make it copy the item for Path of Building.",
+    "settings.coeTitle": "Craft of Exile button",
+    "settings.coeBody":
+      "Add a CoE button to PoE1 and PoE2 results that copies the item in Craft of Exile's advanced import format.",
     "about.eyebrow": "About",
     "about.description":
       "Poe Trade Plus is a companion for Path of Exile Trade built to save searches, organize folders, track history, and keep recurring trade workflows fast, visual, and easy to manage inside the official site.",
     "about.github": "GitHub",
     "about.patreon": "Patreon",
+    "about.whatsNewTitle": "What's New",
+    "about.whatsNewDescription":
+      "Review the latest release notes whenever you want.",
+    "about.whatsNewButton": "Open What's New",
     "about.version": ({ version }) =>
       `Version ${version} • Developed by KroxiLabs`,
     "bulk.empty":

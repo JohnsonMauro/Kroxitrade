@@ -1,12 +1,19 @@
 <script lang="ts">
   import { languageStore, translate, type AppLanguage } from "../../lib/services/i18n";
   import { bookmarksService } from "../../lib/services/bookmarks";
+  import {
+    coeButtonSetting,
+    experimentalSettings,
+    poe2CopyButtonSetting
+  } from "../../lib/services/experimental";
   import { flashMessages } from "../../lib/services/flash";
   import { itemResultsService } from "../../lib/services/item-results";
-  import { settings, type BookmarkTradeActionId, type SidebarSide } from "../../lib/services/settings";
+  import { settings, type BookmarkTradeActionId, type QuickFiltersPlacement, type SidebarSide } from "../../lib/services/settings";
   import { tradeLocationService } from "../../lib/services/trade-location";
+  import type { BookmarksTradeStruct } from "../../lib/types/bookmarks";
   import { normalizeIcon } from "../../lib/utilities/icons";
   import Button from "../Button.svelte";
+  import TradeActionsMenu from "../TradeActionsMenu.svelte";
   import ToggleRow from "../ToggleRow.svelte";
   import { onDestroy, onMount } from "svelte";
   import flagBR from "../../assets/BR.png?inline";
@@ -27,11 +34,31 @@
 
   interface Props {
     onOpenTutorial?: () => void;
+    tutorialStep?: string | null;
   }
 
-  let { onOpenTutorial = () => {} }: Props = $props();
+  let { onOpenTutorial = () => {}, tutorialStep = null }: Props = $props();
 
   const DEFAULT_SIDEBAR_WIDTH = 450;
+  type SettingsTab = "interface" | "sidebar" | "results" | "bookmarks";
+  let activeTab = $state<SettingsTab>("interface");
+
+  const tabs: Array<{ id: SettingsTab; labelKey: string }> = [
+    { id: "interface", labelKey: "settings.tabs.interface" },
+    { id: "sidebar", labelKey: "settings.tabs.sidebar" },
+    { id: "results", labelKey: "settings.tabs.results" },
+    { id: "bookmarks", labelKey: "settings.tabs.bookmarks" },
+  ];
+
+  const tutorialStepTabs: Record<string, SettingsTab> = {
+    "settings-tutorial": "interface",
+    "settings-sidebar": "interface",
+    "settings-language": "interface",
+    "settings-equivalent": "results",
+    "settings-bulk": "sidebar",
+    "settings-history": "sidebar",
+    "settings-bookmarks": "bookmarks"
+  };
   const compactTradeActionOptions: Array<{ id: BookmarkTradeActionId; labelKey: string; icon: string }> = [
     { id: "edit", labelKey: "folder.editSearchName", icon: normalizeIcon(editIcon, { size: 15, className: "settings-option-svg" }) },
     { id: "replace", labelKey: "folder.replaceCurrentSearch", icon: normalizeIcon(replaceIcon, { size: 15, className: "settings-option-svg" }) },
@@ -40,6 +67,17 @@
     { id: "toggle", labelKey: "settings.compactTradeActionToggle", icon: normalizeIcon(toggleIcon, { size: 15, className: "settings-option-svg" }) },
     { id: "delete", labelKey: "folder.deleteTrade", icon: normalizeIcon(deleteIcon, { size: 15, className: "settings-option-svg" }) }
   ];
+  const previewTrade: BookmarksTradeStruct = {
+    id: "settings-preview-trade",
+    title: "High resistance boots",
+    completedAt: null,
+    location: {
+      version: "2",
+      type: "search",
+      slug: "settings-preview",
+      league: "Mercenaries"
+    }
+  };
   const languages: Array<{ code: AppLanguage; label: string; flag: string; emoji: string }> = [
     { code: "en", label: "English", flag: flagGB, emoji: "🇬🇧" },
     { code: "es", label: "Español", flag: flagES, emoji: "🇪🇸" },
@@ -114,8 +152,14 @@
     }
   }
 
-  async function handleFinerFiltersChange(showFinerFilters: boolean) {
-    if (!(await settings.updateFinerFiltersVisibility(showFinerFilters))) {
+  async function handleQuickFiltersChange(showQuickFilters: boolean) {
+    if (!(await settings.updateQuickFiltersVisibility(showQuickFilters))) {
+      flashMessages.alert(translate($languageStore, "settings.saveFailed"));
+    }
+  }
+
+  async function handleQuickFiltersPlacementChange(quickFiltersPlacement: QuickFiltersPlacement) {
+    if (!(await settings.updateQuickFiltersPlacement(quickFiltersPlacement))) {
       flashMessages.alert(translate($languageStore, "settings.saveFailed"));
     }
   }
@@ -145,6 +189,8 @@
   function handleCompactTradeActionInput(event: Event, actionId: BookmarkTradeActionId) {
     handleCompactTradeActionChange(actionId, (event.currentTarget as HTMLInputElement).checked);
   }
+
+  function noopPreviewAction() {}
 
   async function handleSidebarWidthReset() {
     if (!(await settings.updateSidebarWidth(DEFAULT_SIDEBAR_WIDTH))) {
@@ -193,6 +239,18 @@
     return value ? translate($languageStore, "settings.on") : translate($languageStore, "settings.off");
   }
 
+  function handleResultActionsVisibleChange(value: boolean) {
+    experimentalSettings.setResultActionsVisible(value);
+  }
+
+  function handlePoe2CopyVisibleChange(value: boolean) {
+    experimentalSettings.setPoe2CopyVisible(value);
+  }
+
+  function handleCoeVisibleChange(value: boolean) {
+    experimentalSettings.setCoeVisible(value);
+  }
+
   function toggleLanguageMenu(event: MouseEvent) {
     event.stopPropagation();
     isLanguageMenuOpen = !isLanguageMenuOpen;
@@ -233,11 +291,35 @@
 
   let selectedLanguage =
     $derived(languages.find((language) => language.code === $settings.language) ?? languages[0]);
+  const currentLocation = tradeLocationService.locationStore;
+  let isPoe2Trade = $derived($currentLocation.version === "2");
+
+  $effect(() => {
+    if (tutorialStep && tutorialStepTabs[tutorialStep]) {
+      activeTab = tutorialStepTabs[tutorialStep];
+    }
+  });
 </script>
 
 <div class="settings-page">
+  <div class="settings-tabs" role="tablist" aria-label={translate($languageStore, "settings.tabs.label")}>
+    {#each tabs as tab (tab.id)}
+      <button
+        type="button"
+        class="settings-tab"
+        class:is-active={activeTab === tab.id}
+        role="tab"
+        aria-selected={activeTab === tab.id}
+        onclick={() => activeTab = tab.id}
+      >
+        {translate($languageStore, tab.labelKey)}
+      </button>
+    {/each}
+  </div>
+
   <div class="settings-grid">
-    <section class="settings-section settings-section--feature settings-section--wide" data-tutorial="settings-language">
+    {#if activeTab === "interface"}
+      <section class="settings-section settings-section--feature settings-section--wide" data-tutorial="settings-language">
       <div class="section-heading">
         <h3 class="section-title">{translate($languageStore, "settings.languageTitle")}</h3>
       </div>
@@ -288,9 +370,25 @@
           {/if}
         </div>
       </div>
-    </section>
+      </section>
 
-    <section class="settings-section settings-section--wide" data-tutorial="settings-sidebar">
+      <section class="settings-section settings-section--feature settings-section--wide" data-tutorial="settings-tutorial">
+        <div class="section-heading">
+          <h3 class="section-title">{translate($languageStore, "settings.onboardingTitle")}</h3>
+        </div>
+        <p class="section-description">{translate($languageStore, "settings.onboardingDescription")}</p>
+
+        <div class="section-actions">
+          <Button
+            label={translate($languageStore, "settings.reopenTutorial")}
+            theme="gold"
+            class="side-btn"
+            onClick={onOpenTutorial}
+          />
+        </div>
+      </section>
+
+      <section class="settings-section settings-section--wide" data-tutorial="settings-sidebar">
       <div class="section-heading">
         <h3 class="section-title">{translate($languageStore, "settings.sidebarTitle")}</h3>
       </div>
@@ -316,9 +414,88 @@
           onClick={handleSidebarWidthReset}
         />
       </div>
-    </section>
+      </section>
 
-    <section class="settings-section settings-section--wide settings-section--bookmarks-layout" data-tutorial="settings-bookmarks">
+      <section class="settings-section settings-section--wide">
+        <div class="section-heading">
+          <h3 class="section-title">{translate($languageStore, "settings.quickFiltersTitle")}</h3>
+        </div>
+        <div class="settings-row-list">
+          <div class="settings-row">
+            <div class="settings-row__copy">
+              <div class="settings-row__title">{translate($languageStore, "settings.quickFiltersTitle")}</div>
+              <div class="settings-row__description">{translate($languageStore, "settings.quickFiltersDescription")}</div>
+            </div>
+            <ToggleRow
+              checked={$settings.showQuickFilters}
+              label={translate($languageStore, "settings.quickFiltersTitle")}
+              stateLabel={toggleSwitchLabel($settings.showQuickFilters)}
+              onToggle={() => handleQuickFiltersChange(!$settings.showQuickFilters)}
+            />
+          </div>
+          {#if $settings.showQuickFilters}
+            <div class="settings-placement">
+              <div class="settings-placement__label">
+                {translate($languageStore, "settings.quickFiltersPlacementTitle")}
+              </div>
+              <div class="side-selector side-selector--inline">
+                <Button
+                  label={translate($languageStore, "settings.quickFiltersPlacementPage")}
+                  theme={$settings.quickFiltersPlacement === 'page' ? 'gold' : 'blue'}
+                  class="side-btn"
+                  onClick={() => handleQuickFiltersPlacementChange('page')}
+                />
+                <Button
+                  label={translate($languageStore, "settings.quickFiltersPlacementSidebar")}
+                  theme={$settings.quickFiltersPlacement === 'sidebar' ? 'gold' : 'blue'}
+                  class="side-btn"
+                  onClick={() => handleQuickFiltersPlacementChange('sidebar')}
+                />
+              </div>
+            </div>
+          {/if}
+        </div>
+      </section>
+
+    {:else if activeTab === "sidebar"}
+      <section class="settings-section settings-section--wide">
+        <div class="section-heading">
+          <h3 class="section-title">{translate($languageStore, "settings.sidebarModulesTitle")}</h3>
+        </div>
+        <p class="section-description">{translate($languageStore, "settings.sidebarModulesDescription")}</p>
+
+        <div class="settings-row-list settings-row-list--spaced">
+          <div class="settings-row" data-tutorial="settings-bulk">
+            <div class="settings-row__copy">
+              <div class="settings-row__title">{translate($languageStore, "settings.bulkTitle")}</div>
+              <div class="settings-row__description">{translate($languageStore, "settings.bulkDescription")}</div>
+            </div>
+            <ToggleRow
+              checked={$settings.showBulkSellers}
+              label={translate($languageStore, "settings.bulkTitle")}
+              stateLabel={toggleSwitchLabel($settings.showBulkSellers)}
+              onToggle={() => handleBulkSellersChange(!$settings.showBulkSellers)}
+            />
+          </div>
+
+          <div class="settings-row" data-tutorial="settings-history">
+            <div class="settings-row__copy">
+              <div class="settings-row__title">{translate($languageStore, "settings.historyTitle")}</div>
+              <div class="settings-row__description">{translate($languageStore, "settings.historyDescription")}</div>
+            </div>
+            <ToggleRow
+              checked={$settings.showHistory}
+              label={translate($languageStore, "settings.historyTitle")}
+              stateLabel={toggleSwitchLabel($settings.showHistory)}
+              onToggle={() => handleHistoryChange(!$settings.showHistory)}
+            />
+          </div>
+
+        </div>
+      </section>
+
+    {:else if activeTab === "bookmarks"}
+      <section class="settings-section settings-section--wide settings-section--bookmarks-layout" data-tutorial="settings-bookmarks">
       <div class="section-heading">
         <h3 class="section-title">{translate($languageStore, "settings.compactActionsTitle")}</h3>
       </div>
@@ -362,9 +539,76 @@
           {/each}
         </div>
       </div>
-    </section>
 
-    <section class="settings-section settings-section--wide">
+      <div class="bookmark-layout-preview" aria-label={translate($languageStore, "settings.bookmarkPreviewTitle")}>
+        <div class="bookmark-layout-preview__heading">
+          <div>
+            <div class="compact-options__title">{translate($languageStore, "settings.bookmarkPreviewTitle")}</div>
+            <p class="section-description section-description--compact">
+              {translate($languageStore, "settings.bookmarkPreviewDescription")}
+            </p>
+          </div>
+          <span class="bookmark-layout-preview__mode">
+            {translate(
+              $languageStore,
+              $settings.compactActionsMenu
+                ? "settings.compactActionsCompact"
+                : "settings.compactActionsDefault"
+            )}
+          </span>
+        </div>
+
+        <div class="preview-folder">
+          <div class="preview-folder__header">
+            <span class="preview-folder__icon" aria-hidden="true"></span>
+            <span class="preview-folder__title">{translate($languageStore, "settings.bookmarkPreviewFolder")}</span>
+            <span class="preview-folder__chevron" aria-hidden="true">▼</span>
+          </div>
+
+          <div class="preview-trades-list">
+            <div class="preview-trade-item">
+              <span class="preview-trade__drag" aria-hidden="true">≡</span>
+              <div class="preview-trade__content">
+                <div class="preview-trade__top">
+                  <span class="preview-trade__title">{translate($languageStore, "settings.bookmarkPreviewTrade")}</span>
+                  {#if $settings.compactActionsMenu}
+                    <div class="preview-trade-actions preview-trade-actions--compact">
+                      <TradeActionsMenu
+                        trade={previewTrade}
+                        compactText="Mercenaries"
+                        onEdit={noopPreviewAction}
+                        onReplace={noopPreviewAction}
+                        onCopy={noopPreviewAction}
+                        onOpenLive={noopPreviewAction}
+                        onToggle={noopPreviewAction}
+                        onDelete={noopPreviewAction} />
+                    </div>
+                  {/if}
+                </div>
+
+                {#if !$settings.compactActionsMenu}
+                  <div class="preview-trade__bottom">
+                    <span class="preview-trade__meta">Mercenaries</span>
+                    <div class="preview-trade-actions">
+                      <TradeActionsMenu
+                        trade={previewTrade}
+                        onEdit={noopPreviewAction}
+                        onReplace={noopPreviewAction}
+                        onCopy={noopPreviewAction}
+                        onOpenLive={noopPreviewAction}
+                        onToggle={noopPreviewAction}
+                        onDelete={noopPreviewAction} />
+                    </div>
+                  </div>
+                {/if}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      </section>
+
+      <section class="settings-section settings-section--wide">
       <div class="section-heading">
         <h3 class="section-title">{translate($languageStore, "bookmarks.backupTitle")}</h3>
       </div>
@@ -385,9 +629,10 @@
           fileAccept=".txt"
         />
       </div>
-    </section>
+      </section>
 
-    <section class="settings-section settings-section--wide">
+    {:else if activeTab === "results"}
+      <section class="settings-section settings-section--wide">
       <div class="section-heading">
         <h3 class="section-title">{translate($languageStore, "settings.resultsTitle")}</h3>
       </div>
@@ -421,62 +666,49 @@
           />
         </div>
 
-        <div class="settings-row" data-tutorial="settings-bulk">
+        <div class="settings-row">
           <div class="settings-row__copy">
-            <div class="settings-row__title">{translate($languageStore, "settings.bulkTitle")}</div>
-            <div class="settings-row__description">{translate($languageStore, "settings.bulkDescription")}</div>
+            <div class="settings-row__title">{translate($languageStore, "settings.resultActionsTitle")}</div>
+            <div class="settings-row__description">{translate($languageStore, "settings.resultActionsBody")}</div>
           </div>
           <ToggleRow
-            checked={$settings.showBulkSellers}
-            label={translate($languageStore, "settings.bulkTitle")}
-            stateLabel={toggleSwitchLabel($settings.showBulkSellers)}
-            onToggle={() => handleBulkSellersChange(!$settings.showBulkSellers)}
+            checked={$experimentalSettings}
+            label={translate($languageStore, "settings.resultActionsTitle")}
+            stateLabel={toggleSwitchLabel($experimentalSettings)}
+            onToggle={() => handleResultActionsVisibleChange(!$experimentalSettings)}
           />
         </div>
 
-        <div class="settings-row" data-tutorial="settings-history">
+        {#if isPoe2Trade}
+          <div class="settings-row">
+            <div class="settings-row__copy">
+              <div class="settings-row__title">{translate($languageStore, "settings.poe2CopyTitle")}</div>
+              <div class="settings-row__description">{translate($languageStore, "settings.poe2CopyBody")}</div>
+            </div>
+            <ToggleRow
+              checked={$poe2CopyButtonSetting}
+              label={translate($languageStore, "settings.poe2CopyTitle")}
+              stateLabel={toggleSwitchLabel($poe2CopyButtonSetting)}
+              onToggle={() => handlePoe2CopyVisibleChange(!$poe2CopyButtonSetting)}
+            />
+          </div>
+        {/if}
+
+        <div class="settings-row">
           <div class="settings-row__copy">
-            <div class="settings-row__title">{translate($languageStore, "settings.historyTitle")}</div>
-            <div class="settings-row__description">{translate($languageStore, "settings.historyDescription")}</div>
+            <div class="settings-row__title">{translate($languageStore, "settings.coeTitle")}</div>
+            <div class="settings-row__description">{translate($languageStore, "settings.coeBody")}</div>
           </div>
           <ToggleRow
-            checked={$settings.showHistory}
-            label={translate($languageStore, "settings.historyTitle")}
-            stateLabel={toggleSwitchLabel($settings.showHistory)}
-            onToggle={() => handleHistoryChange(!$settings.showHistory)}
-          />
-        </div>
-
-        <div class="settings-row" data-tutorial="settings-filters">
-          <div class="settings-row__copy">
-            <div class="settings-row__title">{translate($languageStore, "settings.finerFiltersTitle")}</div>
-            <div class="settings-row__description">{translate($languageStore, "settings.finerFiltersDescription")}</div>
-          </div>
-          <ToggleRow
-            checked={$settings.showFinerFilters}
-            label={translate($languageStore, "settings.finerFiltersTitle")}
-            stateLabel={toggleSwitchLabel($settings.showFinerFilters)}
-            onToggle={() => handleFinerFiltersChange(!$settings.showFinerFilters)}
+            checked={$coeButtonSetting}
+            label={translate($languageStore, "settings.coeTitle")}
+            stateLabel={toggleSwitchLabel($coeButtonSetting)}
+            onToggle={() => handleCoeVisibleChange(!$coeButtonSetting)}
           />
         </div>
       </div>
-    </section>
-
-    <section class="settings-section settings-section--feature settings-section--wide" data-tutorial="settings-tutorial">
-      <div class="section-heading">
-        <h3 class="section-title">{translate($languageStore, "settings.onboardingTitle")}</h3>
-      </div>
-      <p class="section-description">{translate($languageStore, "settings.onboardingDescription")}</p>
-
-      <div class="section-actions">
-        <Button
-          label={translate($languageStore, "settings.reopenTutorial")}
-          theme="gold"
-          class="side-btn"
-          onClick={onOpenTutorial}
-        />
-      </div>
-    </section>
+      </section>
+    {/if}
   </div>
 </div>
 
@@ -496,6 +728,52 @@
   .settings-grid {
     display: grid;
     gap: 14px;
+  }
+
+  .settings-tabs {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 4px;
+    padding: 4px;
+    border: 1px solid rgba($white, 0.07);
+    border-radius: 6px;
+    background: rgba($white, 0.025);
+  }
+
+  .settings-tab {
+    min-width: 0;
+    min-height: 30px;
+    padding: 0 6px;
+    border: 1px solid transparent;
+    border-radius: 4px;
+    background: transparent;
+    color: rgba($white, 0.62);
+    font-family: $primary-font;
+    font-size: 10px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    cursor: pointer;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    transition:
+      border-color 0.16s ease,
+      background-color 0.16s ease,
+      color 0.16s ease;
+
+    &:hover,
+    &:focus-visible {
+      border-color: rgba($gold, 0.22);
+      background: rgba($gold, 0.06);
+      color: rgba($white, 0.88);
+      outline: none;
+    }
+
+    &.is-active {
+      border-color: rgba($gold, 0.34);
+      background: rgba($gold, 0.1);
+      color: $gold;
+    }
   }
 
   @keyframes fade-in {
@@ -560,6 +838,10 @@
     display: flex;
     flex-direction: column;
     gap: 10px;
+  }
+
+  .settings-row-list--spaced {
+    margin-top: 12px;
   }
 
   .settings-row {
@@ -924,12 +1206,205 @@
     stroke-width: 1.7;
   }
 
+  .settings-placement {
+    margin-top: -2px;
+    padding: 10px 0 12px;
+    border-top: 1px solid rgba($white, 0.07);
+  }
+
+  .settings-placement__label {
+    color: rgba($gold, 0.78);
+    font-family: $primary-font;
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .side-selector--inline {
+    margin-top: 8px;
+  }
+
+  .bookmark-layout-preview {
+    margin-top: 16px;
+    padding-top: 14px;
+    border-top: 1px solid rgba($white, 0.08);
+  }
+
+  .bookmark-layout-preview__heading {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 12px;
+  }
+
+  .bookmark-layout-preview__mode {
+    flex: 0 0 auto;
+    min-height: 22px;
+    padding: 0 8px;
+    display: inline-flex;
+    align-items: center;
+    border: 1px solid rgba($gold, 0.22);
+    border-radius: 999px;
+    background: rgba($gold, 0.07);
+    color: rgba($gold-alt, 0.92);
+    font-family: $primary-font;
+    font-size: 10px;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+
+  .preview-folder {
+    overflow: hidden;
+    border: 1px solid rgba($gold, 0.14);
+    border-radius: 8px;
+    background:
+      linear-gradient(180deg, rgba($gold, 0.035), rgba($gold, 0.012)),
+      rgba($black, 0.4);
+    box-shadow:
+      inset 0 1px 0 rgba($white, 0.02),
+      0 10px 22px rgba($black, 0.2);
+  }
+
+  .preview-folder__header {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    min-height: 43px;
+    padding: 8px 10px;
+    border-bottom: 1px solid rgba($gold, 0.1);
+    background:
+      linear-gradient(180deg, rgba($blue-alt, 0.92), rgba($blue, 0.96)),
+      $blue;
+  }
+
+  .preview-folder__icon {
+    width: 26px;
+    height: 26px;
+    flex: 0 0 26px;
+    border-radius: 4px;
+    border: 1px solid rgba($gold, 0.18);
+    background:
+      radial-gradient(circle at 50% 42%, rgba($gold-alt, 0.72) 0 3px, transparent 4px),
+      linear-gradient(135deg, rgba($gold, 0.28), rgba($black, 0.18));
+  }
+
+  .preview-folder__title {
+    min-width: 0;
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    color: rgba($white, 0.96);
+    font-family: $primary-font;
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+  }
+
+  .preview-folder__chevron {
+    color: rgba($gold-alt, 0.78);
+    font-size: 11px;
+  }
+
+  .preview-trades-list {
+    padding: 10px;
+    background:
+      linear-gradient(180deg, rgba($white, 0.015), rgba($white, 0)),
+      rgba($black, 0.36);
+  }
+
+  .preview-trade-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 9px 10px;
+    border: 1px solid rgba($white, 0.06);
+    border-radius: 6px;
+    background: rgba($black, 0.34);
+  }
+
+  .preview-trade__drag {
+    width: 16px;
+    flex: 0 0 16px;
+    color: rgba($white, 0.3);
+    font-size: 15px;
+    text-align: center;
+  }
+
+  .preview-trade__content {
+    min-width: 0;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .preview-trade__top,
+  .preview-trade__bottom {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 0;
+  }
+
+  .preview-trade__top {
+    justify-content: space-between;
+  }
+
+  .preview-trade__bottom {
+    justify-content: flex-start;
+  }
+
+  .preview-trade__title {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    color: $white;
+    font-size: 13px;
+    line-height: 1.2;
+  }
+
+  .preview-trade__meta {
+    min-width: 0;
+    flex: 1;
+    color: rgba($gold-alt, 0.52);
+    font-size: 10px;
+    line-height: 1.2;
+    letter-spacing: 0.03em;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .preview-trade-actions {
+    display: flex;
+    align-items: center;
+    min-width: 0;
+    flex-shrink: 0;
+  }
+
+  .preview-trade-actions--compact {
+    margin-left: auto;
+  }
+
   @media (max-width: 430px) {
+    .settings-tabs {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
     .settings-grid {
       gap: 12px;
     }
 
     .settings-row {
+      flex-direction: column;
+      align-items: stretch;
+    }
+
+    .bookmark-layout-preview__heading {
       flex-direction: column;
       align-items: stretch;
     }

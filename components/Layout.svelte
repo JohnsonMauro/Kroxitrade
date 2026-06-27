@@ -14,6 +14,7 @@ import Settings from "./pages/Settings.svelte";
 import About from "./pages/About.svelte";
 import Experimental from "./pages/Experimental.svelte";
   import FinerFilters from "./FinerFilters.svelte";
+  import WhatsNewDialog from "./WhatsNewDialog.svelte";
   import WelcomeDialog from "./WelcomeDialog.svelte";
   import logoUrl from "~assets/logo.webp?inline";
   import { flashMessages } from "../lib/services/flash";
@@ -54,7 +55,6 @@ import Experimental from "./pages/Experimental.svelte";
     | 'settings-equivalent'
     | 'settings-bulk'
     | 'settings-history'
-    | 'settings-filters'
     | 'settings-bookmarks'
     | null = $state(null);
   let onboardingTutorialFolderId: string | null = $state(null);
@@ -63,6 +63,7 @@ import Experimental from "./pages/Experimental.svelte";
     : "dev");
   let isDevBuild = $state(import.meta.env.DEV);
   let showVersionNotice = $state(false);
+  let showWhatsNew = $state(false);
 
   const MIN_SIDEBAR_WIDTH = 300;
   const MAX_SIDEBAR_WIDTH = 560;
@@ -207,9 +208,7 @@ import Experimental from "./pages/Experimental.svelte";
     const unsubscribeLocation = tradeLocationService.locationStore.subscribe((location) => {
       currentTradeVersion = location.version;
       void settings.useVersion(location.version);
-      if (import.meta.env.DEV) {
-        experimentalSettings.useVersion(location.version);
-      }
+      experimentalSettings.useVersion(location.version);
     });
     welcomeLanguage = $settings.language;
     isDevBuild = import.meta.env.DEV;
@@ -277,6 +276,15 @@ import Experimental from "./pages/Experimental.svelte";
     }
   };
 
+  const openWhatsNew = () => {
+    showWhatsNew = true;
+  };
+
+  const closeWhatsNew = () => {
+    showWhatsNew = false;
+    dismissVersionNotice();
+  };
+
   const handleOnboardingStepChange = (
     page: 'bookmarks' | 'bulk' | 'history' | 'about' | 'settings',
     stepId:
@@ -289,7 +297,6 @@ import Experimental from "./pages/Experimental.svelte";
       | 'settings-equivalent'
       | 'settings-bulk'
       | 'settings-history'
-      | 'settings-filters'
       | 'settings-bookmarks'
   ) => {
     onboardingHighlightedPage = page;
@@ -402,6 +409,13 @@ import Experimental from "./pages/Experimental.svelte";
       </div>
       <button
         type="button"
+        class="version-notice__open"
+        onclick={openWhatsNew}
+      >
+        {translate($languageStore, "layout.versionNoticeOpen")}
+      </button>
+      <button
+        type="button"
         class="version-notice__close"
         aria-label={translate($languageStore, "layout.versionNoticeClose")}
         onclick={dismissVersionNotice}
@@ -494,15 +508,17 @@ import Experimental from "./pages/Experimental.svelte";
     {:else if currentPage === 'history' && $settings.showHistory}
         <History />
     {:else if currentPage === 'settings'}
-        <Settings onOpenTutorial={openOnboarding} />
+        <Settings
+          onOpenTutorial={openOnboarding}
+          tutorialStep={showOnboarding ? onboardingCurrentStepId : null} />
     {:else if currentPage === 'experimental' && isDevBuild}
         <Experimental />
     {:else if currentPage === 'about'}
-        <About />
+        <About onOpenWhatsNew={openWhatsNew} />
     {/if}
   </main>
 
-  {#if $settings.showFinerFilters}
+  {#if $settings.showQuickFilters && $settings.quickFiltersPlacement === 'sidebar'}
     <FinerFilters />
   {/if}
 
@@ -520,6 +536,11 @@ import Experimental from "./pages/Experimental.svelte";
       welcomeLanguage = language;
     }}
     onConfirm={confirmWelcome} />
+
+  <WhatsNewDialog
+    open={showWhatsNew}
+    version={appVersion}
+    onClose={closeWhatsNew} />
 </div>
 
 {#if isMinimized}
@@ -773,6 +794,33 @@ import Experimental from "./pages/Experimental.svelte";
     &:focus-visible {
       border-color: rgba($gold, 0.36);
       background: rgba($black, 0.42);
+      color: $gold-alt;
+      outline: none;
+    }
+  }
+
+  .version-notice__open {
+    flex: 0 0 auto;
+    height: 24px;
+    padding: 0 9px;
+    border: 1px solid rgba($gold, 0.26);
+    border-radius: 4px;
+    background: rgba($gold, 0.08);
+    color: rgba($gold-alt, 0.94);
+    font-family: $primary-font;
+    font-size: 10px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition:
+      border-color 0.15s ease,
+      background-color 0.15s ease,
+      color 0.15s ease;
+
+    &:hover,
+    &:focus-visible {
+      border-color: rgba($gold, 0.48);
+      background: rgba($gold, 0.14);
       color: $gold-alt;
       outline: none;
     }

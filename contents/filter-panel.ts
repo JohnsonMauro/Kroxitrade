@@ -51,7 +51,11 @@ export const initFilterPanel = () => {
     return t.content.firstElementChild
   }
 
-  const listModifiers = []
+  const listModifiers: Array<{
+    name: string
+    types: string[]
+    prefix: string
+  }> = []
   listModifiers.push({
     name: "Pseudo Res/Life",
     types: ["life", "cold", "fire", "light", "chaos"],
@@ -116,6 +120,12 @@ export const initFilterPanel = () => {
       <span class="btn-finer rm"  data-action="rmv-filter"  title="remove this mod from your search results">-</span>
       <span class="btn-finer add" data-action="add-filter"  title="add this mod to your search filters">+</span>
     </span>`)
+  const globalPresetsTemplate = () =>
+    h(`
+    <div class="krox-filter-presets" data-krox-filter-presets="true">
+      <div class="krox-filter-presets__title">Quick filter presets</div>
+      <div class="krox-filter-presets__list"></div>
+    </div>`)
 
   // ---------- map ----------
   const modMap: Record<string, string> = {
@@ -191,6 +201,60 @@ export const initFilterPanel = () => {
     return row?.getAttribute("data-id") || row?.id || mod.dataset.rowid || ""
   }
 
+  const getModHashFromDom = (mod: HTMLElement) => {
+    const sEl = mod.querySelector(".lc.s") as HTMLElement | null
+    const fieldVal =
+      sEl?.dataset?.field || sEl?.getAttribute("data-field") || ""
+    return fieldVal.startsWith("stat.") ? fieldVal.slice(5) : fieldVal
+  }
+
+  const normalizeMutatedModHashes = (root: ParentNode = document) => {
+    const containers = new Set<HTMLElement>()
+    if (
+      root instanceof HTMLElement &&
+      root.matches(".item-popup__content, .itemBoxContent > .content")
+    ) {
+      containers.add(root)
+    }
+    root
+      .querySelectorAll?.(".item-popup__content, .itemBoxContent > .content")
+      .forEach((container) => containers.add(container as HTMLElement))
+
+    containers.forEach((container) => {
+      const mods = Array.from(
+        container.querySelectorAll(
+          ":scope > .item-mod--mutated, :scope > .item-mod--explicit"
+        )
+      ) as HTMLElement[]
+      const mutatedCount = mods.filter((mod) =>
+        mod.classList.contains("item-mod--mutated")
+      ).length
+
+      if (!mutatedCount || mutatedCount >= mods.length) {
+        mods.forEach((mod) => delete mod.dataset.finerHashOverride)
+        return
+      }
+
+      const mutatedModsAreFirst = mods
+        .slice(0, mutatedCount)
+        .every((mod) => mod.classList.contains("item-mod--mutated"))
+      const hashes = mods.map(getModHashFromDom)
+
+      if (!mutatedModsAreFirst || hashes.some((hash) => !hash)) {
+        mods.forEach((mod) => delete mod.dataset.finerHashOverride)
+        return
+      }
+
+      const reorderedHashes = [
+        ...hashes.slice(-mutatedCount),
+        ...hashes.slice(0, -mutatedCount)
+      ]
+      mods.forEach((mod, index) => {
+        mod.dataset.finerHashOverride = reorderedHashes[index]
+      })
+    })
+  }
+
   const attachButtons = (mod: HTMLElement) => {
     const btns =
       (mod.querySelector("#btns-finer") as HTMLElement | null) ||
@@ -238,10 +302,7 @@ export const initFilterPanel = () => {
   }
 
   const decorateMod = (mod: HTMLElement, ISGs: any[]) => {
-    const sEl = mod.querySelector(".lc.s") as HTMLElement
-    const fieldVal =
-      sEl?.dataset?.field || sEl?.getAttribute("data-field") || ""
-    const modHash = fieldVal.startsWith("stat.") ? fieldVal.slice(5) : fieldVal
+    const modHash = mod.dataset.finerHashOverride || getModHashFromDom(mod)
     if (!modHash) return
 
     mod.dataset.hash = modHash
@@ -267,6 +328,7 @@ export const initFilterPanel = () => {
 
   const scanVisibleMods = (root: ParentNode = document) => {
     const ISGs = ItemSearchGroupsVueItems()
+    normalizeMutatedModHashes(root)
     Array.from(
       root.querySelectorAll(modSelectors) as NodeListOf<HTMLElement>
     ).forEach((mod) => {
@@ -301,6 +363,7 @@ export const initFilterPanel = () => {
       ) as HTMLElement[]
       const ISGs = ItemSearchGroupsVueItems()
 
+      normalizeMutatedModHashes(row)
       mods.forEach((mod) => decorateMod(mod, ISGs))
 
       row.classList.add("finer-processed")
@@ -314,6 +377,10 @@ export const initFilterPanel = () => {
       mutation.addedNodes.forEach((node) => {
         if (!(node instanceof HTMLElement)) return
         if (node.matches?.(modSelectors)) {
+          const content = node.closest(
+            ".item-popup__content, .itemBoxContent > .content"
+          )
+          if (content) normalizeMutatedModHashes(content)
           decorateMod(node, ItemSearchGroupsVueItems())
         }
         scanVisibleMods(node)
@@ -373,6 +440,97 @@ export const initFilterPanel = () => {
       getGlobalApp().save(true)
     }
   }
+
+  const injectSearchPanelQuickFilters = () => {
+    const pane = document.querySelector<HTMLElement>(".search-advanced-pane.brown")
+    const existing = pane?.querySelector('[data-krox-filter-presets="true"]')
+    const storageKey = window.location.pathname.startsWith("/trade2/")
+      ? "bt-quick-filters-visible-poe2"
+      : "bt-quick-filters-visible-poe1"
+    const placementKey = window.location.pathname.startsWith("/trade2/")
+      ? "bt-quick-filters-placement-poe2"
+      : "bt-quick-filters-placement-poe1"
+
+    if (
+      window.localStorage.getItem(storageKey) === "false" ||
+      window.localStorage.getItem(placementKey) === "sidebar"
+    ) {
+      existing?.remove()
+      return
+    }
+
+    if (!pane || existing) {
+      return
+    }
+
+    const panel = globalPresetsTemplate() as HTMLElement | null
+    const list = panel?.querySelector(".krox-filter-presets__list")
+    if (!panel || !list) return
+
+    listModifiers.forEach((modifier) => {
+      const row = document.createElement("div")
+      row.className = "krox-filter-preset"
+
+      const label = document.createElement("span")
+      label.className = "krox-filter-preset__name"
+      label.textContent = modifier.name
+
+      const minus = document.createElement("button")
+      minus.type = "button"
+      minus.className = "krox-filter-preset__btn krox-filter-preset__btn--minus"
+      minus.textContent = "-"
+      minus.title = `Reduce ${modifier.name}`
+      minus.dataset.action = "krox-global-minus"
+      minus.dataset.types = modifier.types.join(",")
+      minus.dataset.prefix = modifier.prefix
+
+      const plus = document.createElement("button")
+      plus.type = "button"
+      plus.className = "krox-filter-preset__btn krox-filter-preset__btn--plus"
+      plus.textContent = "+"
+      plus.title = `Add ${modifier.name}`
+      plus.dataset.action = "krox-global-plus"
+      plus.dataset.types = modifier.types.join(",")
+      plus.dataset.prefix = modifier.prefix
+
+      row.append(label, minus, plus)
+      list.appendChild(row)
+    })
+
+    const firstExpandedGroup = pane.querySelector(".filter-group.expanded")
+    pane.insertBefore(panel, firstExpandedGroup || pane.firstChild)
+  }
+
+  on("click", ".krox-filter-preset__btn", (e: any, el: HTMLElement) => {
+    e.preventDefault()
+    e.stopPropagation()
+
+    applyFinerFiltersAction({
+      action:
+        el.dataset.action === "krox-global-minus"
+          ? "global-minus"
+          : "global-plus",
+      types: el.dataset.types || "",
+      prefix: el.dataset.prefix || "pseudo.pseudo_"
+    })
+  })
+
+  injectSearchPanelQuickFilters()
+  const quickFiltersObserver = new MutationObserver(() => {
+    injectSearchPanelQuickFilters()
+  })
+  quickFiltersObserver.observe(document.body, { childList: true, subtree: true })
+  window.addEventListener("storage", (event) => {
+    if (
+      event.key?.startsWith("bt-quick-filters-visible-poe") ||
+      event.key?.startsWith("bt-quick-filters-placement-poe")
+    ) {
+      injectSearchPanelQuickFilters()
+    }
+  })
+  window.addEventListener("poe-trade-plus:quick-filters-change", () => {
+    injectSearchPanelQuickFilters()
+  })
 
   // listener for actions dispatched from the Svelte sidebar
   const handleFinerFiltersMessage = (e: MessageEvent<unknown>) => {

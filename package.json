@@ -1,7 +1,7 @@
 {
   "name": "poe-trade-plus",
   "displayName": "Poe Trade Plus",
-  "version": "1.0.78",
+  "version": "1.1.1",
   "license": "MIT",
   "description": "Poe Trade Plus enhances the Path of Exile trade site with bookmarks, history and result tools.",
   "author": "KroxiLabs",
@@ -12,16 +12,17 @@
   "scripts": {
     "dev": "wxt",
     "dev:firefox": "node scripts/wxt-firefox-dev.cjs",
+    "whats-new": "node scripts/generate-whats-new.cjs",
     "typecheck": "tsc --noEmit",
     "build:chrome": "node scripts/wxt-runner.cjs build",
     "build:firefox": "node scripts/wxt-runner.cjs build -b firefox",
     "build": "npm run build:chrome && npm run build:firefox",
-    "version:bump": "node scripts/bump-version.cjs",
+    "version": "node scripts/bump-version.cjs",
     "zip:chrome": "node scripts/wxt-runner.cjs zip",
     "zip:firefox": "node scripts/wxt-runner.cjs zip -b firefox",
     "package:chrome": "npm run zip:chrome",
     "package:firefox": "npm run zip:firefox",
-    "package": "npm run version:bump && npm run package:chrome && npm run package:firefox",
+    "package": "npm run package:chrome && npm run package:firefox",
     "postinstall": "wxt prepare"
   },
   "dependencies": {

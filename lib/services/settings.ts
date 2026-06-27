@@ -5,12 +5,15 @@ import type { TradeSiteVersion } from '../types/trade-location';
 
 export type SidebarSide = 'left' | 'right';
 export type BookmarkTradeActionId = 'edit' | 'replace' | 'copy' | 'openLive' | 'toggle' | 'delete';
+export type QuickFiltersPlacement = 'page' | 'sidebar';
 
 export interface VersionSettings {
   showEquivalentPricing: boolean;
   showBulkSellers: boolean;
   showHistory: boolean;
   showFinerFilters: boolean;
+  showQuickFilters: boolean;
+  quickFiltersPlacement: QuickFiltersPlacement;
   compactActionsMenu: boolean;
   compactBookmarkTradeActions: BookmarkTradeActionId[];
 }
@@ -41,6 +44,8 @@ const DEFAULT_VERSION_SETTINGS: VersionSettings = {
   showBulkSellers: false,
   showHistory: true,
   showFinerFilters: true,
+  showQuickFilters: true,
+  quickFiltersPlacement: 'page',
   compactActionsMenu: false,
   compactBookmarkTradeActions: []
 };
@@ -85,6 +90,8 @@ function legacyVersionSettings(value?: Partial<AppSettings> | null): VersionSett
     showBulkSellers: value?.showBulkSellers,
     showHistory: value?.showHistory,
     showFinerFilters: value?.showFinerFilters,
+    showQuickFilters: value?.showQuickFilters,
+    quickFiltersPlacement: value?.quickFiltersPlacement,
     compactActionsMenu: value?.compactActionsMenu,
     compactBookmarkTradeActions: value?.compactBookmarkTradeActions
   });
@@ -92,6 +99,26 @@ function legacyVersionSettings(value?: Partial<AppSettings> | null): VersionSett
 
 function publish() {
   currentSettings = combineSettings(globalSettings, activeVersionSettings);
+  if (typeof window !== "undefined") {
+    const quickFiltersStorageKey = `bt-quick-filters-visible-poe${activeVersion}`;
+    window.localStorage.setItem(
+      quickFiltersStorageKey,
+      String(currentSettings.showQuickFilters)
+    );
+    window.localStorage.setItem(
+      `bt-quick-filters-placement-poe${activeVersion}`,
+      currentSettings.quickFiltersPlacement
+    );
+    window.dispatchEvent(
+      new CustomEvent("poe-trade-plus:quick-filters-change", {
+        detail: {
+          key: quickFiltersStorageKey,
+          value: currentSettings.showQuickFilters,
+          placement: currentSettings.quickFiltersPlacement
+        }
+      })
+    );
+  }
   set(currentSettings);
 }
 
@@ -198,6 +225,12 @@ export const settings = {
   },
   async updateFinerFiltersVisibility(showFinerFilters: boolean) {
     return saveVersion({ ...activeVersionSettings, showFinerFilters });
+  },
+  async updateQuickFiltersVisibility(showQuickFilters: boolean) {
+    return saveVersion({ ...activeVersionSettings, showQuickFilters });
+  },
+  async updateQuickFiltersPlacement(quickFiltersPlacement: QuickFiltersPlacement) {
+    return saveVersion({ ...activeVersionSettings, quickFiltersPlacement });
   },
   async updateSidebarWidth(sidebarWidth: number) {
     return saveGlobal({ ...globalSettings, sidebarWidth });
