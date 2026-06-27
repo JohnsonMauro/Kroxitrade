@@ -291,6 +291,8 @@
 
   let selectedLanguage =
     $derived(languages.find((language) => language.code === $settings.language) ?? languages[0]);
+  const currentLocation = tradeLocationService.locationStore;
+  let isPoe2Trade = $derived($currentLocation.version === "2");
 
   $effect(() => {
     if (tutorialStep && tutorialStepTabs[tutorialStep]) {
@@ -677,18 +679,20 @@
           />
         </div>
 
-        <div class="settings-row">
-          <div class="settings-row__copy">
-            <div class="settings-row__title">{translate($languageStore, "settings.poe2CopyTitle")}</div>
-            <div class="settings-row__description">{translate($languageStore, "settings.poe2CopyBody")}</div>
+        {#if isPoe2Trade}
+          <div class="settings-row">
+            <div class="settings-row__copy">
+              <div class="settings-row__title">{translate($languageStore, "settings.poe2CopyTitle")}</div>
+              <div class="settings-row__description">{translate($languageStore, "settings.poe2CopyBody")}</div>
+            </div>
+            <ToggleRow
+              checked={$poe2CopyButtonSetting}
+              label={translate($languageStore, "settings.poe2CopyTitle")}
+              stateLabel={toggleSwitchLabel($poe2CopyButtonSetting)}
+              onToggle={() => handlePoe2CopyVisibleChange(!$poe2CopyButtonSetting)}
+            />
           </div>
-          <ToggleRow
-            checked={$poe2CopyButtonSetting}
-            label={translate($languageStore, "settings.poe2CopyTitle")}
-            stateLabel={toggleSwitchLabel($poe2CopyButtonSetting)}
-            onToggle={() => handlePoe2CopyVisibleChange(!$poe2CopyButtonSetting)}
-          />
-        </div>
+        {/if}
 
         <div class="settings-row">
           <div class="settings-row__copy">
