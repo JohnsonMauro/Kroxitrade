@@ -1,5 +1,4 @@
-import { writable } from "svelte/store";
-import { poeNinjaService } from "./poe-ninja";
+import { poeNinjaService, type PoeNinjaCurrencyData } from "./poe-ninja";
 import { tradeLocationService } from "./trade-location";
 import { searchPanelService } from "./search-panel";
 import { settings } from "./settings";
@@ -7,6 +6,14 @@ import { slugify } from "../utilities/slugify";
 import { escapeRegex } from "../utilities/escape-regex";
 import { emitPageDebug } from "../utilities/page-debug";
 import { getCurrencyIconUrl } from "../data/currency-icons";
+import coeButtonImage from "../../assets/coe-button.webp?inline";
+import { copyItemForPob } from "../utilities/copy-item-for-pob";
+import {
+  buildCraftOfExileText,
+  copyTextSynchronously
+} from "../utilities/copy-item-for-craft-of-exile";
+import { flashMessages } from "./flash";
+import { experimentalSettings } from "./experimental";
 
 
 
@@ -26,10 +33,13 @@ const ILVL_THRESHOLDS = [
 
 
 export class ItemResultsService {
-  private chaosRatios: Record<string, number> | null = null;
+  private currencyData: PoeNinjaCurrencyData | null = null;
   private statNeedles: RegExp[] = [];
-  private readonly DIVINE_SLUG = "divine-orb";
   private readonly CHAOS_SLUG = "chaos-orb";
+  private readonly referenceSlugs = {
+    "1": ["divine-orb", "chaos-orb"],
+    "2": ["exalted-orb", "divine-orb", "chaos-orb", "orb-of-annulment"]
+  } as const;
   private readonly currencySlugAliases: Record<string, string> = {
     chaos: "chaos-orb",
     divine: "divine-orb",
@@ -53,8 +63,48 @@ export class ItemResultsService {
   private searchRefreshTimers: number[] = [];
   private readonly handleDocumentClick = (event: MouseEvent) => {
     const target = event.target as Element | null;
+    const copyButton = target?.closest<HTMLButtonElement>("button.copy");
+    const coeButton = target?.closest<HTMLButtonElement>("button.bt-copy-coe");
+
+    if (
+      coeButton &&
+      experimentalSettings.isCoeVisible()
+    ) {
+      event.preventDefault();
+      event.stopImmediatePropagation();
+
+      const row = coeButton.closest<HTMLElement>(".row, .result-item");
+      const text = row ? buildCraftOfExileText(row) : null;
+      if (text && copyTextSynchronously(text)) {
+        this.showCopyFeedback("Item copied for Craft of Exile.");
+      } else {
+        flashMessages.alert("Could not copy this item for Craft of Exile.");
+      }
+      return;
+    }
+
+    if (
+      copyButton &&
+      tradeLocationService.current.version === "2" &&
+      experimentalSettings.isPoe2CopyVisible()
+    ) {
+      event.preventDefault();
+      event.stopImmediatePropagation();
+
+      const row = copyButton.closest<HTMLElement>(".row, .result-item");
+      if (row && copyItemForPob(row)) {
+        this.showCopyFeedback("Item text copied.");
+      } else {
+        flashMessages.alert("Could not copy this item for Path of Building.");
+      }
+      return;
+    }
+
     if (!target?.closest(".btn.search-btn")) return;
     this.schedulePostSearchRefresh();
+  };
+  private readonly handleExperimentalChange = () => {
+    this.enhanceResults();
   };
 
   async initialize() {
@@ -88,7 +138,79 @@ export class ItemResultsService {
 
     this.prepareHighlighting();
     this.startObserving();
+    document.removeEventListener("click", this.handleDocumentClick, true);
     document.addEventListener("click", this.handleDocumentClick, true);
+    document.removeEventListener(
+      "poe-trade-plus:experimental-change",
+      this.handleExperimentalChange
+    );
+    document.addEventListener(
+      "poe-trade-plus:experimental-change",
+      this.handleExperimentalChange
+    );
+  }
+
+  private showCopyFeedback(toastMessage: string) {
+    this.showItemCopiedToast(toastMessage);
+  }
+
+  private showItemCopiedToast(message: string) {
+    document.querySelector(".poe-toast-trade.bt-item-copied-toast")?.remove();
+
+    let container = document.body.querySelector<HTMLElement>(
+      ".poe-toast-container.poe-toast-container--position-bottom-center"
+    );
+    if (!container) {
+      container = document.createElement("div");
+      container.className =
+        "poe-toast-container poe-toast-container--position-bottom-center bt-item-copied-toast-container";
+      document.body.appendChild(container);
+    }
+
+    const toast = document.createElement("div");
+    toast.className =
+      "poe-toast-trade poe-toast-trade--type-success bt-item-copied-toast";
+    toast.setAttribute("role", "status");
+    toast.setAttribute("aria-live", "polite");
+
+    const content = document.createElement("div");
+    content.className = "poe-toast-trade__content";
+
+    const title = document.createElement("div");
+    title.className = "poe-toast-trade__title";
+    title.textContent = message;
+    content.appendChild(title);
+
+    const close = document.createElement("button");
+    close.type = "button";
+    close.className = "poe-toast-trade__close";
+    close.textContent = "×";
+    close.setAttribute("aria-label", "Close");
+    close.addEventListener("click", () => {
+      toast.remove();
+      if (
+        container?.classList.contains("bt-item-copied-toast-container") &&
+        container.childElementCount === 0
+      ) {
+        container.remove();
+      }
+    });
+
+    toast.append(content, close);
+    container.appendChild(toast);
+
+    window.setTimeout(() => {
+      toast.classList.add("is-leaving");
+      window.setTimeout(() => {
+        toast.remove();
+        if (
+          container?.classList.contains("bt-item-copied-toast-container") &&
+          container.childElementCount === 0
+        ) {
+          container.remove();
+        }
+      }, 180);
+    }, 1500);
   }
 
   private async handleLocationChange() {
@@ -107,21 +229,8 @@ export class ItemResultsService {
   private async fetchRatios(forceFresh = false) {
     const { league, type, slug, version } = tradeLocationService.current;
 
-    if (version === "2") {
-      this.chaosRatios = null;
-      emitPageDebug("poe-ninja-skip", {
-        reason: "poe2-disabled",
-        league,
-        type,
-        slug,
-        version
-      });
-      this.refreshEquivalentPricing();
-      return;
-    }
-
     if (!league) {
-      this.chaosRatios = null;
+      this.currencyData = null;
       emitPageDebug("poe-ninja-skip", {
         reason: "missing-league",
         league,
@@ -137,9 +246,9 @@ export class ItemResultsService {
       slug,
       forceFresh
     });
-    this.chaosRatios = forceFresh
-      ? await poeNinjaService.fetchFreshChaosRatiosFor(league)
-      : await poeNinjaService.fetchChaosRatiosFor(league);
+    this.currencyData = forceFresh
+      ? await poeNinjaService.fetchFreshCurrencyDataFor(league, version)
+      : await poeNinjaService.fetchCurrencyDataFor(league, version);
   }
 
   async forceRefreshEquivalentPricing() {
@@ -148,11 +257,6 @@ export class ItemResultsService {
   }
 
   private injectEquivalentPricing(row: HTMLElement) {
-    if (tradeLocationService.current.version === "2") {
-      this.removeEquivalentPricing(row);
-      return;
-    }
-
     const priceInfo = this.extractPriceInfo(row);
     if (!priceInfo) {
       return;
@@ -160,7 +264,7 @@ export class ItemResultsService {
 
     const { container: priceContainer, amount, currencyText } = priceInfo;
 
-    if (!this.chaosRatios) {
+    if (!this.currencyData) {
       this.removeEquivalentPricing(row);
       return;
     }
@@ -176,56 +280,37 @@ export class ItemResultsService {
     }
 
     const slug = this.resolveCurrencySlug(currencyText);
-    const ratio = this.chaosRatios[slug];
-    const divineRatio = this.chaosRatios[this.DIVINE_SLUG];
-    const parts: Array<{ amount: number | string; slug: string } | { separator: true }> = [];
-
-    if (slug === this.DIVINE_SLUG && ratio) {
-        // Original price is Divine, e.g. 1.4 Divines
-        const totalChaos = Math.round(amount * ratio);
-        const wholeDivines = Math.floor(amount);
-        const remainderFraction = amount - wholeDivines;
-        const remainderChaos = Math.round(remainderFraction * ratio);
-
-        if (wholeDivines > 0 && remainderChaos > 0) {
-            parts.push({ amount: wholeDivines, slug: this.DIVINE_SLUG });
-            parts.push({ separator: true });
-            parts.push({ amount: remainderChaos, slug: this.CHAOS_SLUG });
-        } else if (wholeDivines === 0 && remainderChaos > 0) {
-            parts.push({ amount: remainderChaos, slug: this.CHAOS_SLUG });
-        } else {
-            parts.push({ amount: totalChaos, slug: this.CHAOS_SLUG });
-        }
-
-    } else if (slug === this.CHAOS_SLUG && divineRatio && amount >= divineRatio * 0.5) {
-        // Original price is Chaos, e.g. 195 Chaos
-        const wholeDivines = Math.floor(amount / divineRatio);
-        const remainderChaos = Math.round(amount % divineRatio);
-
-        if (wholeDivines > 0) {
-            parts.push({ amount: wholeDivines, slug: this.DIVINE_SLUG });
-            if (remainderChaos > 0) {
-                parts.push({ separator: true });
-                parts.push({ amount: remainderChaos, slug: this.CHAOS_SLUG });
-            }
-        } else {
-            // Less than 1 Divine (e.g. 100 chaos). Just show fraction: 0.7 Divine
-            const fraction = (amount / divineRatio).toFixed(1);
-            parts.push({ amount: fraction, slug: this.DIVINE_SLUG });
-        }
-
-    } else if (slug !== this.CHAOS_SLUG && slug !== this.DIVINE_SLUG && ratio) {
-        // Other currencies (like Exalted orbs). Just show total chaos equivalent.
-        const chaosEquiv = Math.round(amount * ratio);
-        parts.push({ amount: chaosEquiv, slug: this.CHAOS_SLUG });
-    } else {
+    const pricedCurrency = this.currencyData[slug];
+    if (!pricedCurrency) {
       this.removeEquivalentPricing(row);
       emitPageDebug("equivalent-unresolved", {
         amount,
         currencyText,
         slug,
-        availableSample: this.chaosRatios ? Object.keys(this.chaosRatios).slice(0, 10) : []
+        availableSample: Object.keys(this.currencyData).slice(0, 10)
       });
+      return;
+    }
+
+    const version = tradeLocationService.current.version;
+    const valueInPrimary = amount * pricedCurrency.value;
+    const parts = this.referenceSlugs[version]
+      .filter((referenceSlug) => referenceSlug !== slug)
+      .flatMap((referenceSlug) => {
+        const reference = this.currencyData?.[referenceSlug];
+        if (!reference?.value) return [];
+
+        const equivalent = valueInPrimary / reference.value;
+        const rounded = equivalent >= 10
+          ? Math.round(equivalent)
+          : Math.round(equivalent * 10) / 10;
+        if (!rounded) return [];
+
+        return [{ amount: rounded, slug: referenceSlug, icon: reference.icon }];
+      });
+
+    if (parts.length === 0) {
+      this.removeEquivalentPricing(row);
       return;
     }
 
@@ -301,7 +386,7 @@ export class ItemResultsService {
 
   private renderEquivalentPricing(
     container: HTMLElement,
-    parts: Array<{ amount: number | string; slug: string } | { separator: true }>
+    parts: Array<{ amount: number | string; slug: string; icon: string }>
   ) {
     let el = container.querySelector(".bt-equivalent-pricings-equivalent") as HTMLElement | null;
     if (!el) {
@@ -313,25 +398,23 @@ export class ItemResultsService {
     el.replaceChildren();
     el.appendChild(this.createTextSpan("bt-equivalent-label", "equivalent:"));
 
-    parts.forEach((part) => {
-      if ("separator" in part) {
-        el!.appendChild(this.createTextSpan("bt-equivalent-separator", "+"));
-        return;
+    parts.forEach((part, index) => {
+      if (index > 0) {
+        el!.appendChild(this.createTextSpan("bt-equivalent-separator", "="));
       }
-
-      el!.appendChild(this.createCurrencyFragment(part.amount, part.slug));
+      el!.appendChild(this.createCurrencyFragment(part.amount, part.slug, part.icon));
     });
     this.syncEquivalentVisibility(el!);
   }
 
-  private createCurrencyFragment(amount: number | string, slug: string) {
+  private createCurrencyFragment(amount: number | string, slug: string, iconUrl: string) {
     const fragment = document.createDocumentFragment();
     fragment.appendChild(this.createTextSpan("bt-equivalent-amount", String(amount)));
 
     const icon = document.createElement("img");
     icon.className = "bt-equivalent-icon currency-icon";
     icon.alt = slug;
-    icon.src = getCurrencyIconUrl(slug === this.CHAOS_SLUG ? "chaos" : "divine");
+    icon.src = iconUrl || getCurrencyIconUrl(slug === this.CHAOS_SLUG ? "chaos" : "divine");
     fragment.appendChild(icon);
 
     return fragment;
@@ -409,6 +492,8 @@ export class ItemResultsService {
 
     results.forEach((row: Element) => {
       const typedRow = row as HTMLElement;
+      this.enablePoe2CopyButton(typedRow);
+      this.syncCoeButton(typedRow);
       this.injectEquivalentPricing(typedRow);
 
       if (typedRow.hasAttribute("bt-enhanced")) {
@@ -421,6 +506,71 @@ export class ItemResultsService {
     });
   }
 
+  private enablePoe2CopyButton(row: HTMLElement) {
+    if (tradeLocationService.current.version !== "2") return;
+
+    const copyButton = row.querySelector<HTMLButtonElement>(".left > button.copy");
+    if (!copyButton) return;
+
+    experimentalSettings.applyPoe2CopyButton(copyButton);
+  }
+
+  private syncCoeButton(row: HTMLElement) {
+    const left = row.querySelector<HTMLElement>(".left");
+    if (!left) return;
+
+    const searchByButton = left.querySelector<HTMLButtonElement>("button.searchBy");
+    let button = left.querySelector<HTMLButtonElement>("button.bt-copy-coe");
+    if (!experimentalSettings.isCoeVisible()) {
+      button?.remove();
+      return;
+    }
+
+    if (button) {
+      if (searchByButton) this.positionCoeButton(button, searchByButton);
+      return;
+    }
+
+    button = document.createElement("button");
+    button.type = "button";
+    button.className = "bt-copy-coe";
+    button.title = "Copy for Craft of Exile";
+    button.setAttribute("aria-label", "Copy for Craft of Exile");
+    const copyMark = document.createElement("span");
+    copyMark.className = "bt-copy-coe-mark";
+    copyMark.setAttribute("aria-hidden", "true");
+    const image = document.createElement("img");
+    image.src = coeButtonImage;
+    image.alt = "";
+    image.setAttribute("aria-hidden", "true");
+    button.appendChild(copyMark);
+    button.appendChild(image);
+    if (searchByButton) {
+      searchByButton.insertAdjacentElement("afterend", button);
+      this.positionCoeButton(button, searchByButton);
+    } else {
+      left.appendChild(button);
+    }
+  }
+
+  private positionCoeButton(button: HTMLButtonElement, searchByButton: HTMLButtonElement) {
+    const searchStyle = window.getComputedStyle(searchByButton);
+    const searchLeft = Number.parseFloat(searchStyle.left);
+    const searchWidth = Number.parseFloat(searchStyle.width);
+
+    if (Number.isFinite(searchLeft) && Number.isFinite(searchWidth)) {
+      button.style.left = `${searchLeft + searchWidth}px`;
+    }
+
+    if (searchStyle.bottom !== "auto") {
+      button.style.top = "auto";
+      button.style.bottom = searchStyle.bottom;
+    } else if (searchStyle.top !== "auto") {
+      button.style.top = searchStyle.top;
+      button.style.bottom = "auto";
+    }
+  }
+
   private refreshEquivalentPricing() {
     const results = document.querySelectorAll(".search-results .result-item, .search-results .row, .result-list .result-item, .row");
     results.forEach((row) => this.injectEquivalentPricing(row as HTMLElement));
@@ -429,7 +579,7 @@ export class ItemResultsService {
   private highlightStats(row: HTMLElement) {
     if (this.statNeedles.length === 0) return;
 
-    const mods = row.querySelectorAll(".explicitMod, .pseudoMod, .implicitMod");
+    const mods = row.querySelectorAll(".explicitMod, .pseudoMod, .implicitMod, .item-mod");
     mods.forEach((mod) => {
         const element = mod as HTMLElement;
         const text = element.textContent || "";
@@ -444,7 +594,7 @@ export class ItemResultsService {
   private checkMaximumSockets(row: HTMLElement) {
     if (tradeLocationService.current.version !== "1") return;
 
-    const ilvlEl = row.querySelector(".itemLevel");
+    const ilvlEl = row.querySelector('.item-property [data-field="ilvl"], [data-field="ilvl"], .itemLevel');
     const ilvlMatch = ilvlEl?.textContent?.match(/(\d+)/);
     if (!ilvlMatch) return;
     const ilvl = parseInt(ilvlMatch[0], 10);

@@ -1,3 +1,6 @@
+import { get } from "svelte/store";
+import { languageStore, translate } from "./i18n";
+
 export class SearchPanelService {
   private readonly SEARCH_INPUT_SELECTOR = '.search-panel .search-bar .search-left input, .search-panel-content .search-bar input';
   private readonly CATEGORY_INPUT_SELECTOR = '.search-advanced-items .filter-group:nth-of-type(1) .filter-property:nth-of-type(1) input';
@@ -5,7 +8,7 @@ export class SearchPanelService {
   private readonly STATS_SELECTOR = '.search-advanced-pane:last-child .filter-group-body .filter:not(.disabled) .filter-title, .filter-group-body .filter .filter-title';
 
   recommendTitle() {
-    return this.getName() || "Trade";
+    return this.getName() || translate(get(languageStore), "search.tradeFallback");
   }
 
   getCategory() {

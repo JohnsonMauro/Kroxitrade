@@ -12,16 +12,19 @@
   import { tradeLocationService } from "../../lib/services/trade-location";
   import { flashMessages } from "../../lib/services/flash";
   import { storageService } from "../../lib/services/storage";
+  import { normalizeIcon } from "../../lib/utilities/icons";
   import type { BookmarksFolderStruct } from "../../lib/types/bookmarks";
 
   import BookmarkFolder from "../BookmarkFolder.svelte";
   import Button from "../Button.svelte";
   import ConfirmDialog from "../ConfirmDialog.svelte";
+  import EmptyState from "../EmptyState.svelte";
   import LoadingContainer from "../LoadingContainer.svelte";
 
   const EXPANDED_FOLDERS_STORAGE_KEY = "bookmark-folders-expanded";
 
-  export let tutorialStep:
+  interface Props {
+    tutorialStep?: 
     | "create-folder"
     | "save-search"
     | "history"
@@ -33,76 +36,76 @@
     | "settings-history"
     | "settings-filters"
     | "settings-bookmarks"
-    | null = null;
-  export let tutorialFolderId: string | null = null;
+    | null;
+    tutorialFolderId?: string | null;
+  }
 
-  let expandedFolderIds: string[] = [];
+  let { tutorialStep = null, tutorialFolderId = null }: Props = $props();
+
+  let expandedFolderIds: string[] = $state([]);
   let isLoading = false;
-  let showArchived = false;
-  let loadedExpandedStateKey: string | null = null;
+  let showArchived = $state(false);
+  let hasLoadedExpandedState = $state(false);
   
-  let isImportingText = false;
-  let importText = "";
-  let draggedFolderId: string | null = null;
-  let dragOverFolderId: string | null = null;
-  let folderPendingDelete: BookmarksFolderStruct | null = null;
-  let pendingEditFolderId: string | null = null;
-  let toolbarStickyEl: HTMLDivElement | null = null;
-  let toolbarRenderKey = 0;
+  let isImportingText = $state(false);
+  let importText = $state("");
+  let draggedFolderId: string | null = $state(null);
+  let dragOverFolderId: string | null = $state(null);
+  let folderPendingDelete: BookmarksFolderStruct | null = $state(null);
+  let pendingEditFolderId: string | null = $state(null);
+  let toolbarStickyEl: HTMLDivElement | null = $state(null);
+  let toolbarRenderKey = $state(0);
   let toolbarRepairFrame = 0;
   let toolbarRepairTimeouts: number[] = [];
   let toolbarRepairAttempts = 0;
 
-  $: currentLocation = tradeLocationService.locationStore;
-  $: currentVersion = $currentLocation.version;
-  $: versionFolders = $bookmarksService.filter(
-    (folder) => folder.version === currentVersion
-  );
-  $: displayedFolders = versionFolders.filter(
-    (folder) => !!folder.archivedAt === showArchived
-  );
-  $: isEmptyState = !isLoading && displayedFolders.length === 0;
-  $: displayedFolderIndexById = new Map(
-    displayedFolders.map((folder, index) => [folder.id, index])
-  );
-  $: expandedFoldersStorageKey = `${EXPANDED_FOLDERS_STORAGE_KEY}-${currentVersion}`;
-  $: validFolderIds = new Set(
-    versionFolders.map((folder) => folder.id).filter(Boolean)
-  );
-  $: tutorialTargetFolderId = tutorialStep === "save-search"
-    ? tutorialFolderId || displayedFolders[0]?.id || null
-    : null;
-  $: {
-    const nextExpandedFolderIds = expandedFolderIds.filter((id) => validFolderIds.has(id));
-    if (nextExpandedFolderIds.length !== expandedFolderIds.length) {
-      expandedFolderIds = nextExpandedFolderIds;
-    }
-  }
-  $: if (tutorialTargetFolderId && !expandedFolderIds.includes(tutorialTargetFolderId)) {
-    expandedFolderIds = [...expandedFolderIds, tutorialTargetFolderId];
-  }
-  $: if (expandedFoldersStorageKey && loadedExpandedStateKey !== expandedFoldersStorageKey) {
-    loadExpandedState(expandedFoldersStorageKey);
-  }
-  $: if (loadedExpandedStateKey === expandedFoldersStorageKey) {
-    persistExpandedState(expandedFoldersStorageKey, expandedFolderIds);
-  }
 
-  const loadExpandedState = (storageKey: string) => {
-    const raw = storageService.getLocalValue(storageKey);
+  const normalizeExpandedFolderIds = (value: unknown): string[] => {
+    if (Array.isArray(value)) {
+      return value.filter((id): id is string => typeof id === "string");
+    }
+
+    if (value && typeof value === "object") {
+      const parsed = value as Record<string, unknown>;
+      const legacyEntry = parsed[currentVersion];
+      if (Array.isArray(legacyEntry)) {
+        return legacyEntry.filter((id): id is string => typeof id === "string");
+      }
+    }
+
+    return [];
+  };
+
+  const loadExpandedState = () => {
+    const globalRaw = storageService.getLocalValue(EXPANDED_FOLDERS_STORAGE_KEY);
 
     try {
-      const parsed = raw ? JSON.parse(raw) : [];
-      expandedFolderIds = Array.isArray(parsed) ? parsed.filter((id): id is string => typeof id === "string") : [];
+      const parsed = globalRaw ? JSON.parse(globalRaw) : null;
+      const nextExpanded = normalizeExpandedFolderIds(parsed);
+      if (nextExpanded.length > 0) {
+        expandedFolderIds = nextExpanded;
+        hasLoadedExpandedState = true;
+        return;
+      }
+    } catch {
+      // Fall through to the legacy per-version key.
+    }
+
+    const legacyStorageKey = `${EXPANDED_FOLDERS_STORAGE_KEY}-${currentVersion}`;
+    const legacyRaw = storageService.getLocalValue(legacyStorageKey);
+
+    try {
+      const parsed = legacyRaw ? JSON.parse(legacyRaw) : [];
+      expandedFolderIds = normalizeExpandedFolderIds(parsed);
     } catch {
       expandedFolderIds = [];
     }
 
-    loadedExpandedStateKey = storageKey;
+    hasLoadedExpandedState = true;
   };
 
-  const persistExpandedState = (storageKey: string, folderIds: string[]) => {
-    storageService.setLocalValue(storageKey, JSON.stringify(folderIds));
+  const persistExpandedState = (folderIds: string[]) => {
+    storageService.setLocalValue(EXPANDED_FOLDERS_STORAGE_KEY, JSON.stringify(folderIds));
   };
 
   const toggleExpansion = (id: string) => {
@@ -217,26 +220,13 @@
       isImportingText = false;
   };
 
-  const normalizeToolbarIcon = (svg: string) =>
-    svg
-      .replace(/<svg\b([^>]*)>/, (_match, attrs) => {
-        const nextAttrs = attrs
-          .replace(/\sclass="[^"]*"/g, "")
-          .replace(/\swidth="[^"]*"/g, "")
-          .replace(/\sheight="[^"]*"/g, "")
-          .replace(/\sviewBox="[^"]*"/g, "")
-          .trim();
-
-        return `<svg ${nextAttrs} viewBox="-2 -2 28 28" class="toolbar-svg">`;
-      });
-
   const toolbarIcons = {
-    newFolder: normalizeToolbarIcon(folderPlusIcon),
-    import: normalizeToolbarIcon(downloadIcon),
-    cancel: normalizeToolbarIcon(xIcon),
-    collapse: normalizeToolbarIcon(chevronsUpIcon),
-    archive: normalizeToolbarIcon(archiveIcon),
-    active: normalizeToolbarIcon(archiveRestoreIcon)
+    newFolder: normalizeIcon(folderPlusIcon, { size: 13, className: "toolbar-svg" }),
+    import: normalizeIcon(downloadIcon, { size: 13, className: "toolbar-svg" }),
+    cancel: normalizeIcon(xIcon, { size: 13, className: "toolbar-svg" }),
+    collapse: normalizeIcon(chevronsUpIcon, { size: 13, className: "toolbar-svg" }),
+    archive: normalizeIcon(archiveIcon, { size: 13, className: "toolbar-svg" }),
+    active: normalizeIcon(archiveRestoreIcon, { size: 13, className: "toolbar-svg" })
   };
 
   const clearToolbarRepairTimers = () => {
@@ -310,6 +300,48 @@
   onDestroy(() => {
     clearToolbarRepairTimers();
   });
+  const currentLocation = tradeLocationService.locationStore;
+  let currentVersion = $derived($currentLocation.version);
+  let versionFolders = $derived($bookmarksService.filter(
+    (folder) => folder.version === currentVersion
+  ));
+  let displayedFolders = $derived(versionFolders.filter(
+    (folder) => !!folder.archivedAt === showArchived
+  ));
+  let isEmptyState = $derived(!isLoading && displayedFolders.length === 0);
+  let displayedFolderIndexById = $derived(new Map(
+    displayedFolders.map((folder, index) => [folder.id, index])
+  ));
+  let validFolderIds = $derived(new Set(
+    $bookmarksService.map((folder) => folder.id).filter(Boolean)
+  ));
+  let tutorialTargetFolderId = $derived(tutorialStep === "save-search"
+    ? tutorialFolderId || displayedFolders[0]?.id || null
+    : null);
+  $effect(() => {
+    if (validFolderIds.size === 0) {
+      return;
+    }
+
+    const nextExpandedFolderIds = expandedFolderIds.filter((id) => validFolderIds.has(id));
+    if (nextExpandedFolderIds.length !== expandedFolderIds.length) {
+      expandedFolderIds = nextExpandedFolderIds;
+    }
+  });
+  $effect(() => {
+    if (tutorialTargetFolderId && !expandedFolderIds.includes(tutorialTargetFolderId)) {
+      expandedFolderIds = [...expandedFolderIds, tutorialTargetFolderId];
+    }
+  });
+  $effect(() => {
+    if (hasLoadedExpandedState) {
+      persistExpandedState(expandedFolderIds);
+    }
+  });
+
+  onMount(() => {
+    loadExpandedState();
+  });
 </script>
 
 <div class="bookmarks-page" data-tutorial="bookmarks-panel">
@@ -318,7 +350,7 @@
       <section class="toolbar-panel">
         <div class="toolbar-row">
           <div class="toolbar-actions toolbar-actions--primary">
-            <button class="toolbar-button" data-tutorial="new-folder" type="button" title={translate($languageStore, "bookmarks.toolbar.newFolderTitle")} aria-label={translate($languageStore, "bookmarks.toolbar.newFolderTitle")} on:click={createFolder}>
+            <button class="toolbar-button" data-tutorial="new-folder" type="button" title={translate($languageStore, "bookmarks.toolbar.newFolderTitle")} aria-label={translate($languageStore, "bookmarks.toolbar.newFolderTitle")} onclick={createFolder}>
               <span class="toolbar-icon" aria-hidden="true">{@html toolbarIcons.newFolder}</span>
               <span class="toolbar-label">{translate($languageStore, "bookmarks.toolbar.new")}</span>
             </button>
@@ -328,7 +360,7 @@
               type="button"
               title={isImportingText ? translate($languageStore, "bookmarks.toolbar.cancelImport") : translate($languageStore, "bookmarks.toolbar.importFolder")}
               aria-label={isImportingText ? translate($languageStore, "bookmarks.toolbar.cancelImport") : translate($languageStore, "bookmarks.toolbar.importFolder")}
-              on:click={() => isImportingText = !isImportingText}
+              onclick={() => isImportingText = !isImportingText}
             >
               <span class="toolbar-icon" aria-hidden="true">
                 {@html isImportingText ? toolbarIcons.cancel : toolbarIcons.import}
@@ -338,7 +370,7 @@
           </div>
 
           <div class="toolbar-actions toolbar-actions--secondary">
-            <button class="toolbar-button" type="button" title={translate($languageStore, "bookmarks.toolbar.collapseAll")} aria-label={translate($languageStore, "bookmarks.toolbar.collapseAll")} on:click={collapseAll}>
+            <button class="toolbar-button" type="button" title={translate($languageStore, "bookmarks.toolbar.collapseAll")} aria-label={translate($languageStore, "bookmarks.toolbar.collapseAll")} onclick={collapseAll}>
               <span class="toolbar-icon" aria-hidden="true">{@html toolbarIcons.collapse}</span>
               <span class="toolbar-label">{translate($languageStore, "bookmarks.toolbar.collapse")}</span>
             </button>
@@ -348,7 +380,7 @@
               type="button"
               title={showArchived ? translate($languageStore, "bookmarks.toolbar.showActive") : translate($languageStore, "bookmarks.toolbar.showArchived")}
               aria-label={showArchived ? translate($languageStore, "bookmarks.toolbar.showActive") : translate($languageStore, "bookmarks.toolbar.showArchived")}
-              on:click={() => showArchived = !showArchived}
+              onclick={() => showArchived = !showArchived}
             >
               <span class="toolbar-icon" aria-hidden="true">
                 {@html showArchived ? toolbarIcons.active : toolbarIcons.archive}
@@ -383,28 +415,14 @@
   <LoadingContainer {isLoading}>
     <div class="folders-list">
       {#if isEmptyState}
-        <section class="empty-state">
-          <div class="empty-state-eyebrow">{translate($languageStore, "bookmarks.emptyEyebrow")}</div>
-          <h3 class="empty-state-title">
-            {translate($languageStore, showArchived ? "bookmarks.emptyArchivedTitle" : "bookmarks.emptyTitle")}
-          </h3>
-          <p class="empty-state-description">
-            {translate($languageStore, showArchived ? "bookmarks.emptyArchivedDescription" : "bookmarks.emptyDescription")}
-          </p>
-          <div class="empty-state-actions">
-            {#if showArchived}
-              <Button
-                label={translate($languageStore, "bookmarks.emptyArchivedAction")}
-                theme="gold"
-                onClick={() => showArchived = false} />
-            {:else}
-              <Button
-                label={translate($languageStore, "bookmarks.toolbar.newFolderTitle")}
-                theme="gold"
-                onClick={createFolder} />
-            {/if}
-          </div>
-        </section>
+        <EmptyState
+          iconHtml={toolbarIcons.newFolder}
+          eyebrow={translate($languageStore, "bookmarks.emptyEyebrow")}
+          title={translate($languageStore, showArchived ? "bookmarks.emptyArchivedTitle" : "bookmarks.emptyTitle")}
+          description={translate($languageStore, showArchived ? "bookmarks.emptyArchivedDescription" : "bookmarks.emptyDescription")}
+          actionLabel={translate($languageStore, showArchived ? "bookmarks.emptyArchivedAction" : "bookmarks.toolbar.newFolderTitle")}
+          onAction={showArchived ? () => showArchived = false : createFolder}
+        />
       {:else}
         {#each displayedFolders as folder (folder.id)}
           <div class="folder-shell" animate:flip={{ duration: 180 }}>
@@ -630,50 +648,6 @@
     width: 100%;
     min-width: 0;
   }
-
-  .empty-state {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 8px;
-    margin: 4px;
-    padding: 16px 14px;
-    border: 1px dashed rgba($gold, 0.18);
-    border-radius: 8px;
-    background:
-      linear-gradient(180deg, rgba($gold, 0.05), rgba($gold, 0.015)),
-      rgba($black, 0.28);
-  }
-
-  .empty-state-eyebrow {
-    font-family: $primary-font;
-    font-size: 10px;
-    font-weight: 700;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: rgba($gold-alt, 0.82);
-  }
-
-  .empty-state-title {
-    margin: 0;
-    font-family: "Fontin", serif;
-    font-size: 18px;
-    line-height: 1.15;
-    color: rgba($white, 0.96);
-  }
-
-  .empty-state-description {
-    margin: 0;
-    font-size: 12px;
-    line-height: 1.5;
-    color: rgba($white, 0.74);
-  }
-
-  .empty-state-actions {
-    display: flex;
-    padding-top: 2px;
-  }
-
 
   .import-text-area {
       display: flex;

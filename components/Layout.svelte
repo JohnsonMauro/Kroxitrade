@@ -1,7 +1,8 @@
 <script lang="ts">
   import bookmarkIcon from "lucide-static/icons/bookmark.svg?raw";
   import clockIcon from "lucide-static/icons/history.svg?raw";
-  import infoIcon from "lucide-static/icons/info.svg?raw";
+import infoIcon from "lucide-static/icons/info.svg?raw";
+import beakerIcon from "lucide-static/icons/beaker.svg?raw";
   import layersIcon from "lucide-static/icons/layers-3.svg?raw";
   import settingsIcon from "lucide-static/icons/settings-2.svg?raw";
   import Header from "./Header.svelte";
@@ -9,8 +10,9 @@
   import BulkSellers from "./pages/BulkSellers.svelte";
   import History from "./pages/History.svelte";
   import OnboardingModal from "./OnboardingModal.svelte";
-  import Settings from "./pages/Settings.svelte";
-  import About from "./pages/About.svelte";
+import Settings from "./pages/Settings.svelte";
+import About from "./pages/About.svelte";
+import Experimental from "./pages/Experimental.svelte";
   import FinerFilters from "./FinerFilters.svelte";
   import WelcomeDialog from "./WelcomeDialog.svelte";
   import logoUrl from "~assets/logo.webp?inline";
@@ -18,9 +20,11 @@
   import { bookmarksService } from "../lib/services/bookmarks";
   import { languageStore, translate } from "../lib/services/i18n";
   import { settings } from "../lib/services/settings";
+  import { experimentalSettings } from "../lib/services/experimental";
   import { storageService } from "../lib/services/storage";
   import { tradeLocationService } from "../lib/services/trade-location";
   import { hasValidExtensionContext } from "../lib/utilities/extension-context";
+  import { normalizeIcon } from "../lib/utilities/icons";
   import type { BookmarksFolderStruct, BookmarksTradeStruct } from "../lib/types/bookmarks";
   import { onDestroy, onMount, tick } from "svelte";
   
@@ -30,16 +34,16 @@
   const ONBOARDING_FOLDER_ID_KEY = "layout-onboarding-folder-id";
   const VERSION_NOTICE_SEEN_KEY = "layout-version-notice-seen";
 
-  let currentPage: 'bookmarks' | 'bulk' | 'history' | 'about' | 'settings' = 'bookmarks';
-  let currentTradeVersion: "1" | "2" = tradeLocationService.current.version;
-  let isMinimized = false;
-  let isResizing = false;
+  let currentPage: 'bookmarks' | 'bulk' | 'history' | 'about' | 'settings' | 'experimental' = $state('bookmarks');
+  let currentTradeVersion: "1" | "2" = $state(tradeLocationService.current.version);
+  let isMinimized = $state(false);
+  let isResizing = $state(false);
   let liveSidebarWidth: number | null = null;
-  let loadedMinimizedStateKey: string | null = null;
-  let showOnboarding = false;
-  let showWelcome = false;
-  let welcomeLanguage = "en" as typeof $settings.language;
-  let onboardingHighlightedPage: 'bookmarks' | 'bulk' | 'history' | 'about' | 'settings' | null = null;
+  let loadedMinimizedStateKey: string | null = $state(null);
+  let showOnboarding = $state(false);
+  let showWelcome = $state(false);
+  let welcomeLanguage = $state("en" as typeof $settings.language);
+  let onboardingHighlightedPage: 'bookmarks' | 'bulk' | 'history' | 'about' | 'settings' | 'experimental' | null = $state(null);
   let onboardingCurrentStepId:
     | 'create-folder'
     | 'save-search'
@@ -52,13 +56,13 @@
     | 'settings-history'
     | 'settings-filters'
     | 'settings-bookmarks'
-    | null = null;
-  let onboardingTutorialFolderId: string | null = null;
-  let appVersion = hasValidExtensionContext()
+    | null = $state(null);
+  let onboardingTutorialFolderId: string | null = $state(null);
+  let appVersion = $state(hasValidExtensionContext()
     ? chrome.runtime.getManifest().version
-    : "dev";
-  let isDevBuild = import.meta.env.DEV;
-  let showVersionNotice = false;
+    : "dev");
+  let isDevBuild = $state(import.meta.env.DEV);
+  let showVersionNotice = $state(false);
 
   const MIN_SIDEBAR_WIDTH = 300;
   const MAX_SIDEBAR_WIDTH = 560;
@@ -69,23 +73,26 @@
 
   const getExpandedSidebarWidth = () => clampSidebarWidth($settings.sidebarWidth || 450);
   const getRenderedSidebarWidth = () => clampSidebarWidth(liveSidebarWidth ?? getExpandedSidebarWidth());
-  const normalizeNavIcon = (svg: string) =>
-    svg
-      .replace(/<svg\b([^>]*)>/, (_match, attrs) => {
-        const cleaned = attrs
-          .replace(/\s(width|height|stroke-width|class|aria-hidden)="[^"]*"/g, "")
-          .trim();
-        const nextAttrs = cleaned ? `${cleaned} ` : "";
-        return `<svg ${nextAttrs} viewBox="-2 -2 28 28" class="nav-svg" aria-hidden="true">`;
-      })
-      .replace(/stroke-width="[^"]*"/g, 'stroke-width="1.75"');
 
   const navIcons = {
-    bookmarks: normalizeNavIcon(bookmarkIcon),
-    bulk: normalizeNavIcon(layersIcon),
-    history: normalizeNavIcon(clockIcon),
-    settings: normalizeNavIcon(settingsIcon),
-    about: normalizeNavIcon(infoIcon)
+    bookmarks: normalizeIcon(bookmarkIcon, {
+      size: 14,
+      className: "nav-svg",
+      extraAttrs: 'aria-hidden="true"'
+    }),
+    bulk: normalizeIcon(layersIcon, { size: 14, className: "nav-svg", extraAttrs: 'aria-hidden="true"' }),
+    history: normalizeIcon(clockIcon, { size: 14, className: "nav-svg", extraAttrs: 'aria-hidden="true"' }),
+    settings: normalizeIcon(settingsIcon, {
+      size: 14,
+      className: "nav-svg",
+      extraAttrs: 'aria-hidden="true"'
+    }),
+    about: normalizeIcon(infoIcon, { size: 14, className: "nav-svg", extraAttrs: 'aria-hidden="true"' }),
+    experimental: normalizeIcon(beakerIcon, {
+      size: 14,
+      className: "nav-svg",
+      extraAttrs: 'aria-hidden="true"'
+    })
   };
 
   const getTutorialTradeStruct = (): BookmarksTradeStruct => {
@@ -199,6 +206,10 @@
     tradeLocationService.startPolling();
     const unsubscribeLocation = tradeLocationService.locationStore.subscribe((location) => {
       currentTradeVersion = location.version;
+      void settings.useVersion(location.version);
+      if (import.meta.env.DEV) {
+        experimentalSettings.useVersion(location.version);
+      }
     });
     welcomeLanguage = $settings.language;
     isDevBuild = import.meta.env.DEV;
@@ -227,6 +238,7 @@
 
     return () => {
       unsubscribeLocation();
+      tradeLocationService.stopPolling();
     };
   });
 
@@ -291,29 +303,38 @@
   };
 
   onDestroy(() => {
+    experimentalSettings.teardown();
     window.removeEventListener('mousemove', handleResizeMove);
     window.removeEventListener('mouseup', stopResize);
     window.removeEventListener('mouseleave', stopResize);
   });
 
-  $: if (!$settings.showBulkSellers && currentPage === 'bulk') {
-    currentPage = 'bookmarks';
-  }
+  $effect(() => {
+    if (!$settings.showBulkSellers && currentPage === 'bulk') {
+      currentPage = 'bookmarks';
+    }
+  });
 
-  $: if (!$settings.showHistory && currentPage === 'history') {
-    currentPage = 'bookmarks';
-  }
+  $effect(() => {
+    if (!$settings.showHistory && currentPage === 'history') {
+      currentPage = 'bookmarks';
+    }
+  });
 
-  $: currentLocation = tradeLocationService.locationStore;
-  $: minimizedStorageKey = `${MINIMIZED_STORAGE_KEY}-${$currentLocation.version}`;
-  $: if (minimizedStorageKey && loadedMinimizedStateKey !== minimizedStorageKey) {
-    loadMinimizedState(minimizedStorageKey);
-  }
-  $: if (loadedMinimizedStateKey === minimizedStorageKey) {
-    persistMinimizedState(minimizedStorageKey, isMinimized);
-  }
+  const currentLocation = tradeLocationService.locationStore;
+  let minimizedStorageKey = $derived(`${MINIMIZED_STORAGE_KEY}-${$currentLocation.version}`);
+  $effect(() => {
+    if (minimizedStorageKey && loadedMinimizedStateKey !== minimizedStorageKey) {
+      loadMinimizedState(minimizedStorageKey);
+    }
+  });
+  $effect(() => {
+    if (loadedMinimizedStateKey === minimizedStorageKey) {
+      persistMinimizedState(minimizedStorageKey, isMinimized);
+    }
+  });
 
-  $: {
+  $effect(() => {
     if (typeof document !== 'undefined') {
       const isRight = $settings.sidebarSide === 'right';
       
@@ -328,7 +349,7 @@
       document.body.classList.toggle('bt-is-resizing-sidebar', isResizing);
 
       const hosts = document.querySelectorAll('#kroxitrade-root');
-      hosts.forEach((h: any) => {
+      hosts.forEach((h: HTMLElement) => {
         h.classList.toggle('is-side-right', isRight);
         h.classList.toggle('is-side-left', !isRight);
         
@@ -341,7 +362,7 @@
         }
       });
     }
-  }
+  });
 </script>
 
 <div
@@ -355,7 +376,7 @@
       class="resize-handle"
       class:side-right={$settings.sidebarSide === 'right'}
       aria-label={translate($languageStore, "layout.resizeSidebar")}
-      on:mousedown={startResize}
+      onmousedown={startResize}
     ></button>
   {/if}
 
@@ -383,7 +404,7 @@
         type="button"
         class="version-notice__close"
         aria-label={translate($languageStore, "layout.versionNoticeClose")}
-        on:click={dismissVersionNotice}
+        onclick={dismissVersionNotice}
       >
         ×
       </button>
@@ -394,7 +415,7 @@
     <button 
         class="nav-item {currentPage === 'bookmarks' ? 'is-active' : ''} {showOnboarding && onboardingHighlightedPage === 'bookmarks' ? 'is-onboarding-focus' : ''}" 
         data-tutorial="nav-bookmarks"
-        on:click={() => currentPage = 'bookmarks'}
+        onclick={() => currentPage = 'bookmarks'}
     >
         <span class="nav-item__icon" aria-hidden="true">{@html navIcons.bookmarks}</span>
         <span class="nav-item__label">{translate($languageStore, "layout.nav.bookmarks")}</span>
@@ -403,7 +424,7 @@
     {#if $settings.showBulkSellers}
       <button 
           class="nav-item {currentPage === 'bulk' ? 'is-active' : ''} {showOnboarding && onboardingHighlightedPage === 'bulk' ? 'is-onboarding-focus' : ''}" 
-          on:click={() => currentPage = 'bulk'}
+          onclick={() => currentPage = 'bulk'}
       >
           <span class="nav-item__icon" aria-hidden="true">{@html navIcons.bulk}</span>
           <span class="nav-item__label">{translate($languageStore, "layout.nav.bulk")}</span>
@@ -414,7 +435,7 @@
       <button 
           class="nav-item {currentPage === 'history' ? 'is-active' : ''} {showOnboarding && onboardingHighlightedPage === 'history' ? 'is-onboarding-focus' : ''}" 
           data-tutorial="nav-history"
-          on:click={() => currentPage = 'history'}
+          onclick={() => currentPage = 'history'}
       >
           <span class="nav-item__icon" aria-hidden="true">{@html navIcons.history}</span>
           <span class="nav-item__label">{translate($languageStore, "layout.nav.history")}</span>
@@ -425,16 +446,27 @@
         data-tutorial="nav-settings"
         title={translate($languageStore, "layout.nav.settings")}
         aria-label={translate($languageStore, "layout.nav.settings")}
-        on:click={() => currentPage = 'settings'}
+        onclick={() => currentPage = 'settings'}
     >
         <span class="nav-item__icon" aria-hidden="true">{@html navIcons.settings}</span>
         <span class="nav-item__label">{translate($languageStore, "layout.nav.settings")}</span>
     </button>
+    {#if isDevBuild}
+      <button
+          class="nav-item {currentPage === 'experimental' ? 'is-active' : ''}"
+          title={translate($languageStore, "layout.nav.experimental")}
+          aria-label={translate($languageStore, "layout.nav.experimental")}
+          onclick={() => currentPage = 'experimental'}
+      >
+          <span class="nav-item__icon" aria-hidden="true">{@html navIcons.experimental}</span>
+          <span class="nav-item__label">{translate($languageStore, "layout.nav.experimental")}</span>
+      </button>
+    {/if}
     <button 
         class="nav-item nav-item--icon-only {currentPage === 'about' ? 'is-active' : ''} {showOnboarding && onboardingHighlightedPage === 'about' ? 'is-onboarding-focus' : ''}" 
         title={translate($languageStore, "layout.nav.about")}
         aria-label={translate($languageStore, "layout.nav.about")}
-        on:click={() => currentPage = 'about'}
+        onclick={() => currentPage = 'about'}
     >
         <span class="nav-item__icon" aria-hidden="true">{@html navIcons.about}</span>
     </button>
@@ -444,7 +476,7 @@
     {#each $flashMessages as flash (flash.id)}
       <button 
         class="flash flash-{flash.type}" 
-        on:click={() => flashMessages.remove(flash.id)}
+        onclick={() => flashMessages.remove(flash.id)}
         aria-label={translate($languageStore, "layout.removeAlert")}
       >
         {flash.message}
@@ -463,6 +495,8 @@
         <History />
     {:else if currentPage === 'settings'}
         <Settings onOpenTutorial={openOnboarding} />
+    {:else if currentPage === 'experimental' && isDevBuild}
+        <Experimental />
     {:else if currentPage === 'about'}
         <About />
     {/if}
@@ -475,7 +509,7 @@
   <OnboardingModal
     open={showOnboarding}
     showHistoryStep={$settings.showHistory}
-    showEquivalentStep={currentTradeVersion !== '2'}
+    showEquivalentStep={true}
     onClose={closeOnboarding}
     onStepChange={handleOnboardingStepChange} />
 
@@ -492,7 +526,7 @@
   <button 
     class="floating-restore-btn" 
     class:side-right={$settings.sidebarSide === 'right'}
-    on:click={toggleMinimize} 
+    onclick={toggleMinimize} 
     aria-label={translate($languageStore, "layout.restorePanel")}
   >
     <img src={logoUrl} alt="Logo" class="floater-logo" />

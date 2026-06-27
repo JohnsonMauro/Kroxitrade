@@ -9,6 +9,7 @@ export const englishTranslations: Record<string, TranslationValue> = {
     "layout.nav.bulk": "Bulk",
     "layout.nav.history": "History",
     "layout.nav.settings": "Settings",
+    "layout.nav.experimental": "Experimental",
     "layout.nav.about": "About",
     "layout.removeAlert": "Remove alert",
     "layout.resizeSidebar": "Resize sidebar",
@@ -187,6 +188,22 @@ export const englishTranslations: Record<string, TranslationValue> = {
     "settings.finerFiltersTitle": "Add To Filters",
     "settings.finerFiltersDescription":
       "Show or hide the Add to Filters panel at the bottom of the sidebar.",
+    "experimental.eyebrow": "Dev only",
+    "experimental.title": "Experimental",
+    "experimental.description":
+      "Temporary playground for features we are testing before they reach the main UI.",
+    "experimental.devOnlyTitle": "Development build only",
+    "experimental.devOnlyBody":
+      "This space only appears in development builds so we can try ideas without affecting production users.",
+    "experimental.resultActionsTitle": "Always show result actions",
+    "experimental.resultActionsBody":
+      "Keep Refresh, Copy Item, and Filter by Item Stats visible without hovering a result.",
+    "experimental.poe2CopyTitle": "Enable PoE2 Copy button",
+    "experimental.poe2CopyBody":
+      "Show PoE2's native Copy button and make it copy the item for Path of Building. It follows the same hover behavior as Refresh and Filter by Item Stats.",
+    "experimental.poe2CoeTitle": "Enable Craft of Exile button",
+    "experimental.poe2CoeBody":
+      "Add a CoE button to PoE1 and PoE2 results that copies the item in Craft of Exile's advanced import format.",
     "settings.hidden": "Hidden",
     "settings.visible": "Visible",
     "settings.on": "On",
@@ -203,6 +220,7 @@ export const englishTranslations: Record<string, TranslationValue> = {
     "settings.tradeActionsDescription":
       "Choose which saved-search actions stay visible outside the menu in both classic and compact layouts. If none are selected, only the three-dot menu is shown.",
     "settings.compactTradeActionToggle": "Complete / Pending",
+    "settings.saveFailed": "Could not save settings. Please try again.",
     "about.eyebrow": "About",
     "about.description":
       "Poe Trade Plus is a companion for Path of Exile Trade built to save searches, organize folders, track history, and keep recurring trade workflows fast, visual, and easy to manage inside the official site.",
@@ -218,6 +236,11 @@ export const englishTranslations: Record<string, TranslationValue> = {
     "bulk.findError": "Couldn't locate that listing in the current results.",
     "bulk.buyError": "Couldn't trigger the buy action for that listing.",
     "bulk.visited": "VISITED",
+    "bulk.emptyTitle": "No repeated sellers yet",
+    "bulk.refresh": "Refresh Results",
+    "bulk.listingFallback": ({ index }) => `Listing ${index}`,
+    "bulk.priceUnavailable": "Price unavailable",
+    "search.tradeFallback": "Trade",
     "bookmarks.newFolder": "New Folder",
     "bookmarks.folderCreated": "Folder created!",
     "bookmarks.folderDeleted": "Folder deleted!",
@@ -260,6 +283,7 @@ export const englishTranslations: Record<string, TranslationValue> = {
       "Save a file copy of your folders or restore one you exported earlier.",
     "bookmarks.saveFile": "Save File",
     "bookmarks.restoreFile": "Restore From File",
+    "bookmarks.folderCopyTitle": ({ title }) => `${title} (copy)`,
     "confirm.cancel": "Cancel",
     "confirm.delete": "Delete",
     "confirm.deleteFolderTitle": "Delete folder?",
@@ -271,8 +295,12 @@ export const englishTranslations: Record<string, TranslationValue> = {
     "history.clear": "Clear History",
     "history.cleared": "History cleared!",
     "history.empty": ({ version }) => `History is empty for PoE ${version}.`,
+    "history.emptyDescription":
+      "Recent trade searches will appear here once you open them from the official trade site.",
+    "history.untitledSearch": "Untitled Search",
     "history.today": "Today",
     "history.yesterday": "Yesterday",
+    "history.standardLeague": "Standard",
     "folder.metaSeparator": " • ",
     "folder.copiedTrade": ({ title }) => `Copied ${title} to clipboard`,
     "folder.copyTradeError": "Couldn't copy the trade URL.",
@@ -280,6 +308,7 @@ export const englishTranslations: Record<string, TranslationValue> = {
     "folder.invalidTradePage": "Not on a valid trade page",
     "folder.missingTradeType": "Missing trade type for the current search.",
     "folder.addedToFolder": ({ title }) => `Added "${title}" to folder`,
+    "folder.tradeFallback": "Trade",
     "folder.copiedFolder": "Folder data copied to clipboard!",
     "folder.copyFolderError": "Couldn't copy the folder data.",
     "folder.renamedFolder": ({ title }) => `Renamed folder to "${title}"`,

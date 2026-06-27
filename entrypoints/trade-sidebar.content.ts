@@ -4,21 +4,10 @@ import "~/lib/styles/enhancements.scss"
 import { mount, unmount } from "svelte"
 
 import App from "~/contents/index.svelte"
-
-const tradeMatches = [
-  "https://www.pathofexile.com/trade*",
-  "https://br.pathofexile.com/trade*",
-  "https://ru.pathofexile.com/trade*",
-  "https://th.pathofexile.com/trade*",
-  "https://de.pathofexile.com/trade*",
-  "https://fr.pathofexile.com/trade*",
-  "https://es.pathofexile.com/trade*",
-  "https://jp.pathofexile.com/trade*",
-  "https://poe2.kakaogames.com/trade*"
-]
+import { tradeHosts } from "~/lib/config/trade-hosts"
 
 export default defineContentScript({
-  matches: tradeMatches,
+  matches: tradeHosts,
 
   async main(ctx) {
     const ui = createIntegratedUi(ctx, {

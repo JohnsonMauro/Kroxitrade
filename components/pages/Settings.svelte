@@ -5,7 +5,9 @@
   import { itemResultsService } from "../../lib/services/item-results";
   import { settings, type BookmarkTradeActionId, type SidebarSide } from "../../lib/services/settings";
   import { tradeLocationService } from "../../lib/services/trade-location";
+  import { normalizeIcon } from "../../lib/utilities/icons";
   import Button from "../Button.svelte";
+  import ToggleRow from "../ToggleRow.svelte";
   import { onDestroy, onMount } from "svelte";
   import flagBR from "../../assets/BR.png?inline";
   import flagDE from "../../assets/DE.png?inline";
@@ -23,39 +25,31 @@
   import toggleIcon from "lucide-static/icons/check.svg?raw";
   import deleteIcon from "lucide-static/icons/trash-2.svg?raw";
 
-  export let onOpenTutorial: () => void = () => {};
+  interface Props {
+    onOpenTutorial?: () => void;
+  }
+
+  let { onOpenTutorial = () => {} }: Props = $props();
 
   const DEFAULT_SIDEBAR_WIDTH = 450;
-  const normalizeSettingsIcon = (svg: string) =>
-    svg.replace(/<svg\b([^>]*)>/, (_match, attrs) => {
-      const nextAttrs = attrs
-        .replace(/\sclass="[^"]*"/g, "")
-        .replace(/\swidth="[^"]*"/g, "")
-        .replace(/\sheight="[^"]*"/g, "")
-        .replace(/\sviewBox="[^"]*"/g, "")
-        .trim();
-
-      return `<svg ${nextAttrs} viewBox="-2 -2 28 28" class="settings-option-svg">`;
-    });
-
   const compactTradeActionOptions: Array<{ id: BookmarkTradeActionId; labelKey: string; icon: string }> = [
-    { id: "edit", labelKey: "folder.editSearchName", icon: normalizeSettingsIcon(editIcon) },
-    { id: "replace", labelKey: "folder.replaceCurrentSearch", icon: normalizeSettingsIcon(replaceIcon) },
-    { id: "copy", labelKey: "folder.copyUrl", icon: normalizeSettingsIcon(copyIcon) },
-    { id: "openLive", labelKey: "folder.openLiveSearch", icon: normalizeSettingsIcon(liveIcon) },
-    { id: "toggle", labelKey: "settings.compactTradeActionToggle", icon: normalizeSettingsIcon(toggleIcon) },
-    { id: "delete", labelKey: "folder.deleteTrade", icon: normalizeSettingsIcon(deleteIcon) }
+    { id: "edit", labelKey: "folder.editSearchName", icon: normalizeIcon(editIcon, { size: 15, className: "settings-option-svg" }) },
+    { id: "replace", labelKey: "folder.replaceCurrentSearch", icon: normalizeIcon(replaceIcon, { size: 15, className: "settings-option-svg" }) },
+    { id: "copy", labelKey: "folder.copyUrl", icon: normalizeIcon(copyIcon, { size: 15, className: "settings-option-svg" }) },
+    { id: "openLive", labelKey: "folder.openLiveSearch", icon: normalizeIcon(liveIcon, { size: 15, className: "settings-option-svg" }) },
+    { id: "toggle", labelKey: "settings.compactTradeActionToggle", icon: normalizeIcon(toggleIcon, { size: 15, className: "settings-option-svg" }) },
+    { id: "delete", labelKey: "folder.deleteTrade", icon: normalizeIcon(deleteIcon, { size: 15, className: "settings-option-svg" }) }
   ];
-  const languages: Array<{ code: AppLanguage; label: string; flag: string }> = [
-    { code: "en", label: "English", flag: flagGB },
-    { code: "es", label: "Español", flag: flagES },
-    { code: "pt", label: "Português", flag: flagBR },
-    { code: "ru", label: "Русский", flag: flagRU },
-    { code: "th", label: "ไทย", flag: flagTH },
-    { code: "de", label: "Deutsch", flag: flagDE },
-    { code: "fr", label: "Français", flag: flagFR },
-    { code: "ja", label: "日本語", flag: flagJP },
-    { code: "ko", label: "한국어", flag: flagKR }
+  const languages: Array<{ code: AppLanguage; label: string; flag: string; emoji: string }> = [
+    { code: "en", label: "English", flag: flagGB, emoji: "🇬🇧" },
+    { code: "es", label: "Español", flag: flagES, emoji: "🇪🇸" },
+    { code: "pt", label: "Português", flag: flagBR, emoji: "🇧🇷" },
+    { code: "ru", label: "Русский", flag: flagRU, emoji: "🇷🇺" },
+    { code: "th", label: "ไทย", flag: flagTH, emoji: "🇹🇭" },
+    { code: "de", label: "Deutsch", flag: flagDE, emoji: "🇩🇪" },
+    { code: "fr", label: "Français", flag: flagFR, emoji: "🇫🇷" },
+    { code: "ja", label: "日本語", flag: flagJP, emoji: "🇯🇵" },
+    { code: "ko", label: "한국어", flag: flagKR, emoji: "🇰🇷" }
   ];
 
   const localizedLanguageNames: Record<AppLanguage, Record<AppLanguage, string>> = {
@@ -70,17 +64,20 @@
     ko: { en: "영어", es: "스페인어", pt: "포르투갈어", ru: "러시아어", th: "태국어", de: "독일어", fr: "프랑스어", ja: "일본어", ko: "한국어" }
   };
 
-  let isLanguageMenuOpen = false;
-  let isRefreshingEquivalentRatios = false;
-  let languageSelectorEl: HTMLDivElement | null = null;
-  let currentTradeVersion: "1" | "2" = tradeLocationService.current.version;
+  let isLanguageMenuOpen = $state(false);
+  let isRefreshingEquivalentRatios = $state(false);
+  let languageSelectorEl: HTMLDivElement | null = $state(null);
 
   async function handleSideChange(side: SidebarSide) {
-    await settings.updateSide(side);
+    if (!(await settings.updateSide(side))) {
+      flashMessages.alert(translate($languageStore, "settings.saveFailed"));
+    }
   }
 
   async function handleEquivalentPricingChange(showEquivalentPricing: boolean) {
-    await settings.updateEquivalentPricingVisibility(showEquivalentPricing);
+    if (!(await settings.updateEquivalentPricingVisibility(showEquivalentPricing))) {
+      flashMessages.alert(translate($languageStore, "settings.saveFailed"));
+    }
   }
 
   async function handleEquivalentPricingRefresh() {
@@ -106,19 +103,27 @@
   }
 
   async function handleBulkSellersChange(showBulkSellers: boolean) {
-    await settings.updateBulkSellersVisibility(showBulkSellers);
+    if (!(await settings.updateBulkSellersVisibility(showBulkSellers))) {
+      flashMessages.alert(translate($languageStore, "settings.saveFailed"));
+    }
   }
 
   async function handleHistoryChange(showHistory: boolean) {
-    await settings.updateHistoryVisibility(showHistory);
+    if (!(await settings.updateHistoryVisibility(showHistory))) {
+      flashMessages.alert(translate($languageStore, "settings.saveFailed"));
+    }
   }
 
   async function handleFinerFiltersChange(showFinerFilters: boolean) {
-    await settings.updateFinerFiltersVisibility(showFinerFilters);
+    if (!(await settings.updateFinerFiltersVisibility(showFinerFilters))) {
+      flashMessages.alert(translate($languageStore, "settings.saveFailed"));
+    }
   }
 
   async function handleCompactActionsMenuChange(compactActionsMenu: boolean) {
-    await settings.updateCompactActionsMenu(compactActionsMenu);
+    if (!(await settings.updateCompactActionsMenu(compactActionsMenu))) {
+      flashMessages.alert(translate($languageStore, "settings.saveFailed"));
+    }
   }
 
   async function handleCompactTradeActionChange(actionId: BookmarkTradeActionId, checked: boolean) {
@@ -126,11 +131,15 @@
       ? [...$settings.compactBookmarkTradeActions, actionId]
       : $settings.compactBookmarkTradeActions.filter((id) => id !== actionId);
 
-    await settings.updateCompactBookmarkTradeActions(
+    const saved = await settings.updateCompactBookmarkTradeActions(
       compactTradeActionOptions
         .map((option) => option.id)
         .filter((id) => nextActions.includes(id))
     );
+
+    if (!saved) {
+      flashMessages.alert(translate($languageStore, "settings.saveFailed"));
+    }
   }
 
   function handleCompactTradeActionInput(event: Event, actionId: BookmarkTradeActionId) {
@@ -138,11 +147,15 @@
   }
 
   async function handleSidebarWidthReset() {
-    await settings.updateSidebarWidth(DEFAULT_SIDEBAR_WIDTH);
+    if (!(await settings.updateSidebarWidth(DEFAULT_SIDEBAR_WIDTH))) {
+      flashMessages.alert(translate($languageStore, "settings.saveFailed"));
+    }
   }
 
   async function handleLanguageChange(language: AppLanguage) {
-    await settings.updateLanguage(language);
+    if (!(await settings.updateLanguage(language))) {
+      flashMessages.alert(translate($languageStore, "settings.saveFailed"));
+    }
   }
 
   async function exportBookmarksBackup() {
@@ -209,16 +222,8 @@
 
   onMount(async () => {
     await settings.load();
-    currentTradeVersion = tradeLocationService.current.version;
-    const unsubscribeLocation = tradeLocationService.locationStore.subscribe((location) => {
-      currentTradeVersion = location.version;
-    });
     document.addEventListener("click", handleDocumentClick);
     document.addEventListener("keydown", handleDocumentKeydown);
-
-    return () => {
-      unsubscribeLocation();
-    };
   });
 
   onDestroy(() => {
@@ -226,9 +231,8 @@
     document.removeEventListener("keydown", handleDocumentKeydown);
   });
 
-  $: selectedLanguage =
-    languages.find((language) => language.code === $settings.language) ?? languages[0];
-  $: showEquivalentPricingSetting = currentTradeVersion !== "2";
+  let selectedLanguage =
+    $derived(languages.find((language) => language.code === $settings.language) ?? languages[0]);
 </script>
 
 <div class="settings-page">
@@ -244,16 +248,22 @@
           <img class="language-flag" src={selectedLanguage.flag} alt={selectedLanguage.label} />
         </div>
 
-        <div class="language-select-wrap">
+        <div class="language-select-wrap language-select-wrap--custom">
           <button
             type="button"
             class="language-select"
             aria-haspopup="listbox"
             aria-expanded={isLanguageMenuOpen}
-            on:click={toggleLanguageMenu}
+            onclick={toggleLanguageMenu}
           >
-            <span class="language-option__native">{selectedLanguage.label}</span>
-            <span class="language-option__translated">{getLocalizedLanguageName(selectedLanguage.code)}</span>
+            <span class="language-select__flag-wrap">
+              <img class="language-flag" src={selectedLanguage.flag} alt="" aria-hidden="true" />
+            </span>
+            <span class="language-select__copy">
+              <span class="language-option__native">{selectedLanguage.label}</span>
+              <span class="language-option__translated">{getLocalizedLanguageName(selectedLanguage.code)}</span>
+            </span>
+            <span class="language-select__chevron" aria-hidden="true">▾</span>
           </button>
 
           {#if isLanguageMenuOpen}
@@ -265,10 +275,10 @@
                   class:is-active={language.code === $settings.language}
                   role="option"
                   aria-selected={language.code === $settings.language}
-                  on:click={(event) => selectLanguage(event, language.code)}
+                  onclick={(event) => selectLanguage(event, language.code)}
                 >
                   <span class="language-menu__flag-wrap">
-                    <img class="language-flag" src={language.flag} alt={language.label} />
+                    <img class="language-flag" src={language.flag} alt="" aria-hidden="true" />
                   </span>
                   <span class="language-option__native">{language.label}</span>
                   <span class="language-option__translated">{getLocalizedLanguageName(language.code)}</span>
@@ -344,7 +354,7 @@
               <input
                 type="checkbox"
                 checked={$settings.compactBookmarkTradeActions.includes(option.id)}
-                on:change={(event) => handleCompactTradeActionInput(event, option.id)}
+                onchange={(event) => handleCompactTradeActionInput(event, option.id)}
                 aria-label={translate($languageStore, option.labelKey)}
               />
               <span class="compact-option__icon" aria-hidden="true">{@html option.icon}</span>
@@ -382,64 +392,46 @@
         <h3 class="section-title">{translate($languageStore, "settings.resultsTitle")}</h3>
       </div>
       <div class="settings-row-list">
-        {#if showEquivalentPricingSetting}
-          <div class="settings-row" data-tutorial="settings-equivalent">
-            <div class="settings-row__copy">
-              <div class="settings-row__title">{translate($languageStore, "settings.equivalentTitle")}</div>
-              <div class="settings-row__description">{translate($languageStore, "settings.equivalentDescription")}</div>
-              <div class="settings-row__hint settings-row__hint--actions">
-                <span>{translate($languageStore, "settings.equivalentSource")}</span>
-                <button
-                  type="button"
-                  class="mini-action"
-                  on:click={handleEquivalentPricingRefresh}
-                  disabled={isRefreshingEquivalentRatios}
-                >
-                  {translate(
-                    $languageStore,
-                    isRefreshingEquivalentRatios
-                      ? "settings.equivalentRefreshLoading"
-                      : "settings.equivalentRefresh"
-                  )}
-                </button>
-              </div>
+        <div class="settings-row" data-tutorial="settings-equivalent">
+          <div class="settings-row__copy">
+            <div class="settings-row__title">{translate($languageStore, "settings.equivalentTitle")}</div>
+            <div class="settings-row__description">{translate($languageStore, "settings.equivalentDescription")}</div>
+            <div class="settings-row__hint settings-row__hint--actions">
+              <span>{translate($languageStore, "settings.equivalentSource")}</span>
+              <button
+                type="button"
+                class="mini-action"
+                onclick={handleEquivalentPricingRefresh}
+                disabled={isRefreshingEquivalentRatios}
+              >
+                {translate(
+                  $languageStore,
+                  isRefreshingEquivalentRatios
+                    ? "settings.equivalentRefreshLoading"
+                    : "settings.equivalentRefresh"
+                )}
+              </button>
             </div>
-            <button
-              type="button"
-              class="toggle-row toggle-row--inline"
-              class:is-active={$settings.showEquivalentPricing}
-              role="switch"
-              aria-checked={$settings.showEquivalentPricing}
-              aria-label={translate($languageStore, "settings.equivalentTitle")}
-              on:click={() => handleEquivalentPricingChange(!$settings.showEquivalentPricing)}
-            >
-              <span class="toggle-switch">
-                <span class="toggle-switch__thumb"></span>
-              </span>
-              <span class="toggle-state">{toggleSwitchLabel($settings.showEquivalentPricing)}</span>
-            </button>
           </div>
-        {/if}
+          <ToggleRow
+            checked={$settings.showEquivalentPricing}
+            label={translate($languageStore, "settings.equivalentTitle")}
+            stateLabel={toggleSwitchLabel($settings.showEquivalentPricing)}
+            onToggle={() => handleEquivalentPricingChange(!$settings.showEquivalentPricing)}
+          />
+        </div>
 
         <div class="settings-row" data-tutorial="settings-bulk">
           <div class="settings-row__copy">
             <div class="settings-row__title">{translate($languageStore, "settings.bulkTitle")}</div>
             <div class="settings-row__description">{translate($languageStore, "settings.bulkDescription")}</div>
           </div>
-          <button
-            type="button"
-            class="toggle-row toggle-row--inline"
-            class:is-active={$settings.showBulkSellers}
-            role="switch"
-            aria-checked={$settings.showBulkSellers}
-            aria-label={translate($languageStore, "settings.bulkTitle")}
-            on:click={() => handleBulkSellersChange(!$settings.showBulkSellers)}
-          >
-            <span class="toggle-switch">
-              <span class="toggle-switch__thumb"></span>
-            </span>
-            <span class="toggle-state">{toggleSwitchLabel($settings.showBulkSellers)}</span>
-          </button>
+          <ToggleRow
+            checked={$settings.showBulkSellers}
+            label={translate($languageStore, "settings.bulkTitle")}
+            stateLabel={toggleSwitchLabel($settings.showBulkSellers)}
+            onToggle={() => handleBulkSellersChange(!$settings.showBulkSellers)}
+          />
         </div>
 
         <div class="settings-row" data-tutorial="settings-history">
@@ -447,20 +439,12 @@
             <div class="settings-row__title">{translate($languageStore, "settings.historyTitle")}</div>
             <div class="settings-row__description">{translate($languageStore, "settings.historyDescription")}</div>
           </div>
-          <button
-            type="button"
-            class="toggle-row toggle-row--inline"
-            class:is-active={$settings.showHistory}
-            role="switch"
-            aria-checked={$settings.showHistory}
-            aria-label={translate($languageStore, "settings.historyTitle")}
-            on:click={() => handleHistoryChange(!$settings.showHistory)}
-          >
-            <span class="toggle-switch">
-              <span class="toggle-switch__thumb"></span>
-            </span>
-            <span class="toggle-state">{toggleSwitchLabel($settings.showHistory)}</span>
-          </button>
+          <ToggleRow
+            checked={$settings.showHistory}
+            label={translate($languageStore, "settings.historyTitle")}
+            stateLabel={toggleSwitchLabel($settings.showHistory)}
+            onToggle={() => handleHistoryChange(!$settings.showHistory)}
+          />
         </div>
 
         <div class="settings-row" data-tutorial="settings-filters">
@@ -468,20 +452,12 @@
             <div class="settings-row__title">{translate($languageStore, "settings.finerFiltersTitle")}</div>
             <div class="settings-row__description">{translate($languageStore, "settings.finerFiltersDescription")}</div>
           </div>
-          <button
-            type="button"
-            class="toggle-row toggle-row--inline"
-            class:is-active={$settings.showFinerFilters}
-            role="switch"
-            aria-checked={$settings.showFinerFilters}
-            aria-label={translate($languageStore, "settings.finerFiltersTitle")}
-            on:click={() => handleFinerFiltersChange(!$settings.showFinerFilters)}
-          >
-            <span class="toggle-switch">
-              <span class="toggle-switch__thumb"></span>
-            </span>
-            <span class="toggle-state">{toggleSwitchLabel($settings.showFinerFilters)}</span>
-          </button>
+          <ToggleRow
+            checked={$settings.showFinerFilters}
+            label={translate($languageStore, "settings.finerFiltersTitle")}
+            stateLabel={toggleSwitchLabel($settings.showFinerFilters)}
+            onToggle={() => handleFinerFiltersChange(!$settings.showFinerFilters)}
+          />
         </div>
       </div>
     </section>
@@ -690,80 +666,6 @@
     margin-top: 14px;
   }
 
-  .toggle-row {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-    padding: 0;
-    border: none;
-    background: transparent;
-    cursor: pointer;
-
-    &:focus-visible {
-      .toggle-switch {
-        box-shadow:
-          0 0 0 1px rgba($gold, 0.28),
-          0 0 0 3px rgba($gold, 0.12);
-      }
-
-      .toggle-state {
-        color: $white;
-      }
-    }
-  }
-
-  .toggle-row--inline {
-    width: auto;
-    flex: 0 0 auto;
-  }
-
-  .toggle-switch {
-    position: relative;
-    width: 38px;
-    height: 20px;
-    border-radius: 999px;
-    background: rgba($blue, 0.4);
-    transition: background 0.16s ease, box-shadow 0.16s ease;
-    flex: 0 0 auto;
-  }
-
-  .toggle-row:hover .toggle-switch {
-    box-shadow: 0 0 0 1px rgba($blue, 0.2);
-  }
-
-  .toggle-row.is-active .toggle-switch {
-    background: rgba($gold, 0.5);
-  }
-
-  .toggle-switch__thumb {
-    position: absolute;
-    top: 2px;
-    left: 2px;
-    width: 16px;
-    height: 16px;
-    border-radius: 999px;
-    background: rgba($blue-alt, 0.95);
-    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.28);
-    transition: transform 0.16s ease, background 0.16s ease;
-  }
-
-  .toggle-state {
-    min-width: 28px;
-    color: rgba($white, 0.68);
-    font-family: $primary-font;
-    font-size: 10px;
-    font-weight: 600;
-    letter-spacing: 0.08em;
-    text-align: right;
-    text-transform: uppercase;
-  }
-
-  .toggle-row.is-active .toggle-switch__thumb {
-    transform: translateX(18px);
-    background: #f7d08a;
-  }
-
   :global(.side-btn) {
     flex: 1;
     min-width: 0;
@@ -816,9 +718,9 @@
 
   .language-select {
     min-width: 0;
-    justify-content: space-between;
+    justify-content: flex-start;
     gap: 10px;
-    padding: 0 34px 0 10px;
+    padding: 0 10px;
     cursor: pointer;
     background-color: rgba($white, 0.03);
     font-family: $primary-font;
@@ -826,6 +728,7 @@
     font-weight: 600;
     letter-spacing: 0.05em;
     text-transform: uppercase;
+
     &:focus-visible {
       border-color: rgba($gold, 0.45);
       background: rgba($gold, 0.08);
@@ -834,13 +737,25 @@
     }
   }
 
-  .language-select-wrap::after {
-    content: "▾";
-    position: absolute;
-    right: 12px;
-    top: 50%;
-    transform: translateY(-50%);
-    pointer-events: none;
+  .language-select__flag-wrap {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 auto;
+  }
+
+  .language-select__copy {
+    display: flex;
+    min-width: 0;
+    flex: 1 1 auto;
+    align-items: baseline;
+    gap: 8px;
+    justify-content: space-between;
+  }
+
+  .language-select__chevron {
+    flex: 0 0 auto;
+    margin-left: auto;
     color: rgba($gold, 0.72);
     font-size: 11px;
   }
@@ -1019,15 +934,10 @@
       align-items: stretch;
     }
 
-    .toggle-row--inline {
-      width: 100%;
-    }
   }
 
   @media (prefers-reduced-motion: reduce) {
     .settings-page,
-    .toggle-switch,
-    .toggle-switch__thumb,
     .language-select,
     .language-menu__item,
     .compact-option {

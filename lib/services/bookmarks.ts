@@ -2,6 +2,8 @@ import { Base64 } from "js-base64";
 import { writable } from "svelte/store";
 import { uniqueId } from "../utilities/unique-id";
 import { storageService } from "./storage";
+import { get } from "svelte/store";
+import { languageStore, translate } from "./i18n";
 import type { 
   BookmarksFolderStruct, 
   BookmarksTradeStruct, 
@@ -240,10 +242,11 @@ export class BookmarksService {
 
   async duplicateFolder(folder: BookmarksFolderStruct) {
     if (!folder.id) throw new Error("Cannot duplicate a folder without an id");
+    const language = get(languageStore);
     const newFolder = {
       ...folder,
       id: undefined,
-      title: `${folder.title} (copy)`
+      title: translate(language, "bookmarks.folderCopyTitle", { title: folder.title })
     };
     const newFolderId = await this.persistFolder(newFolder);
     const trades = await this.fetchTradesByFolderId(folder.id);

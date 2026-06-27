@@ -45,6 +45,7 @@ export const japaneseTranslations: Record<string, TranslationValue> = {
   "settings.compactTradeActionsDescription":
     "コンパクトモードで表示したままにする保存済み検索の操作を選択します。何も選ばない場合は3点メニューのみ表示されます。すべて、または1つを除いて選択した場合は、すべての操作が表示されます。",
   "settings.compactTradeActionToggle": "完了 / 保留",
+  "settings.saveFailed": "設定を保存できませんでした。もう一度お試しください。",
   "about.eyebrow": "概要",
   "about.description":
     "Poe Trade Plus は Path of Exile Trade 用の補助ツールで、検索の保存、フォルダー整理、履歴管理を行い、繰り返し使うトレード作業を公式サイト上で素早く見やすく簡単に管理できるようにします。",
@@ -58,6 +59,8 @@ export const japaneseTranslations: Record<string, TranslationValue> = {
   "bulk.findError": "現在の結果内でこの出品を見つけられませんでした。",
   "bulk.buyError": "この出品の購入操作を実行できませんでした。",
   "bulk.visited": "訪問済み",
+  "bulk.emptyTitle": "重複した売り手はまだありません",
+  "bulk.refresh": "結果を更新",
   "bookmarks.newFolder": "新しいフォルダー",
   "bookmarks.folderCreated": "フォルダーを作成しました！",
   "bookmarks.folderDeleted": "フォルダーを削除しました！",
@@ -80,7 +83,20 @@ export const japaneseTranslations: Record<string, TranslationValue> = {
   "bookmarks.toolbar.archive": "アーカイブ",
   "bookmarks.toolbar.showActive": "アクティブを表示",
   "bookmarks.toolbar.showArchived": "アーカイブを表示",
+  "bookmarks.importTitle": "フォルダーをインポート",
+  "bookmarks.importDescription":
+    "エクスポートしたフォルダーテキストを下に貼り付け、保存済みブックマークフォルダーとして復元します。",
   "bookmarks.importPlaceholder": "ここにフォルダーテキストを貼り付け...",
+  "bookmarks.importHint":
+    "以前エクスポートしたフォルダーの完全な文字列を使用してください。",
+  "bookmarks.emptyEyebrow": "ブックマーク",
+  "bookmarks.emptyTitle": "最初のフォルダーを作成",
+  "bookmarks.emptyDescription":
+    "よく使うトレード検索をフォルダーに保存して、あとですばやく開けるようにします。",
+  "bookmarks.emptyArchivedTitle": "アーカイブ済みフォルダーはまだありません",
+  "bookmarks.emptyArchivedDescription":
+    "アクティブなブックマークリストから移動したフォルダーがここに表示されます。",
+  "bookmarks.emptyArchivedAction": "アクティブなフォルダーを表示",
   "bookmarks.confirmImport": "インポートを確認",
   "bookmarks.backupTitle": "バックアップと復元",
   "bookmarks.saveFile": "ファイルを保存",
@@ -88,8 +104,11 @@ export const japaneseTranslations: Record<string, TranslationValue> = {
   "history.clear": "履歴を消去",
   "history.cleared": "履歴を消去しました！",
   "history.empty": ({ version }) => `PoE ${version} の履歴は空です。`,
+  "history.emptyDescription":
+    "公式トレードサイトで開いた最近の検索がここに表示されます。",
   "history.today": "今日",
   "history.yesterday": "昨日",
+  "history.standardLeague": "Standard",
   "folder.copiedTrade": ({ title }) =>
     `${title} をクリップボードにコピーしました`,
   "folder.copyTradeError": "トレード URL をコピーできませんでした。",

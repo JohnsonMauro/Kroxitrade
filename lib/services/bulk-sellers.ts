@@ -1,4 +1,7 @@
 import { writable } from "svelte/store";
+import { get } from "svelte/store";
+import { languageStore, translate } from "./i18n";
+import { escapeCssAttributeValue } from "../utilities/css";
 import type { BulkSellerGroup, BulkSellerItem } from "../types/bulk-sellers";
 
 const RESULT_SELECTOR = ".search-results .row, .search-results .result-item, .result-list .row, .result-list .result-item, .row[data-id]";
@@ -12,6 +15,7 @@ export class BulkSellersService {
   private initialized = false;
   private readonly postSearchRefreshDelays = [80, 220, 500, 900];
   private searchRefreshTimers: number[] = [];
+  private readonly rowCache = new Map<string, { signature: string; item: BulkSellerItem | null }>();
   private readonly handleDocumentClick = (event: MouseEvent) => {
     const target = event.target as Element | null;
     if (!target?.closest(".btn.search-btn")) return;
@@ -39,6 +43,7 @@ export class BulkSellersService {
     this.searchRefreshTimers = [];
     this.observer?.disconnect();
     this.observer = null;
+    this.rowCache.clear();
     document.removeEventListener("click", this.handleDocumentClick, true);
     this.groupsStore.set([]);
   }
@@ -110,6 +115,24 @@ export class BulkSellersService {
   }
 
   private extractItem(row: HTMLElement, index: number): BulkSellerItem | null {
+    const rowId = row.dataset.id || row.getAttribute("data-id");
+    if (rowId) {
+      const signature = this.getRowSignature(row);
+      const cached = this.rowCache.get(rowId);
+
+      if (cached && cached.signature === signature) {
+        return cached.item;
+      }
+
+      const item = this.extractItemUncached(row, index);
+      this.rowCache.set(rowId, { signature, item });
+      return item;
+    }
+
+    return this.extractItemUncached(row, index);
+  }
+
+  private extractItemUncached(row: HTMLElement, index: number): BulkSellerItem | null {
     const seller = this.extractSeller(row);
     const itemName = this.extractItemName(row);
     const priceLabel = this.extractPriceLabel(row);
@@ -121,8 +144,9 @@ export class BulkSellersService {
       return null;
     }
 
-    const safeItemName = itemName || `Listing ${index + 1}`;
-    const safePriceLabel = priceLabel || "Price unavailable";
+    const language = get(languageStore);
+    const safeItemName = itemName || translate(language, "bulk.listingFallback", { index: index + 1 });
+    const safePriceLabel = priceLabel || translate(language, "bulk.priceUnavailable");
     const itemKey = `${safeItemName}__${safePriceLabel}`;
 
     return {
@@ -138,6 +162,14 @@ export class BulkSellersService {
     };
   }
 
+  private getRowSignature(row: HTMLElement) {
+    return [
+      row.dataset.id || row.getAttribute("data-id") || "",
+      row.className,
+      row.textContent?.replace(/\s+/g, " ").trim() || ""
+    ].join("::");
+  }
+
   private extractSeller(row: HTMLElement) {
     const sellerLink = row.querySelector<HTMLElement>("span.profile-link a, .profile-link a, .account-name");
     return sellerLink?.textContent?.trim() || null;
@@ -149,6 +181,8 @@ export class BulkSellersService {
       ".itemHeader .name",
       ".itemHeader .title",
       ".itemHeader .lprice .title",
+      ".item-popup__header",
+      ".item-popup__header-line",
       ".details .itemName",
       ".details .title",
       ".details h3",
@@ -221,7 +255,8 @@ export class BulkSellersService {
   }
 
   private resolveRow(itemId: string) {
-    const direct = document.querySelector<HTMLElement>(`.row[data-id="${itemId}"], .result-item[data-id="${itemId}"]`);
+    const escapedItemId = escapeCssAttributeValue(itemId);
+    const direct = document.querySelector<HTMLElement>(`.row[data-id="${escapedItemId}"], .result-item[data-id="${escapedItemId}"]`);
     if (direct) return direct;
 
     const currentGroups = this.snapshot();

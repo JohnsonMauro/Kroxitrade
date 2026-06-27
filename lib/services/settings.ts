@@ -1,53 +1,167 @@
 import { writable } from 'svelte/store';
 import { setLanguage, type AppLanguage } from './i18n';
 import { storageService } from './storage';
+import type { TradeSiteVersion } from '../types/trade-location';
 
 export type SidebarSide = 'left' | 'right';
 export type BookmarkTradeActionId = 'edit' | 'replace' | 'copy' | 'openLive' | 'toggle' | 'delete';
 
-export interface AppSettings {
-  sidebarSide: SidebarSide;
+export interface VersionSettings {
   showEquivalentPricing: boolean;
   showBulkSellers: boolean;
   showHistory: boolean;
   showFinerFilters: boolean;
-  sidebarWidth: number;
-  language: AppLanguage;
   compactActionsMenu: boolean;
   compactBookmarkTradeActions: BookmarkTradeActionId[];
 }
 
-const DEFAULT_SETTINGS: AppSettings = {
+export interface AppSettings extends VersionSettings {
+  sidebarSide: SidebarSide;
+  sidebarWidth: number;
+  language: AppLanguage;
+}
+
+interface GlobalSettings {
+  sidebarSide: SidebarSide;
+  sidebarWidth: number;
+  language: AppLanguage;
+}
+
+const GLOBAL_SETTINGS_KEY = 'app-settings';
+const versionSettingsKey = (version: TradeSiteVersion) => `app-settings-poe${version}`;
+
+const DEFAULT_GLOBAL_SETTINGS: GlobalSettings = {
   sidebarSide: 'right',
+  sidebarWidth: 360,
+  language: 'en'
+};
+
+const DEFAULT_VERSION_SETTINGS: VersionSettings = {
   showEquivalentPricing: false,
   showBulkSellers: false,
   showHistory: true,
   showFinerFilters: true,
-  sidebarWidth: 360,
-  language: 'en',
   compactActionsMenu: false,
   compactBookmarkTradeActions: []
 };
 
-let currentSettings: AppSettings = DEFAULT_SETTINGS;
+let activeVersion: TradeSiteVersion = inferTradeVersion();
+let globalSettings: GlobalSettings = DEFAULT_GLOBAL_SETTINGS;
+let activeVersionSettings: VersionSettings = DEFAULT_VERSION_SETTINGS;
+const versionCache = new Map<TradeSiteVersion, VersionSettings>();
+let currentSettings: AppSettings = combineSettings(globalSettings, activeVersionSettings);
+let versionRequestId = 0;
 
-const { subscribe, set, update } = writable<AppSettings>(DEFAULT_SETTINGS);
+const { subscribe, set } = writable<AppSettings>(currentSettings);
 
-subscribe((value) => {
-  currentSettings = value;
-});
-
-// Load settings from storage
-async function load() {
-  const settings = await storageService.getValue<AppSettings>('app-settings');
-  const next = { ...DEFAULT_SETTINGS, ...settings };
-  set(next);
-  setLanguage(next.language);
+function inferTradeVersion(): TradeSiteVersion {
+  if (typeof window === 'undefined') return '1';
+  return window.location.pathname.startsWith('/trade2/') ? '2' : '1';
 }
 
-// Persist settings to storage
-async function save(newSettings: AppSettings) {
-  await storageService.setValue('app-settings', newSettings);
+function combineSettings(global: GlobalSettings, version: VersionSettings): AppSettings {
+  return {
+    ...global,
+    ...version,
+    compactBookmarkTradeActions: [...version.compactBookmarkTradeActions]
+  };
+}
+
+function normalizeVersionSettings(value?: Partial<VersionSettings> | null): VersionSettings {
+  const defined = Object.fromEntries(
+    Object.entries(value ?? {}).filter(([, setting]) => setting !== undefined)
+  ) as Partial<VersionSettings>;
+
+  return {
+    ...DEFAULT_VERSION_SETTINGS,
+    ...defined,
+    compactBookmarkTradeActions: [...(defined.compactBookmarkTradeActions ?? [])]
+  };
+}
+
+function legacyVersionSettings(value?: Partial<AppSettings> | null): VersionSettings {
+  return normalizeVersionSettings({
+    showEquivalentPricing: value?.showEquivalentPricing,
+    showBulkSellers: value?.showBulkSellers,
+    showHistory: value?.showHistory,
+    showFinerFilters: value?.showFinerFilters,
+    compactActionsMenu: value?.compactActionsMenu,
+    compactBookmarkTradeActions: value?.compactBookmarkTradeActions
+  });
+}
+
+function publish() {
+  currentSettings = combineSettings(globalSettings, activeVersionSettings);
+  set(currentSettings);
+}
+
+async function loadVersionSettings(
+  version: TradeSiteVersion,
+  legacy?: Partial<AppSettings> | null
+) {
+  const cached = versionCache.get(version);
+  if (cached) return cached;
+
+  const stored = await storageService.getValue<VersionSettings>(versionSettingsKey(version));
+  const next = stored
+    ? normalizeVersionSettings(stored)
+    : legacyVersionSettings(legacy);
+
+  versionCache.set(version, next);
+
+  if (!stored) {
+    await storageService.setValue(versionSettingsKey(version), next);
+  }
+
+  return next;
+}
+
+async function load() {
+  const requestedVersion = inferTradeVersion();
+  const requestId = ++versionRequestId;
+  const stored = await storageService.getValue<Partial<AppSettings>>(GLOBAL_SETTINGS_KEY);
+
+  globalSettings = {
+    sidebarSide: stored?.sidebarSide ?? DEFAULT_GLOBAL_SETTINGS.sidebarSide,
+    sidebarWidth: stored?.sidebarWidth ?? DEFAULT_GLOBAL_SETTINGS.sidebarWidth,
+    language: stored?.language ?? DEFAULT_GLOBAL_SETTINGS.language
+  };
+
+  const [poe1Settings, poe2Settings] = await Promise.all([
+    loadVersionSettings('1', stored),
+    loadVersionSettings('2', stored)
+  ]);
+  if (requestId !== versionRequestId) return;
+
+  activeVersion = requestedVersion;
+  activeVersionSettings = requestedVersion === '2' ? poe2Settings : poe1Settings;
+  publish();
+  setLanguage(globalSettings.language);
+}
+
+async function saveGlobal(next: GlobalSettings) {
+  const saved = await storageService.setValue(GLOBAL_SETTINGS_KEY, next);
+  if (!saved) {
+    console.warn("[Poe Trade Plus] Failed to persist global settings");
+    return false;
+  }
+
+  globalSettings = next;
+  publish();
+  return true;
+}
+
+async function saveVersion(next: VersionSettings) {
+  const saved = await storageService.setValue(versionSettingsKey(activeVersion), next);
+  if (!saved) {
+    console.warn(`[Poe Trade Plus] Failed to persist PoE ${activeVersion} settings`);
+    return false;
+  }
+
+  activeVersionSettings = next;
+  versionCache.set(activeVersion, next);
+  publish();
+  return true;
 }
 
 export const settings = {
@@ -56,68 +170,50 @@ export const settings = {
   getCurrent() {
     return currentSettings;
   },
-  async updateSide(side: SidebarSide) {
-    update(s => {
-      const next = { ...s, sidebarSide: side };
-      save(next);
-      return next;
-    });
+  getActiveVersion() {
+    return activeVersion;
+  },
+  async useVersion(version: TradeSiteVersion) {
+    if (activeVersion === version) return;
+
+    const requestId = ++versionRequestId;
+    const next = await loadVersionSettings(version);
+    if (requestId !== versionRequestId) return;
+
+    activeVersion = version;
+    activeVersionSettings = next;
+    publish();
+  },
+  async updateSide(sidebarSide: SidebarSide) {
+    return saveGlobal({ ...globalSettings, sidebarSide });
   },
   async updateEquivalentPricingVisibility(showEquivalentPricing: boolean) {
-    update(s => {
-      const next = { ...s, showEquivalentPricing };
-      save(next);
-      return next;
-    });
+    return saveVersion({ ...activeVersionSettings, showEquivalentPricing });
   },
   async updateBulkSellersVisibility(showBulkSellers: boolean) {
-    update(s => {
-      const next = { ...s, showBulkSellers };
-      save(next);
-      return next;
-    });
+    return saveVersion({ ...activeVersionSettings, showBulkSellers });
   },
   async updateHistoryVisibility(showHistory: boolean) {
-    update(s => {
-      const next = { ...s, showHistory };
-      save(next);
-      return next;
-    });
+    return saveVersion({ ...activeVersionSettings, showHistory });
   },
   async updateFinerFiltersVisibility(showFinerFilters: boolean) {
-    update(s => {
-      const next = { ...s, showFinerFilters };
-      save(next);
-      return next;
-    });
+    return saveVersion({ ...activeVersionSettings, showFinerFilters });
   },
   async updateSidebarWidth(sidebarWidth: number) {
-    update(s => {
-      const next = { ...s, sidebarWidth };
-      save(next);
-      return next;
-    });
+    return saveGlobal({ ...globalSettings, sidebarWidth });
   },
   async updateLanguage(language: AppLanguage) {
-    update(s => {
-      const next = { ...s, language };
-      save(next);
-      setLanguage(language);
-      return next;
-    });
+    const saved = await saveGlobal({ ...globalSettings, language });
+    if (saved) setLanguage(language);
+    return saved;
   },
   async updateCompactActionsMenu(compactActionsMenu: boolean) {
-    update(s => {
-      const next = { ...s, compactActionsMenu };
-      save(next);
-      return next;
-    });
+    return saveVersion({ ...activeVersionSettings, compactActionsMenu });
   },
   async updateCompactBookmarkTradeActions(compactBookmarkTradeActions: BookmarkTradeActionId[]) {
-    update(s => {
-      const next = { ...s, compactBookmarkTradeActions };
-      save(next);
-      return next;
+    return saveVersion({
+      ...activeVersionSettings,
+      compactBookmarkTradeActions: [...compactBookmarkTradeActions]
     });
   }
 };

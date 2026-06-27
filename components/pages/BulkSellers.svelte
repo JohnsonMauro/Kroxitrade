@@ -1,19 +1,26 @@
 <script lang="ts">
   import { onMount } from "svelte";
+  import layersIcon from "lucide-static/icons/layers-3.svg?raw";
   import { storageService } from "../../lib/services/storage";
   import { bulkSellersService } from "../../lib/services/bulk-sellers";
   import { flashMessages } from "../../lib/services/flash";
   import { languageStore, translate } from "../../lib/services/i18n";
-  import AlertMessage from "../AlertMessage.svelte";
   import Button from "../Button.svelte";
+  import EmptyState from "../EmptyState.svelte";
 
   const COLLAPSED_STORAGE_KEY = "bulk-sellers-collapsed";
   const VISITED_STORAGE_KEY = "bulk-sellers-visited";
   const bulkSellers = bulkSellersService;
-  let collapsedSellers: string[] = [];
-  let collapsedLookup = new Set<string>();
-  let visitedItems = new Set<string>();
-  let visitedSellerLookup = new Set<string>();
+  let collapsedSellers: string[] = $state([]);
+  let collapsedLookup = $derived(new Set(collapsedSellers));
+  let visitedItems = $state(new Set<string>());
+  let visitedSellerLookup = $derived(
+    new Set(
+      $bulkSellers
+        .filter((group) => group.items.some((item) => visitedItems.has(item.id)))
+        .map((group) => group.seller)
+    )
+  );
 
   const loadCollapsedState = () => {
     const raw = storageService.getLocalValue(COLLAPSED_STORAGE_KEY);
@@ -59,9 +66,7 @@
     loadVisitedState();
   });
 
-  $: collapsedLookup = new Set(collapsedSellers);
-
-  $: {
+  $effect(() => {
     const validSellers = new Set($bulkSellers.map((group) => group.seller));
     const nextCollapsed = collapsedSellers.filter((seller) => validSellers.has(seller));
 
@@ -69,11 +74,7 @@
       collapsedSellers = nextCollapsed;
       persistCollapsedState();
     }
-  }
-
-  $: visitedSellerLookup = new Set(
-    $bulkSellers.filter((group) => group.items.some((item) => visitedItems.has(item.id))).map((group) => group.seller)
-  );
+  });
 
   const findItem = (id: string) => {
     if (!bulkSellersService.find(id)) {
@@ -89,6 +90,13 @@
       persistVisitedState();
     }
   };
+
+  const refreshBulkSellers = () => {
+    bulkSellersService.refresh();
+  };
+
+  const getSellerPanelId = (seller: string) =>
+    `bulk-seller-items-${seller.toLowerCase().replace(/[^a-z0-9_-]+/g, "-")}`;
 </script>
 
 <div class="bulk-sellers-page">
@@ -96,9 +104,14 @@
     <div class="groups">
       {#each $bulkSellers as group (group.seller)}
         <section class="seller-group">
-          <button class="seller-header" type="button" on:click={() => toggleSeller(group.seller)}>
+          <button
+            class="seller-header"
+            type="button"
+            aria-expanded={!collapsedLookup.has(group.seller)}
+            aria-controls={getSellerPanelId(group.seller)}
+            onclick={() => toggleSeller(group.seller)}>
             <div class="seller-header-main">
-              <span class="seller-caret">{collapsedLookup.has(group.seller) ? "▶" : "▼"}</span>
+              <span class="seller-caret" aria-hidden="true">{collapsedLookup.has(group.seller) ? "▶" : "▼"}</span>
               <div class="seller-name">{group.seller}</div>
             </div>
             <div class="seller-header-meta">
@@ -110,7 +123,7 @@
           </button>
 
           {#if !collapsedLookup.has(group.seller)}
-            <div class="seller-items">
+            <div class="seller-items" id={getSellerPanelId(group.seller)}>
               {#each group.items as item (item.id)}
                 <div class="seller-item" title={item.itemName} aria-label={`${item.itemName}: ${item.priceLabel}`}>
                   <div class="item-price">
@@ -146,9 +159,13 @@
       {/each}
     </div>
   {:else}
-    <AlertMessage
-      type="warning"
-      message={translate($languageStore, "bulk.empty")}
+    <EmptyState
+      iconHtml={layersIcon}
+      eyebrow={translate($languageStore, "layout.nav.bulk")}
+      title={translate($languageStore, "bulk.emptyTitle")}
+      description={translate($languageStore, "bulk.empty")}
+      actionLabel={translate($languageStore, "bulk.refresh")}
+      onAction={refreshBulkSellers}
     />
   {/if}
 </div>

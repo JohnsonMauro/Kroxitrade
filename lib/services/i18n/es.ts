@@ -9,6 +9,7 @@ export const spanishTranslations: Record<string, TranslationValue> = {
     "layout.nav.bulk": "Bulk",
     "layout.nav.history": "Historial",
     "layout.nav.settings": "Ajustes",
+    "layout.nav.experimental": "Experimental",
     "layout.nav.about": "Acerca de",
     "layout.removeAlert": "Quitar alerta",
     "layout.resizeSidebar": "Redimensionar panel",
@@ -187,6 +188,22 @@ export const spanishTranslations: Record<string, TranslationValue> = {
     "settings.finerFiltersTitle": "Agregar a filtros",
     "settings.finerFiltersDescription":
       "Mostrá u ocultá el panel Agregar a filtros al final de la barra lateral.",
+    "experimental.eyebrow": "Solo dev",
+    "experimental.title": "Experimental",
+    "experimental.description":
+      "Espacio temporal para probar ideas antes de que lleguen a la interfaz principal.",
+    "experimental.devOnlyTitle": "Solo en build de desarrollo",
+    "experimental.devOnlyBody":
+      "Este espacio aparece únicamente en builds de desarrollo para probar cosas sin afectar a usuarios de producción.",
+    "experimental.resultActionsTitle": "Mostrar siempre acciones del resultado",
+    "experimental.resultActionsBody":
+      "Mantiene visibles Actualizar, Copiar objeto y Filtrar por estadísticas sin hacer hover.",
+    "experimental.poe2CopyTitle": "Habilitar botón Copy de PoE2",
+    "experimental.poe2CopyBody":
+      "Muestra el botón Copy nativo de PoE2 y copia el objeto para Path of Building. Usa el mismo comportamiento hover que Refresh y Filter by Item Stats.",
+    "experimental.poe2CoeTitle": "Habilitar botón Craft of Exile",
+    "experimental.poe2CoeBody":
+      "Agrega un botón CoE a los resultados de PoE1 y PoE2 que copia el objeto en el formato avanzado de importación.",
     "settings.hidden": "Oculto",
     "settings.visible": "Visible",
     "settings.on": "On",
@@ -203,6 +220,7 @@ export const spanishTranslations: Record<string, TranslationValue> = {
     "settings.tradeActionsDescription":
       "Elegí qué acciones de cada búsqueda guardada quedan visibles fuera del menú tanto en el diseño clásico como en el compacto. Si no seleccionás ninguna, solo se ven los tres puntos.",
     "settings.compactTradeActionToggle": "Completar / Pendiente",
+    "settings.saveFailed": "No se pudieron guardar los ajustes. Probá de nuevo.",
     "about.eyebrow": "Acerca de",
     "about.description":
       "Poe Trade Plus es un complemento para Path of Exile Trade creado para guardar búsquedas, organizar carpetas, seguir el historial y hacer que los flujos de trade repetidos sean rápidos, visuales y fáciles de manejar dentro del sitio oficial.",
@@ -220,6 +238,11 @@ export const spanishTranslations: Record<string, TranslationValue> = {
     "bulk.buyError":
       "No se pudo ejecutar la acción de compra para esa publicación.",
     "bulk.visited": "VISITADO",
+    "bulk.emptyTitle": "Todavía no hay vendedores repetidos",
+    "bulk.refresh": "Actualizar resultados",
+    "bulk.listingFallback": ({ index }) => `Listado ${index}`,
+    "bulk.priceUnavailable": "Precio no disponible",
+    "search.tradeFallback": "Trade",
     "bookmarks.newFolder": "Nueva carpeta",
     "bookmarks.folderCreated": "¡Carpeta creada!",
     "bookmarks.folderDeleted": "¡Carpeta eliminada!",
@@ -261,6 +284,7 @@ export const spanishTranslations: Record<string, TranslationValue> = {
       "Guardá una copia en archivo de tus carpetas o restaurá una que hayas exportado antes.",
     "bookmarks.saveFile": "Guardar archivo",
     "bookmarks.restoreFile": "Restaurar desde archivo",
+    "bookmarks.folderCopyTitle": ({ title }) => `${title} (copia)`,
     "confirm.cancel": "Cancelar",
     "confirm.delete": "Eliminar",
     "confirm.deleteFolderTitle": "¿Eliminar carpeta?",
@@ -273,8 +297,12 @@ export const spanishTranslations: Record<string, TranslationValue> = {
     "history.cleared": "¡Historial borrado!",
     "history.empty": ({ version }) =>
       `El historial está vacío para PoE ${version}.`,
+    "history.emptyDescription":
+      "Tus búsquedas recientes de trade van a aparecer acá cuando las abras desde el sitio oficial.",
+    "history.untitledSearch": "Búsqueda sin título",
     "history.today": "Hoy",
     "history.yesterday": "Ayer",
+    "history.standardLeague": "Standard",
     "folder.metaSeparator": " • ",
     "folder.copiedTrade": ({ title }) => `Se copió ${title} al portapapeles`,
     "folder.copyTradeError": "No se pudo copiar la URL del trade.",
@@ -283,6 +311,7 @@ export const spanishTranslations: Record<string, TranslationValue> = {
     "folder.missingTradeType":
       "Falta el tipo de trade para la búsqueda actual.",
     "folder.addedToFolder": ({ title }) => `Se agregó "${title}" a la carpeta`,
+    "folder.tradeFallback": "Trade",
     "folder.copiedFolder":
       "¡Los datos de la carpeta se copiaron al portapapeles!",
     "folder.copyFolderError": "No se pudieron copiar los datos de la carpeta.",

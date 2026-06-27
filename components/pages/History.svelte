@@ -1,15 +1,16 @@
 <script lang="ts">
   import { onMount } from "svelte";
+  import historyIcon from "lucide-static/icons/history.svg?raw";
   import { tradeLocationService } from "../../lib/services/trade-location";
   import { openUrlInActiveTab } from "../../lib/services/active-trade-tab";
   import { flashMessages } from "../../lib/services/flash";
   import { languageStore, translate } from "../../lib/services/i18n";
-  import { getTradeUrl } from "../../lib/utilities/trade-url";
+  import { resolveTradeUrl } from "../../lib/utilities/trade-url";
   import type { TradeLocationHistoryStruct, TradeSiteVersion } from "../../lib/types/trade-location";
 
   import Button from "../Button.svelte";
+  import EmptyState from "../EmptyState.svelte";
   import LoadingContainer from "../LoadingContainer.svelte";
-  import AlertMessage from "../AlertMessage.svelte";
 
   type HistoryGroup = {
     id: string;
@@ -19,9 +20,9 @@
 
   let historyEntries: TradeLocationHistoryStruct[] = [];
   let filteredEntries: TradeLocationHistoryStruct[] = [];
-  let groupedEntries: HistoryGroup[] = [];
-  let isLoading = false;
-  let currentVersion: TradeSiteVersion = "1";
+  let groupedEntries: HistoryGroup[] = $state([]);
+  let isLoading = $state(false);
+  let currentVersion: TradeSiteVersion = $state("1");
 
   onMount(() => {
     const unsubscribeLocation = tradeLocationService.locationStore.subscribe((loc) => {
@@ -40,9 +41,12 @@
 
   const fetchHistory = async () => {
     isLoading = true;
-    historyEntries = await tradeLocationService.fetchHistory();
-    applyFilter();
-    isLoading = false;
+    try {
+      historyEntries = await tradeLocationService.fetchHistory();
+      applyFilter();
+    } finally {
+      isLoading = false;
+    }
   };
 
   const startOfDay = (date: Date) => new Date(date.getFullYear(), date.getMonth(), date.getDate());
@@ -99,6 +103,20 @@
     return rtf.format(diffDays, "day");
   };
 
+  const formatLeagueLabel = (league: string | null) => {
+    if (!league) {
+      return translate($languageStore, "history.standardLeague");
+    }
+
+    const lastSegment = league.split("/").pop() || league;
+
+    try {
+      return decodeURIComponent(lastSegment);
+    } catch {
+      return lastSegment.replace(/\+/g, " ");
+    }
+  };
+
   const groupHistoryEntries = (entries: TradeLocationHistoryStruct[]) => {
     const groups: HistoryGroup[] = [];
     const groupedMap = new Map<string, HistoryGroup>();
@@ -142,9 +160,7 @@
   };
 
   const openHistoryEntry = async (entry: TradeLocationHistoryStruct) => {
-    await openUrlInActiveTab(
-      getTradeUrl(entry.version, entry.type, entry.slug, entry.league || "Standard")
-    );
+    await openUrlInActiveTab(resolveTradeUrl(entry));
   };
 </script>
 
@@ -163,21 +179,25 @@
                 <li class="history-item">
                   <a
                     class="history-link"
-                    href={getTradeUrl(entry.version, entry.type, entry.slug, entry.league || "Standard")}
-                    on:click|preventDefault={() => void openHistoryEntry(entry)}
+                    href={resolveTradeUrl(entry)}
+                    onclick={(event) => {
+                      event.preventDefault();
+                      void openHistoryEntry(entry);
+                    }}
                   >
                     <div class="history-link__topline">
-                      <span class="history-league">{entry.league}</span>
+                      <span class="history-league">{formatLeagueLabel(entry.league)}</span>
                       <span class="history-relative">{formatRelativeTime(entry.createdAt)}</span>
                     </div>
 
-                    <div class="history-title">{entry.title}</div>
-
-                    <div class="history-meta">
-                      {new Intl.DateTimeFormat($languageStore, {
-                        dateStyle: "medium",
-                        timeStyle: "short"
-                      }).format(new Date(entry.createdAt))}
+                    <div class="history-link__headline">
+                      <div class="history-title">{entry.title}</div>
+                      <div class="history-meta">
+                        {new Intl.DateTimeFormat($languageStore, {
+                          dateStyle: "medium",
+                          timeStyle: "short"
+                        }).format(new Date(entry.createdAt))}
+                      </div>
                     </div>
                   </a>
                 </li>
@@ -195,7 +215,12 @@
         class="clear-button"
       />
     {:else}
-      <AlertMessage type="warning" message={translate($languageStore, "history.empty", { version: currentVersion })} />
+      <EmptyState
+        iconHtml={historyIcon}
+        eyebrow={translate($languageStore, "layout.nav.history")}
+        title={translate($languageStore, "history.empty", { version: currentVersion })}
+        description={translate($languageStore, "history.emptyDescription")}
+      />
     {/if}
   </LoadingContainer>
 </div>
@@ -303,7 +328,16 @@
     white-space: nowrap;
   }
 
+  .history-link__headline {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 12px;
+    min-width: 0;
+  }
+
   .history-title {
+    flex: 1;
     font-size: 13px;
     font-weight: 700;
     line-height: 1.45;
@@ -312,10 +346,11 @@
   }
 
   .history-meta {
-    margin-top: 6px;
+    flex: 0 0 auto;
     font-size: 11px;
     color: rgba($white, 0.62);
     overflow-wrap: anywhere;
+    white-space: nowrap;
   }
 
   :global(.clear-button) {

@@ -1,5 +1,7 @@
 import { writable } from "svelte/store";
+import { get } from "svelte/store";
 import { getActiveTradeTab } from "./active-trade-tab";
+import { languageStore, translate } from "./i18n";
 import { storageService } from "./storage";
 import { searchPanelService } from "./search-panel";
 import { hasValidExtensionContext, isExtensionContextInvalidatedError } from "../utilities/extension-context";
@@ -68,6 +70,13 @@ export class TradeLocationService {
       this.blurHandler = () => this.pausePolling();
       window.addEventListener("blur", this.blurHandler);
     }
+  }
+
+  stopPolling() {
+    this.pausePolling();
+    this.removeWindowListeners();
+    this.removeActiveTabListeners();
+    this.activeTabTrackingStarted = false;
   }
 
   private resumePolling(interval: number) {
@@ -139,6 +148,48 @@ export class TradeLocationService {
     }
   }
 
+  private removeWindowListeners() {
+    if (this.focusHandler) {
+      window.removeEventListener("focus", this.focusHandler);
+      this.focusHandler = null;
+    }
+
+    if (this.blurHandler) {
+      window.removeEventListener("blur", this.blurHandler);
+      this.blurHandler = null;
+    }
+  }
+
+  private removeActiveTabListeners() {
+    if (!hasValidExtensionContext() || !chrome.tabs) {
+      this.activeTabUpdatedHandler = null;
+      this.activeTabActivatedHandler = null;
+      return;
+    }
+
+    if (this.activeTabUpdatedHandler && chrome.tabs.onUpdated) {
+      try {
+        chrome.tabs.onUpdated.removeListener(this.activeTabUpdatedHandler);
+      } catch (error) {
+        if (!isExtensionContextInvalidatedError(error)) {
+          console.warn("[Poe Trade Plus] Failed to unsubscribe from tab updates", error);
+        }
+      }
+      this.activeTabUpdatedHandler = null;
+    }
+
+    if (this.activeTabActivatedHandler && chrome.tabs.onActivated) {
+      try {
+        chrome.tabs.onActivated.removeListener(this.activeTabActivatedHandler);
+      } catch (error) {
+        if (!isExtensionContextInvalidatedError(error)) {
+          console.warn("[Poe Trade Plus] Failed to unsubscribe from tab activation", error);
+        }
+      }
+      this.activeTabActivatedHandler = null;
+    }
+  }
+
   onChange(callback: (event: { old: ExactTradeLocationStruct, new: ExactTradeLocationStruct }) => void) {
     this.listeners.add(callback);
     return () => this.listeners.delete(callback);
@@ -168,7 +219,7 @@ export class TradeLocationService {
     history.unshift({
       ...location,
       id: uniqueId(),
-      title: searchPanelService.recommendTitle() || "Untitled Search",
+      title: searchPanelService.recommendTitle() || translate(get(languageStore), "history.untitledSearch"),
       createdAt: new Date().toISOString()
     } as TradeLocationHistoryStruct);
 
