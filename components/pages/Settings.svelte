@@ -118,6 +118,12 @@
     }
   }
 
+  async function handleMagebloodLegacyDescriptionsChange(showMagebloodLegacyDescriptions: boolean) {
+    if (!(await settings.updateMagebloodLegacyDescriptionsVisibility(showMagebloodLegacyDescriptions))) {
+      flashMessages.alert(translate($languageStore, "settings.saveFailed"));
+    }
+  }
+
   async function handleEquivalentPricingRefresh() {
     if (isRefreshingEquivalentRatios) return;
 
@@ -690,6 +696,19 @@
               label={translate($languageStore, "settings.poe2CopyTitle")}
               stateLabel={toggleSwitchLabel($poe2CopyButtonSetting)}
               onToggle={() => handlePoe2CopyVisibleChange(!$poe2CopyButtonSetting)}
+            />
+          </div>
+
+          <div class="settings-row">
+            <div class="settings-row__copy">
+              <div class="settings-row__title">{translate($languageStore, "settings.magebloodLegacyTitle")}</div>
+              <div class="settings-row__description">{translate($languageStore, "settings.magebloodLegacyBody")}</div>
+            </div>
+            <ToggleRow
+              checked={$settings.showMagebloodLegacyDescriptions}
+              label={translate($languageStore, "settings.magebloodLegacyTitle")}
+              stateLabel={toggleSwitchLabel($settings.showMagebloodLegacyDescriptions)}
+              onToggle={() => handleMagebloodLegacyDescriptionsChange(!$settings.showMagebloodLegacyDescriptions)}
             />
           </div>
         {/if}

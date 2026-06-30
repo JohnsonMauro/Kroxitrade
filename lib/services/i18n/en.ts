@@ -296,6 +296,9 @@ export const englishTranslations: Record<string, TranslationValue> = {
     "settings.coeTitle": "Craft of Exile button",
     "settings.coeBody":
       "Add a CoE button to PoE1 and PoE2 results that copies the item in Craft of Exile's advanced import format.",
+    "settings.magebloodLegacyTitle": "Mageblood Legacy descriptions",
+    "settings.magebloodLegacyBody":
+      "Show the hidden effects for PoE2 Mageblood Legacy mods below the item, like notable descriptions.",
     "about.eyebrow": "About",
     "about.description":
       "Poe Trade Plus is a companion for Path of Exile Trade built to save searches, organize folders, track history, and keep recurring trade workflows fast, visual, and easy to manage inside the official site.",
