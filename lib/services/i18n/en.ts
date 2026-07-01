@@ -181,6 +181,21 @@ export const englishTranslations: Record<string, TranslationValue> = {
     "popup.trade2": "PoE 2 Trade",
     "popup.trade1Alt": "Path of Exile Trade",
     "popup.trade2Alt": "Path of Exile 2 Trade",
+    "popup.shortcuts": "External links",
+    "popup.shortcuts.poe1": "Path of Exile 1",
+    "popup.shortcuts.poe2": "Path of Exile 2",
+    "popup.shortcuts.shared": "Shared tools",
+    "popup.hideShortcuts": "Hide",
+    "popup.showShortcuts": "Show",
+    "popup.shortcut.poeRegex": "Path of Regex",
+    "popup.shortcut.poe2Regex": "Path of Regex 2",
+    "popup.shortcut.poeWiki": "Path of Exile Wiki",
+    "popup.shortcut.poe2Wiki": "Path of Exile 2 Wiki",
+    "popup.shortcut.craftPoe1": "Craft of Exile PoE 1",
+    "popup.shortcut.craftPoe2": "Craft of Exile PoE 2",
+    "popup.shortcut.poedb": "PoEDb",
+    "popup.shortcut.poe2db": "PoE2Db",
+    "popup.shortcut.ninja": "poe.ninja",
     "settings.sidebarTitle": "Sidebar Position",
     "settings.sidebarDescription":
       "Choose which side of the screen you want the Poe Trade Plus panel to appear.",
@@ -283,6 +298,9 @@ export const englishTranslations: Record<string, TranslationValue> = {
     "settings.coeTitle": "Craft of Exile button",
     "settings.coeBody":
       "Add a CoE button to PoE1 and PoE2 results that copies the item in Craft of Exile's advanced import format.",
+    "settings.magebloodLegacyTitle": "Mageblood Legacy descriptions",
+    "settings.magebloodLegacyBody":
+      "Show the hidden effects for PoE2 Mageblood Legacy mods below the item, like notable descriptions.",
     "about.eyebrow": "About",
     "about.description":
       "Poe Trade Plus is a companion for Path of Exile Trade built to save searches, organize folders, track history, and keep recurring trade workflows fast, visual, and easy to manage inside the official site.",
@@ -346,7 +364,7 @@ export const englishTranslations: Record<string, TranslationValue> = {
     "bookmarks.confirmImport": "Confirm Import",
     "bookmarks.backupTitle": "Backup & Restore",
     "bookmarks.backupDescription":
-      "Save a file copy of your folders or restore one you exported earlier.",
+      "Save a portable file with folders, saved searches, settings, and extension preferences, or restore one you exported earlier.",
     "bookmarks.saveFile": "Save File",
     "bookmarks.restoreFile": "Restore From File",
     "bookmarks.folderCopyTitle": ({ title }) => `${title} (copy)`,

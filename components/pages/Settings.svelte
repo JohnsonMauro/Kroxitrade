@@ -1,6 +1,7 @@
 <script lang="ts">
   import { languageStore, translate, type AppLanguage } from "../../lib/services/i18n";
   import { bookmarksService } from "../../lib/services/bookmarks";
+  import { extensionBackupService } from "../../lib/services/extension-backup";
   import {
     coeButtonSetting,
     experimentalSettings,
@@ -118,6 +119,12 @@
     }
   }
 
+  async function handleMagebloodLegacyDescriptionsChange(showMagebloodLegacyDescriptions: boolean) {
+    if (!(await settings.updateMagebloodLegacyDescriptionsVisibility(showMagebloodLegacyDescriptions))) {
+      flashMessages.alert(translate($languageStore, "settings.saveFailed"));
+    }
+  }
+
   async function handleEquivalentPricingRefresh() {
     if (isRefreshingEquivalentRatios) return;
 
@@ -205,12 +212,12 @@
   }
 
   async function exportBookmarksBackup() {
-    const dataString = await bookmarksService.generateBackupDataString();
-    const blob = new Blob([dataString], { type: "text/plain" });
+    const dataString = await extensionBackupService.generateBackupDataString();
+    const blob = new Blob([dataString], { type: "application/json" });
     const url = URL.createObjectURL(blob);
     const anchor = document.createElement("a");
     anchor.href = url;
-    anchor.download = `poe-trade-plus-backup-${new Date().toISOString().slice(0, 10)}.txt`;
+    anchor.download = `poe-trade-plus-backup-${new Date().toISOString().slice(0, 10)}.json`;
     anchor.click();
     URL.revokeObjectURL(url);
     flashMessages.success(translate($languageStore, "bookmarks.exported"));
@@ -224,8 +231,10 @@
     const reader = new FileReader();
     reader.onload = async (loadEvent) => {
       const dataString = loadEvent.target?.result as string;
-      const success = await bookmarksService.restoreFromDataString(dataString);
+      const success = await extensionBackupService.restoreFromDataString(dataString);
       if (success) {
+        await settings.load();
+        experimentalSettings.useVersion(tradeLocationService.current.version);
         flashMessages.success(translate($languageStore, "bookmarks.restored"));
       } else {
         flashMessages.alert(translate($languageStore, "bookmarks.restoreFailed"));
@@ -626,7 +635,7 @@
           theme="gold"
           class="side-btn"
           onFileChange={restoreBookmarksBackup}
-          fileAccept=".txt"
+          fileAccept=".json,.txt"
         />
       </div>
       </section>
@@ -690,6 +699,19 @@
               label={translate($languageStore, "settings.poe2CopyTitle")}
               stateLabel={toggleSwitchLabel($poe2CopyButtonSetting)}
               onToggle={() => handlePoe2CopyVisibleChange(!$poe2CopyButtonSetting)}
+            />
+          </div>
+
+          <div class="settings-row">
+            <div class="settings-row__copy">
+              <div class="settings-row__title">{translate($languageStore, "settings.magebloodLegacyTitle")}</div>
+              <div class="settings-row__description">{translate($languageStore, "settings.magebloodLegacyBody")}</div>
+            </div>
+            <ToggleRow
+              checked={$settings.showMagebloodLegacyDescriptions}
+              label={translate($languageStore, "settings.magebloodLegacyTitle")}
+              stateLabel={toggleSwitchLabel($settings.showMagebloodLegacyDescriptions)}
+              onToggle={() => handleMagebloodLegacyDescriptionsChange(!$settings.showMagebloodLegacyDescriptions)}
             />
           </div>
         {/if}

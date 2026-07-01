@@ -15,6 +15,21 @@ export const russianTranslations: Record<string, TranslationValue> = {
   "layout.restorePanel": "Восстановить панель Poe Trade Plus",
   "popup.description":
     "Poe Trade Plus добавляет более быструю навигацию и торговые инструменты на официальный сайт торговли Path of Exile.",
+  "popup.shortcuts": "Внешние ссылки",
+  "popup.shortcuts.poe1": "Path of Exile 1",
+  "popup.shortcuts.poe2": "Path of Exile 2",
+  "popup.shortcuts.shared": "Общие инструменты",
+  "popup.hideShortcuts": "Скрыть",
+  "popup.showShortcuts": "Показать",
+  "popup.shortcut.poeRegex": "Path of Regex",
+  "popup.shortcut.poe2Regex": "Path of Regex 2",
+  "popup.shortcut.poeWiki": "Path of Exile Wiki",
+  "popup.shortcut.poe2Wiki": "Path of Exile 2 Wiki",
+  "popup.shortcut.craftPoe1": "Craft of Exile PoE 1",
+  "popup.shortcut.craftPoe2": "Craft of Exile PoE 2",
+  "popup.shortcut.poedb": "PoEDb",
+  "popup.shortcut.poe2db": "PoE2Db",
+  "popup.shortcut.ninja": "poe.ninja",
   "settings.sidebarTitle": "Положение панели",
   "settings.sidebarDescription":
     "Выберите сторону экрана, где будет отображаться панель Poe Trade Plus.",
@@ -29,6 +44,9 @@ export const russianTranslations: Record<string, TranslationValue> = {
   "settings.equivalentTitle": "Эквивалентная цена",
   "settings.equivalentDescription":
     "Показывать или скрывать дополнительную строку с эквивалентом в chaos/divine в результатах.",
+  "settings.magebloodLegacyTitle": "Описания Legacy для Mageblood",
+  "settings.magebloodLegacyBody":
+    "Показывать скрытые эффекты PoE2 Legacy-модов Mageblood под предметом, как описания notable-пассивов.",
   "settings.hidden": "Скрыто",
   "settings.visible": "Показано",
   "settings.compactActionsTitle": "Макет закладок",
@@ -93,6 +111,8 @@ export const russianTranslations: Record<string, TranslationValue> = {
   "bookmarks.emptyArchivedAction": "Показать активные папки",
   "bookmarks.confirmImport": "Подтвердить импорт",
   "bookmarks.backupTitle": "Резервное копирование и восстановление",
+  "bookmarks.backupDescription":
+    "Сохраните переносимый файл с папками, сохранёнными поисками, настройками и параметрами расширения или восстановите прежний файл.",
   "bookmarks.saveFile": "Сохранить файл",
   "bookmarks.restoreFile": "Восстановить из файла",
   "history.clear": "Очистить историю",

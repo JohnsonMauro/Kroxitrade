@@ -17,6 +17,21 @@ export const portugueseTranslations: Record<string, TranslationValue> = {
   "layout.restorePanel": "Restaurar painel do Poe Trade Plus",
   "popup.description":
     "Poe Trade Plus adiciona navegação mais rápida e ferramentas de trade ao site oficial de Path of Exile.",
+  "popup.shortcuts": "Links externos",
+  "popup.shortcuts.poe1": "Path of Exile 1",
+  "popup.shortcuts.poe2": "Path of Exile 2",
+  "popup.shortcuts.shared": "Ferramentas compartilhadas",
+  "popup.hideShortcuts": "Ocultar",
+  "popup.showShortcuts": "Mostrar",
+  "popup.shortcut.poeRegex": "Path of Regex",
+  "popup.shortcut.poe2Regex": "Path of Regex 2",
+  "popup.shortcut.poeWiki": "Path of Exile Wiki",
+  "popup.shortcut.poe2Wiki": "Path of Exile 2 Wiki",
+  "popup.shortcut.craftPoe1": "Craft of Exile PoE 1",
+  "popup.shortcut.craftPoe2": "Craft of Exile PoE 2",
+  "popup.shortcut.poedb": "PoEDb",
+  "popup.shortcut.poe2db": "PoE2Db",
+  "popup.shortcut.ninja": "poe.ninja",
   "settings.sidebarTitle": "Posição do painel",
   "settings.sidebarDescription":
     "Escolha em qual lado da tela o painel do Poe Trade Plus deve aparecer.",
@@ -32,6 +47,9 @@ export const portugueseTranslations: Record<string, TranslationValue> = {
   "settings.equivalentTitle": "Preço equivalente",
   "settings.equivalentDescription":
     "Mostre ou oculte a linha extra com equivalência em chaos/divine nos resultados.",
+  "settings.magebloodLegacyTitle": "Descrições Legacy de Mageblood",
+  "settings.magebloodLegacyBody":
+    "Mostre os efeitos ocultos dos mods Legacy de Mageblood do PoE2 abaixo do item, como descrições de notáveis.",
   "settings.hidden": "Oculto",
   "settings.visible": "Visível",
   "settings.compactActionsTitle": "Layout de favoritos",
@@ -98,6 +116,8 @@ export const portugueseTranslations: Record<string, TranslationValue> = {
   "bookmarks.emptyArchivedAction": "Mostrar pastas ativas",
   "bookmarks.confirmImport": "Confirmar importação",
   "bookmarks.backupTitle": "Backup e restauração",
+  "bookmarks.backupDescription":
+    "Salve um arquivo portátil com pastas, buscas salvas, configurações e preferências da extensão, ou restaure um arquivo anterior.",
   "bookmarks.saveFile": "Salvar arquivo",
   "bookmarks.restoreFile": "Restaurar do arquivo",
   "history.clear": "Limpar histórico",

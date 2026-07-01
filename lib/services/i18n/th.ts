@@ -15,6 +15,21 @@ export const thaiTranslations: Record<string, TranslationValue> = {
   "layout.restorePanel": "กู้คืนแผง Poe Trade Plus",
   "popup.description":
     "Poe Trade Plus เพิ่มการนำทางที่เร็วขึ้นและเครื่องมือช่วยเทรดให้กับเว็บไซต์ซื้อขาย Path of Exile อย่างเป็นทางการ",
+  "popup.shortcuts": "ลิงก์ภายนอก",
+  "popup.shortcuts.poe1": "Path of Exile 1",
+  "popup.shortcuts.poe2": "Path of Exile 2",
+  "popup.shortcuts.shared": "เครื่องมือร่วม",
+  "popup.hideShortcuts": "ซ่อน",
+  "popup.showShortcuts": "แสดง",
+  "popup.shortcut.poeRegex": "Path of Regex",
+  "popup.shortcut.poe2Regex": "Path of Regex 2",
+  "popup.shortcut.poeWiki": "Path of Exile Wiki",
+  "popup.shortcut.poe2Wiki": "Path of Exile 2 Wiki",
+  "popup.shortcut.craftPoe1": "Craft of Exile PoE 1",
+  "popup.shortcut.craftPoe2": "Craft of Exile PoE 2",
+  "popup.shortcut.poedb": "PoEDb",
+  "popup.shortcut.poe2db": "PoE2Db",
+  "popup.shortcut.ninja": "poe.ninja",
   "settings.sidebarTitle": "ตำแหน่งแผง",
   "settings.sidebarDescription":
     "เลือกด้านของหน้าจอที่ต้องการให้แผง Poe Trade Plus แสดงผล",
@@ -29,6 +44,9 @@ export const thaiTranslations: Record<string, TranslationValue> = {
   "settings.equivalentTitle": "ราคาเทียบเท่า",
   "settings.equivalentDescription":
     "แสดงหรือซ่อนบรรทัดเพิ่มเติมที่แสดงราคาเทียบเท่า chaos/divine ในผลลัพธ์",
+  "settings.magebloodLegacyTitle": "คำอธิบาย Mageblood Legacy",
+  "settings.magebloodLegacyBody":
+    "แสดงเอฟเฟกต์ที่ซ่อนอยู่ของม็อด PoE2 Mageblood Legacy ใต้ไอเทม เหมือนคำอธิบาย notable",
   "settings.hidden": "ซ่อน",
   "settings.visible": "แสดง",
   "settings.compactActionsTitle": "เลย์เอาต์บุ๊กมาร์ก",
@@ -93,6 +111,8 @@ export const thaiTranslations: Record<string, TranslationValue> = {
   "bookmarks.emptyArchivedAction": "แสดงโฟลเดอร์ที่ใช้งานอยู่",
   "bookmarks.confirmImport": "ยืนยันการนำเข้า",
   "bookmarks.backupTitle": "สำรองและกู้คืน",
+  "bookmarks.backupDescription":
+    "บันทึกไฟล์พกพาที่มีโฟลเดอร์ การค้นหาที่บันทึกไว้ การตั้งค่า และค่ากำหนดของส่วนขยาย หรือกู้คืนจากไฟล์เดิม",
   "bookmarks.saveFile": "บันทึกไฟล์",
   "bookmarks.restoreFile": "กู้คืนจากไฟล์",
   "history.clear": "ล้างประวัติ",

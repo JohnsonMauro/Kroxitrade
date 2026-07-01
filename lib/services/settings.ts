@@ -9,6 +9,7 @@ export type QuickFiltersPlacement = 'page' | 'sidebar';
 
 export interface VersionSettings {
   showEquivalentPricing: boolean;
+  showMagebloodLegacyDescriptions: boolean;
   showBulkSellers: boolean;
   showHistory: boolean;
   showFinerFilters: boolean;
@@ -41,6 +42,7 @@ const DEFAULT_GLOBAL_SETTINGS: GlobalSettings = {
 
 const DEFAULT_VERSION_SETTINGS: VersionSettings = {
   showEquivalentPricing: false,
+  showMagebloodLegacyDescriptions: false,
   showBulkSellers: false,
   showHistory: true,
   showFinerFilters: true,
@@ -87,6 +89,7 @@ function normalizeVersionSettings(value?: Partial<VersionSettings> | null): Vers
 function legacyVersionSettings(value?: Partial<AppSettings> | null): VersionSettings {
   return normalizeVersionSettings({
     showEquivalentPricing: value?.showEquivalentPricing,
+    showMagebloodLegacyDescriptions: value?.showMagebloodLegacyDescriptions,
     showBulkSellers: value?.showBulkSellers,
     showHistory: value?.showHistory,
     showFinerFilters: value?.showFinerFilters,
@@ -216,6 +219,9 @@ export const settings = {
   },
   async updateEquivalentPricingVisibility(showEquivalentPricing: boolean) {
     return saveVersion({ ...activeVersionSettings, showEquivalentPricing });
+  },
+  async updateMagebloodLegacyDescriptionsVisibility(showMagebloodLegacyDescriptions: boolean) {
+    return saveVersion({ ...activeVersionSettings, showMagebloodLegacyDescriptions });
   },
   async updateBulkSellersVisibility(showBulkSellers: boolean) {
     return saveVersion({ ...activeVersionSettings, showBulkSellers });

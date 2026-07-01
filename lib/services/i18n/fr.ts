@@ -15,6 +15,21 @@ export const frenchTranslations: Record<string, TranslationValue> = {
   "layout.restorePanel": "Restaurer le panneau Poe Trade Plus",
   "popup.description":
     "Poe Trade Plus ajoute une navigation plus rapide et des aides de trade au site officiel de Path of Exile.",
+  "popup.shortcuts": "Liens externes",
+  "popup.shortcuts.poe1": "Path of Exile 1",
+  "popup.shortcuts.poe2": "Path of Exile 2",
+  "popup.shortcuts.shared": "Outils partagés",
+  "popup.hideShortcuts": "Masquer",
+  "popup.showShortcuts": "Afficher",
+  "popup.shortcut.poeRegex": "Path of Regex",
+  "popup.shortcut.poe2Regex": "Path of Regex 2",
+  "popup.shortcut.poeWiki": "Path of Exile Wiki",
+  "popup.shortcut.poe2Wiki": "Path of Exile 2 Wiki",
+  "popup.shortcut.craftPoe1": "Craft of Exile PoE 1",
+  "popup.shortcut.craftPoe2": "Craft of Exile PoE 2",
+  "popup.shortcut.poedb": "PoEDb",
+  "popup.shortcut.poe2db": "PoE2Db",
+  "popup.shortcut.ninja": "poe.ninja",
   "settings.sidebarTitle": "Position du panneau",
   "settings.sidebarDescription":
     "Choisissez de quel côté de l’écran le panneau Poe Trade Plus doit apparaître.",
@@ -30,6 +45,9 @@ export const frenchTranslations: Record<string, TranslationValue> = {
   "settings.equivalentTitle": "Prix équivalent",
   "settings.equivalentDescription":
     "Afficher ou masquer la ligne supplémentaire avec l’équivalent chaos/divine dans les résultats.",
+  "settings.magebloodLegacyTitle": "Descriptions Legacy de Mageblood",
+  "settings.magebloodLegacyBody":
+    "Afficher les effets cachés des mods Legacy de Mageblood de PoE2 sous l'objet, comme les descriptions de notables.",
   "settings.hidden": "Masqué",
   "settings.visible": "Visible",
   "settings.compactActionsTitle": "Disposition des favoris",
@@ -97,6 +115,8 @@ export const frenchTranslations: Record<string, TranslationValue> = {
   "bookmarks.emptyArchivedAction": "Afficher les dossiers actifs",
   "bookmarks.confirmImport": "Confirmer l’import",
   "bookmarks.backupTitle": "Sauvegarde et restauration",
+  "bookmarks.backupDescription":
+    "Enregistrez un fichier portable avec les dossiers, recherches sauvegardées, paramètres et préférences de l’extension, ou restaurez-en un précédent.",
   "bookmarks.saveFile": "Enregistrer le fichier",
   "bookmarks.restoreFile": "Restaurer depuis le fichier",
   "history.clear": "Effacer l’historique",

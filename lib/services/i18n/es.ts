@@ -181,6 +181,21 @@ export const spanishTranslations: Record<string, TranslationValue> = {
     "popup.trade2": "Trade PoE 2",
     "popup.trade1Alt": "Trade de Path of Exile",
     "popup.trade2Alt": "Trade de Path of Exile 2",
+    "popup.shortcuts": "Enlaces externos",
+    "popup.shortcuts.poe1": "Path of Exile 1",
+    "popup.shortcuts.poe2": "Path of Exile 2",
+    "popup.shortcuts.shared": "Herramientas compartidas",
+    "popup.hideShortcuts": "Ocultar",
+    "popup.showShortcuts": "Mostrar",
+    "popup.shortcut.poeRegex": "Path of Regex",
+    "popup.shortcut.poe2Regex": "Path of Regex 2",
+    "popup.shortcut.poeWiki": "Path of Exile Wiki",
+    "popup.shortcut.poe2Wiki": "Path of Exile 2 Wiki",
+    "popup.shortcut.craftPoe1": "Craft of Exile PoE 1",
+    "popup.shortcut.craftPoe2": "Craft of Exile PoE 2",
+    "popup.shortcut.poedb": "PoEDb",
+    "popup.shortcut.poe2db": "PoE2Db",
+    "popup.shortcut.ninja": "poe.ninja",
     "settings.sidebarTitle": "Posición del panel",
     "settings.sidebarDescription":
       "Elegí en qué lado de la pantalla querés que aparezca el panel de Poe Trade Plus.",
@@ -283,6 +298,9 @@ export const spanishTranslations: Record<string, TranslationValue> = {
     "settings.coeTitle": "Botón Craft of Exile",
     "settings.coeBody":
       "Agrega un botón CoE a resultados de PoE1 y PoE2 que copia el objeto en formato avanzado de Craft of Exile.",
+    "settings.magebloodLegacyTitle": "Descripciones Legacy de Mageblood",
+    "settings.magebloodLegacyBody":
+      "Muestra los efectos ocultos de los mods Legacy de Mageblood de PoE2 debajo del objeto, como las descripciones de notables.",
     "about.eyebrow": "Acerca de",
     "about.description":
       "Poe Trade Plus es un complemento para Path of Exile Trade creado para guardar búsquedas, organizar carpetas, seguir el historial y hacer que los flujos de trade repetidos sean rápidos, visuales y fáciles de manejar dentro del sitio oficial.",
@@ -347,7 +365,7 @@ export const spanishTranslations: Record<string, TranslationValue> = {
     "bookmarks.confirmImport": "Confirmar importación",
     "bookmarks.backupTitle": "Respaldo y restauración",
     "bookmarks.backupDescription":
-      "Guardá una copia en archivo de tus carpetas o restaurá una que hayas exportado antes.",
+      "Guardá un archivo portable con carpetas, búsquedas, settings y preferencias de la extensión, o restaurá uno exportado antes.",
     "bookmarks.saveFile": "Guardar archivo",
     "bookmarks.restoreFile": "Restaurar desde archivo",
     "bookmarks.folderCopyTitle": ({ title }) => `${title} (copia)`,

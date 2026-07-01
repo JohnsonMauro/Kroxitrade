@@ -6,6 +6,10 @@ import { slugify } from "../utilities/slugify";
 import { escapeRegex } from "../utilities/escape-regex";
 import { emitPageDebug } from "../utilities/page-debug";
 import { getCurrencyIconUrl } from "../data/currency-icons";
+import {
+  MAGEBLOOD_LEGACY_TEXTS,
+  type MagebloodLegacyLocale
+} from "../data/mageblood-legacy-texts";
 import coeButtonImage from "../../assets/coe-button.webp?inline";
 import { copyItemForPob } from "../utilities/copy-item-for-pob";
 import {
@@ -30,6 +34,136 @@ const ILVL_THRESHOLDS = [
   { maxSockets: 4, ilvl: 34 },
   { maxSockets: 5, ilvl: 49 },
 ];
+
+interface LegacyEffect {
+  stats: Array<[number, string]>;
+}
+
+interface MagebloodLegacy {
+  mod: HTMLElement;
+  key: string;
+  title: string;
+}
+
+const MAGEBLOOD_LEGACY_EFFECTS: Record<string, LegacyEffect> = {
+  amethyst: { stats: [[45, "% to Chaos Resistance"]] },
+  basalt: { stats: [[150, "% increased Armour"]] },
+  bismuth: { stats: [[45, "% to all Elemental Resistances"]] },
+  diamond: { stats: [[75, "% increased Critical Hit Chance"]] },
+  gold: { stats: [[45, "% increased Rarity of Items found"]] },
+  granite: { stats: [[2000, " to Armour"]] },
+  jade: { stats: [[2000, " to Evasion Rating"]] },
+  quicksilver: { stats: [[30, "% increased Movement Speed"]] },
+  ruby: { stats: [[60, "% to Fire Resistance"], [5, "% to Maximum Fire Resistance"]] },
+  sapphire: { stats: [[60, "% to Cold Resistance"], [5, "% to Maximum Cold Resistance"]] },
+  silver: { stats: [[30, "% increased Skill Speed"]] },
+  stibnite: { stats: [[150, "% increased Evasion Rating"]] },
+  sulphur: { stats: [[60, "% increased Damage"]] },
+  topaz: { stats: [[60, "% to Lightning Resistance"], [5, "% to Maximum Lightning Resistance"]] }
+};
+
+const MAGEBLOOD_LEGACY_VARIANTS: Record<string, string> = {
+  "1": "amethyst",
+  "2": "basalt",
+  "3": "bismuth",
+  "4": "diamond",
+  "5": "gold",
+  "6": "granite",
+  "7": "jade",
+  "8": "quicksilver",
+  "9": "ruby",
+  "10": "sapphire",
+  "11": "silver",
+  "12": "stibnite",
+  "13": "sulphur",
+  "14": "topaz"
+};
+
+const MAGEBLOOD_LEGACY_ALIASES: Record<string, string> = {
+  amatista: "amethyst",
+  basalto: "basalt",
+  bismuto: "bismuth",
+  diamante: "diamond",
+  oro: "gold",
+  granito: "granite",
+  jade: "jade",
+  celeridad: "quicksilver",
+  rubi: "ruby",
+  rubí: "ruby",
+  zafiro: "sapphire",
+  plata: "silver",
+  antimonio: "stibnite",
+  azufre: "sulphur",
+  topacio: "topaz",
+  mercurio: "quicksilver",
+  estibina: "stibnite",
+  ametista: "amethyst",
+  ouro: "gold",
+  safira: "sapphire",
+  prata: "silver",
+  enxofre: "sulphur"
+};
+
+const MAGEBLOOD_LEGACY_FIELD_PATTERN = /stat\.explicit\.stat_264262054\|(\d+)/;
+const MAGEBLOOD_DUPLICATE_FIELD = "stat.explicit.stat_3874491706";
+const MAGEBLOOD_LEGACY_PATTERN = /^(?:Legacy of|Legado de|มรดกแห่ง) (.+)$/i;
+const MAGEBLOOD_DUPLICATE_PATTERN =
+  /(?:Mage(?:'|\u2019)?s Legacies have (\d+)% increased effect per duplicate|legados de mago.*efecto aumentado un (\d+)%.*legado de mago duplicado)/i;
+const MAGEBLOOD_LEGACY_CLASS = "bt-mb-legacy";
+const MAGEBLOOD_EXPLANATIONS_CLASS = "bt-mb-explanations";
+
+const normalizeMagebloodLegacyKey = (name: string) => {
+  const normalized = name
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .trim();
+  return MAGEBLOOD_LEGACY_ALIASES[normalized] || normalized;
+};
+
+const titleCaseLegacyName = (name: string) =>
+  name.charAt(0).toUpperCase() + name.slice(1);
+
+const getMagebloodLegacyLocale = (): MagebloodLegacyLocale => {
+  const host = window.location.hostname.toLowerCase();
+  if (host === "poe2.kakaogames.com") return "ko";
+  const subdomain = host.split(".")[0];
+  if (subdomain === "br") return "pt";
+  if (subdomain === "jp") return "jp";
+  if (["es", "pt", "ru", "th", "de", "fr"].includes(subdomain)) {
+    return subdomain as MagebloodLegacyLocale;
+  }
+  return "en";
+};
+
+const getMagebloodLegacyBaseLabel = (locale: MagebloodLegacyLocale) =>
+  ({
+    en: "base",
+    es: "base",
+    pt: "base",
+    ru: "база",
+    th: "ฐาน",
+    de: "Basis",
+    fr: "base",
+    jp: "基礎",
+    ko: "기본"
+  })[locale];
+
+const getMagebloodLegacyEffectLabel = (locale: MagebloodLegacyLocale) =>
+  ({
+    en: "effect",
+    es: "de efecto",
+    pt: "de efeito",
+    ru: "эффекта",
+    th: "ผล",
+    de: "Effekt",
+    fr: "d'effet",
+    jp: "効果",
+    ko: "효과"
+  })[locale];
+
+const formatMagebloodLegacyLine = (template: string, value: number) =>
+  template.replace("{value}", `${value}`);
 
 
 
@@ -58,6 +192,7 @@ export class ItemResultsService {
     chance: "orb-of-chance"
   };
   private showEquivalentPricing = false;
+  private showMagebloodLegacyDescriptions = false;
   private unsubscribeSettings: (() => void) | null = null;
   private unsubscribeLocation: (() => void) | null = null;
   private readonly postSearchRefreshDelays = [80, 220, 500, 900];
@@ -119,12 +254,19 @@ export class ItemResultsService {
 
     await settings.load();
     this.showEquivalentPricing = settings.getCurrent().showEquivalentPricing;
+    this.showMagebloodLegacyDescriptions = settings.getCurrent().showMagebloodLegacyDescriptions;
     this.unsubscribeSettings?.();
     this.unsubscribeSettings = settings.subscribe((value) => {
       const changed = this.showEquivalentPricing !== value.showEquivalentPricing;
+      const magebloodChanged =
+        this.showMagebloodLegacyDescriptions !== value.showMagebloodLegacyDescriptions;
       this.showEquivalentPricing = value.showEquivalentPricing;
+      this.showMagebloodLegacyDescriptions = value.showMagebloodLegacyDescriptions;
       if (changed) {
         this.refreshEquivalentPricing();
+      }
+      if (magebloodChanged) {
+        this.refreshMagebloodLegacyDescriptions();
       }
     });
     this.unsubscribeLocation?.();
@@ -497,6 +639,7 @@ export class ItemResultsService {
       this.enablePoe2CopyButton(typedRow);
       this.syncCoeButton(typedRow);
       this.injectEquivalentPricing(typedRow);
+      this.enhanceMagebloodLegacy(typedRow);
 
       if (typedRow.hasAttribute("bt-enhanced")) {
         return;
@@ -596,6 +739,194 @@ export class ItemResultsService {
             element.classList.add("bt-highlight-stat-filters");
         }
     });
+  }
+
+  private enhanceMagebloodLegacy(row: HTMLElement) {
+    if (!this.showMagebloodLegacyDescriptions) {
+      this.removeMagebloodLegacyDescriptions(row);
+      return;
+    }
+
+    this.removeMagebloodLegacyDescriptions(row);
+
+    const legacies: MagebloodLegacy[] = [];
+    const duplicateMods: HTMLElement[] = [];
+    let duplicatePercent = 0;
+
+    row.querySelectorAll<HTMLElement>('.item-mod [data-field^="stat."]').forEach((valueSpan) => {
+      const inner = valueSpan.querySelector<HTMLElement>("span") || valueSpan;
+      const text = (inner.textContent || "").replace(/\s+/g, " ").trim();
+      const field = valueSpan.dataset.field || "";
+      const mod = valueSpan.closest<HTMLElement>(".item-mod");
+
+      const legacyFieldMatch = field.match(MAGEBLOOD_LEGACY_FIELD_PATTERN);
+      if (legacyFieldMatch) {
+        const key = MAGEBLOOD_LEGACY_VARIANTS[legacyFieldMatch[1]];
+        if (mod && key) {
+          legacies.push({ mod, key, title: text });
+        }
+        return;
+      }
+
+      const legacyMatch = text.match(MAGEBLOOD_LEGACY_PATTERN);
+      if (legacyMatch) {
+        if (mod) {
+          const name = legacyMatch[1].trim();
+          legacies.push({
+            mod,
+            key: normalizeMagebloodLegacyKey(name),
+            title: text
+          });
+        }
+        return;
+      }
+
+      const duplicateMatch = text.match(MAGEBLOOD_DUPLICATE_PATTERN);
+      if (field === MAGEBLOOD_DUPLICATE_FIELD || duplicateMatch) {
+        if (mod) duplicateMods.push(mod);
+        const percentMatch = text.match(/(\d+)%/);
+        duplicatePercent = Number.parseInt(
+          percentMatch?.[1] || duplicateMatch?.[1] || duplicateMatch?.[2] || "0",
+          10
+        );
+      }
+    });
+
+    if (legacies.length === 0) return;
+
+    const counts: Record<string, number> = {};
+    const displayTitles: Record<string, string> = {};
+    legacies.forEach(({ key, title }) => {
+      counts[key] = (counts[key] || 0) + 1;
+      displayTitles[key] = title;
+    });
+
+    const duplicates = legacies.length - Object.keys(counts).length;
+    const duplicateMod = duplicateMods[0] || null;
+    const multiplier = duplicateMod && Number.isFinite(duplicatePercent)
+      ? 1 + (duplicatePercent / 100) * duplicates
+      : 1;
+    const increasedEffect = Math.round((multiplier - 1) * 100);
+
+    legacies.forEach(({ mod }) => mod.classList.add(MAGEBLOOD_LEGACY_CLASS));
+
+    if (!row.querySelector(`.${MAGEBLOOD_EXPLANATIONS_CLASS}`)) {
+      const explanationAnchor = this.findMagebloodExplanationAnchor(row, legacies);
+      const fragment = document.createDocumentFragment();
+      fragment.appendChild(
+        this.buildMagebloodLegacyExplanations(counts, displayTitles, multiplier, increasedEffect)
+      );
+
+      explanationAnchor?.after(fragment);
+    }
+  }
+
+  private removeMagebloodLegacyDescriptions(row: HTMLElement) {
+    row
+      .querySelectorAll(`.${MAGEBLOOD_EXPLANATIONS_CLASS}`)
+      .forEach((element) => element.remove());
+    row
+      .querySelectorAll(`.${MAGEBLOOD_LEGACY_CLASS}`)
+      .forEach((element) => element.classList.remove(MAGEBLOOD_LEGACY_CLASS));
+  }
+
+  private createMagebloodDiv(className: string, text?: string) {
+    const el = document.createElement("div");
+    el.className = className;
+    if (text !== undefined) el.textContent = text;
+    return el;
+  }
+
+  private findMagebloodExplanationAnchor(
+    row: HTMLElement,
+    legacies: MagebloodLegacy[]
+  ) {
+    const content = row.querySelector<HTMLElement>(".item-popup__content") || row;
+    const flagsSeparator = content.querySelector<HTMLHRElement>('hr[name="flags"]');
+    if (flagsSeparator) {
+      return flagsSeparator;
+    }
+
+    const corruptedLine = Array.from(content.children).find((child) =>
+      /\b(?:corrupted|corrupto)\b/i.test(child.textContent || "")
+    );
+    if (corruptedLine) {
+      const next = corruptedLine.nextElementSibling;
+      return next?.tagName.toLowerCase() === "hr"
+        ? next
+        : corruptedLine;
+    }
+
+    const explicitSeparator = content.querySelector<HTMLHRElement>('hr[name="explicit"]');
+    if (explicitSeparator) {
+      return explicitSeparator;
+    }
+
+    return legacies[legacies.length - 1]?.mod || content.lastElementChild;
+  }
+
+  private buildMagebloodLegacyExplanations(
+    counts: Record<string, number>,
+    displayTitles: Record<string, string>,
+    multiplier: number,
+    increasedEffect: number
+  ) {
+    const container = this.createMagebloodDiv(MAGEBLOOD_EXPLANATIONS_CLASS);
+    const locale = getMagebloodLegacyLocale();
+    const legacyTexts = MAGEBLOOD_LEGACY_TEXTS[locale] || MAGEBLOOD_LEGACY_TEXTS.en;
+    const baseLabel = getMagebloodLegacyBaseLabel(locale);
+    const effectLabel = getMagebloodLegacyEffectLabel(locale);
+
+    Object.keys(counts).forEach((key) => {
+      const titleText = displayTitles[key] || `Legacy of ${titleCaseLegacyName(key)}`;
+      const effect = MAGEBLOOD_LEGACY_EFFECTS[key];
+      const templates = legacyTexts[key] || MAGEBLOOD_LEGACY_TEXTS.en[key];
+      const block = document.createElement("div");
+      const title = document.createElement("span");
+      title.style.color = "var(--colour-augmented)";
+      title.textContent = titleText;
+      block.appendChild(title);
+
+      if (!effect || !templates) {
+        block.appendChild(document.createElement("br"));
+        block.appendChild(document.createTextNode("Effect not in the database yet."));
+        container.appendChild(block);
+        return;
+      }
+
+      effect.stats.forEach(([base], index) => {
+        const template = templates[index] || MAGEBLOOD_LEGACY_TEXTS.en[key]?.[index];
+        if (!template) return;
+
+        const final = multiplier > 1.0001 ? Math.floor(base * multiplier) : base;
+        const value = formatMagebloodLegacyLine(template, final);
+        const line = document.createElement("span");
+        line.className = "bt-mb-explanation-line";
+        line.textContent = value;
+        if (multiplier > 1.0001) {
+          const detail = document.createElement("span");
+          detail.className = "bt-mb-explanation-detail";
+          detail.textContent = ` (${baseLabel}: ${base}, +${increasedEffect}% ${effectLabel})`;
+          line.appendChild(detail);
+        }
+        block.appendChild(document.createElement("br"));
+        block.appendChild(line);
+      });
+
+      templates.slice(effect.stats.length).forEach((line) => {
+        block.appendChild(document.createElement("br"));
+        block.appendChild(document.createTextNode(line));
+      });
+
+      container.appendChild(block);
+    });
+
+    return container;
+  }
+
+  private refreshMagebloodLegacyDescriptions() {
+    const results = document.querySelectorAll(".search-results .result-item, .search-results .row, .result-list .result-item, .row");
+    results.forEach((row) => this.enhanceMagebloodLegacy(row as HTMLElement));
   }
 
 

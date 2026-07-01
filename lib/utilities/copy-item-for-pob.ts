@@ -1,7 +1,8 @@
 const EXCLUDED_FROM_COPY_SELECTOR = [
   "#btns-finer",
   ".finer-filtered-overlay",
-  ".bt-maximum-sockets-warning"
+  ".bt-maximum-sockets-warning",
+  ".bt-mb-explanations"
 ].join(", ");
 
 export const copyItemForPob = (row: HTMLElement): boolean => {
