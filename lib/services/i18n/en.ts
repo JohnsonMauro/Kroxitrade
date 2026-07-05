@@ -9,7 +9,6 @@ export const englishTranslations: Record<string, TranslationValue> = {
     "layout.nav.bulk": "Bulk",
     "layout.nav.history": "History",
     "layout.nav.settings": "Settings",
-    "layout.nav.experimental": "Experimental",
     "layout.nav.about": "About",
     "layout.removeAlert": "Remove alert",
     "layout.resizeSidebar": "Resize sidebar",
@@ -242,31 +241,9 @@ export const englishTranslations: Record<string, TranslationValue> = {
     "settings.historyTitle": "History",
     "settings.historyDescription":
       "Show or hide the history tab that stores your recently opened searches.",
-    "settings.experimentalTabTitle": "Experimental tab",
-    "settings.experimentalTabDescription":
-      "Show or hide the dev-only Experimental tab in the sidebar.",
     "settings.finerFiltersTitle": "Add To Filters",
     "settings.finerFiltersDescription":
       "Show or hide the Add to Filters panel at the bottom of the sidebar.",
-    "experimental.eyebrow": "Dev only",
-    "experimental.title": "Experimental",
-    "experimental.description":
-      "Temporary playground for features we are testing before they reach the main UI.",
-    "experimental.devOnlyTitle": "Development build only",
-    "experimental.devOnlyBody":
-      "Stable result customization moved into Settings. This space only appears in development builds for future hidden flags and temporary tests.",
-    "experimental.emptyTitle": "No active experiments",
-    "experimental.emptyBody":
-      "Result action, PoE2 copy, and Craft of Exile controls now live in Settings under Results.",
-    "experimental.resultActionsTitle": "Always show result actions",
-    "experimental.resultActionsBody":
-      "Keep Refresh, Copy Item, and Filter by Item Stats visible without hovering a result.",
-    "experimental.poe2CopyTitle": "Enable PoE2 Copy button",
-    "experimental.poe2CopyBody":
-      "Show PoE2's native Copy button and make it copy the item for Path of Building. It follows the same hover behavior as Refresh and Filter by Item Stats.",
-    "experimental.poe2CoeTitle": "Enable Craft of Exile button",
-    "experimental.poe2CoeBody":
-      "Add a CoE button to PoE1 and PoE2 results that copies the item in Craft of Exile's advanced import format.",
     "settings.hidden": "Hidden",
     "settings.visible": "Visible",
     "settings.on": "On",

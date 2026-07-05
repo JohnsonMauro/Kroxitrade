@@ -9,7 +9,6 @@ export const spanishTranslations: Record<string, TranslationValue> = {
     "layout.nav.bulk": "Bulk",
     "layout.nav.history": "Historial",
     "layout.nav.settings": "Ajustes",
-    "layout.nav.experimental": "Experimental",
     "layout.nav.about": "Acerca de",
     "layout.removeAlert": "Quitar alerta",
     "layout.resizeSidebar": "Redimensionar panel",
@@ -242,31 +241,9 @@ export const spanishTranslations: Record<string, TranslationValue> = {
     "settings.historyTitle": "Historial",
     "settings.historyDescription":
       "Mostrá u ocultá la pestaña Historial que guarda tus búsquedas abiertas recientemente.",
-    "settings.experimentalTabTitle": "Pestaña Experimental",
-    "settings.experimentalTabDescription":
-      "Mostrá u ocultá la pestaña Experimental del panel. Solo aparece en dev.",
     "settings.finerFiltersTitle": "Agregar a filtros",
     "settings.finerFiltersDescription":
       "Mostrá u ocultá el panel Agregar a filtros al final de la barra lateral.",
-    "experimental.eyebrow": "Solo dev",
-    "experimental.title": "Experimental",
-    "experimental.description":
-      "Espacio temporal para probar ideas antes de que lleguen a la interfaz principal.",
-    "experimental.devOnlyTitle": "Solo en build de desarrollo",
-    "experimental.devOnlyBody":
-      "La personalización estable de resultados pasó a Ajustes. Este espacio aparece en builds de desarrollo para futuras flags ocultas y pruebas temporales.",
-    "experimental.emptyTitle": "Sin experimentos activos",
-    "experimental.emptyBody":
-      "Las opciones de acciones de resultado, Copy de PoE2 y Craft of Exile ahora viven en Ajustes, dentro de Resultados.",
-    "experimental.resultActionsTitle": "Mostrar siempre acciones del resultado",
-    "experimental.resultActionsBody":
-      "Mantiene visibles Actualizar, Copiar objeto y Filtrar por estadísticas sin hacer hover.",
-    "experimental.poe2CopyTitle": "Habilitar botón Copy de PoE2",
-    "experimental.poe2CopyBody":
-      "Muestra el botón Copy nativo de PoE2 y copia el objeto para Path of Building. Usa el mismo comportamiento hover que Refresh y Filter by Item Stats.",
-    "experimental.poe2CoeTitle": "Habilitar botón Craft of Exile",
-    "experimental.poe2CoeBody":
-      "Agrega un botón CoE a los resultados de PoE1 y PoE2 que copia el objeto en el formato avanzado de importación.",
     "settings.hidden": "Oculto",
     "settings.visible": "Visible",
     "settings.on": "On",

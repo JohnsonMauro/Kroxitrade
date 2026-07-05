@@ -24,7 +24,6 @@ export interface AppSettings extends VersionSettings {
   sidebarSide: SidebarSide;
   sidebarWidth: number;
   language: AppLanguage;
-  showExperimentalTab: boolean;
   textSize: TextSizePreference;
 }
 
@@ -32,7 +31,6 @@ interface GlobalSettings {
   sidebarSide: SidebarSide;
   sidebarWidth: number;
   language: AppLanguage;
-  showExperimentalTab: boolean;
   textSize: TextSizePreference;
 }
 
@@ -43,7 +41,6 @@ const DEFAULT_GLOBAL_SETTINGS: GlobalSettings = {
   sidebarSide: 'right',
   sidebarWidth: 360,
   language: 'en',
-  showExperimentalTab: true,
   textSize: 'medium'
 };
 
@@ -166,7 +163,6 @@ async function load() {
     sidebarSide: stored?.sidebarSide ?? DEFAULT_GLOBAL_SETTINGS.sidebarSide,
     sidebarWidth: stored?.sidebarWidth ?? DEFAULT_GLOBAL_SETTINGS.sidebarWidth,
     language: stored?.language ?? DEFAULT_GLOBAL_SETTINGS.language,
-    showExperimentalTab: stored?.showExperimentalTab ?? DEFAULT_GLOBAL_SETTINGS.showExperimentalTab,
     textSize: normalizeTextSize(stored?.textSize)
   };
 
@@ -253,9 +249,6 @@ export const settings = {
   },
   async updateSidebarWidth(sidebarWidth: number) {
     return saveGlobal({ ...globalSettings, sidebarWidth });
-  },
-  async updateExperimentalTabVisibility(showExperimentalTab: boolean) {
-    return saveGlobal({ ...globalSettings, showExperimentalTab });
   },
   async updateTextSize(textSize: TextSizePreference) {
     return saveGlobal({ ...globalSettings, textSize: normalizeTextSize(textSize) });
