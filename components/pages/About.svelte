@@ -4,9 +4,11 @@
   import { hasValidExtensionContext } from "../../lib/utilities/extension-context";
 
   let {
-    onOpenWhatsNew = () => {}
+    onOpenWhatsNew = () => {},
+    onOpenTutorial = () => {}
   }: {
     onOpenWhatsNew?: () => void;
+    onOpenTutorial?: () => void;
   } = $props();
 
   const version = hasValidExtensionContext() ? chrome.runtime.getManifest().version : "dev"
@@ -28,6 +30,15 @@
       label={translate($languageStore, "about.whatsNewButton")}
       theme="gold"
       onClick={onOpenWhatsNew} />
+  </section>
+
+  <section class="about-section" data-tutorial="settings-tutorial">
+    <h2>{translate($languageStore, "settings.onboardingTitle")}</h2>
+    <p>{translate($languageStore, "settings.onboardingDescription")}</p>
+    <Button
+      label={translate($languageStore, "settings.reopenTutorial")}
+      theme="gold"
+      onClick={onOpenTutorial} />
   </section>
 
   <footer class="about-footer">

@@ -103,7 +103,7 @@
     },
     {
       id: "settings-tutorial" as OnboardingStepId,
-      page: "settings" as OnboardingPage,
+      page: "about" as OnboardingPage,
       targetSelector: '[data-tutorial="settings-tutorial"]',
       preferredPlacement: "above",
       eyebrow: translate($languageStore, "onboarding.step4Eyebrow"),

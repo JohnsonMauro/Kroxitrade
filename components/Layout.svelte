@@ -515,12 +515,11 @@ import Experimental from "./pages/Experimental.svelte";
         <History />
     {:else if currentPage === 'settings'}
         <Settings
-          onOpenTutorial={openOnboarding}
           tutorialStep={showOnboarding ? onboardingCurrentStepId : null} />
     {:else if currentPage === 'experimental' && isDevBuild && $settings.showExperimentalTab}
         <Experimental />
     {:else if currentPage === 'about'}
-        <About onOpenWhatsNew={openWhatsNew} />
+        <About onOpenWhatsNew={openWhatsNew} onOpenTutorial={openOnboarding} />
     {/if}
   </main>
 

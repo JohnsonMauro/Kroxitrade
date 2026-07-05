@@ -34,11 +34,10 @@
   import deleteIcon from "lucide-static/icons/trash-2.svg?raw";
 
   interface Props {
-    onOpenTutorial?: () => void;
     tutorialStep?: string | null;
   }
 
-  let { onOpenTutorial = () => {}, tutorialStep = null }: Props = $props();
+  let { tutorialStep = null }: Props = $props();
 
   const DEFAULT_SIDEBAR_WIDTH = 450;
   const isDevBuild = import.meta.env.DEV;
@@ -53,7 +52,6 @@
   ];
 
   const tutorialStepTabs: Record<string, SettingsTab> = {
-    "settings-tutorial": "interface",
     "settings-sidebar": "interface",
     "settings-language": "interface",
     "settings-equivalent": "results",
@@ -414,22 +412,6 @@
               onClick={() => handleTextSizeChange(option.id)}
             />
           {/each}
-        </div>
-      </section>
-
-      <section class="settings-section settings-section--feature settings-section--wide" data-tutorial="settings-tutorial">
-        <div class="section-heading">
-          <h3 class="section-title">{translate($languageStore, "settings.onboardingTitle")}</h3>
-        </div>
-        <p class="section-description">{translate($languageStore, "settings.onboardingDescription")}</p>
-
-        <div class="section-actions">
-          <Button
-            label={translate($languageStore, "settings.reopenTutorial")}
-            theme="gold"
-            class="side-btn"
-            onClick={onOpenTutorial}
-          />
         </div>
       </section>
 
@@ -901,10 +883,6 @@
 
   .settings-section--bookmarks-layout {
     text-align: left;
-  }
-
-  .section-actions {
-    margin-top: 14px;
   }
 
   .settings-row-list {
