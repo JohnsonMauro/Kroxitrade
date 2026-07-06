@@ -111,6 +111,19 @@ const version113Items: WhatsNewItem[] = [
   }
 ];
 
+const version114Items: WhatsNewItem[] = [
+  {
+    title: "Adjustable text size",
+    description:
+      "Interface settings now include Small, Medium, and Large text sizes, with Medium matching the previous default."
+  },
+  {
+    title: "Tutorial access moved to About",
+    description:
+      "The button to reopen the onboarding tutorial now lives in About, keeping Interface settings focused on display and language options."
+  }
+];
+
 const version110Features: WhatsNewItem[] = [
   {
     title: "Settings are now easier to navigate",
@@ -201,9 +214,18 @@ const version110Changes: WhatsNewItem[] = [
 ];
 
 export const latestWhatsNew: WhatsNewEntry = {
-  version: "1.1.3",
-  date: "2026-06-30",
+  version: "1.1.4",
+  date: "2026-07-05",
   sections: [
+    {
+      title: "1.1.4",
+      groups: [
+        {
+          titleKey: "whatsNew.section.features",
+          items: version114Items
+        }
+      ]
+    },
     {
       title: "1.1.3",
       groups: [
@@ -265,6 +287,16 @@ export const latestWhatsNew: WhatsNewEntry = {
 
 export const whatsNewEntries: WhatsNewEntry[] = [
   latestWhatsNew,
+  {
+    version: "1.1.4",
+    date: "2026-07-05",
+    sections: [
+      {
+        titleKey: "whatsNew.section.features",
+        items: version114Items
+      }
+    ]
+  },
   {
     version: "1.1.3",
     date: "2026-06-30",
