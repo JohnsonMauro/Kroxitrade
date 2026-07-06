@@ -209,6 +209,7 @@ export const englishTranslations: Record<string, TranslationValue> = {
     "settings.textSizeSmall": "Small",
     "settings.textSizeMedium": "Medium",
     "settings.textSizeLarge": "Large",
+    "settings.textSizeExtraLarge": "Extra",
     "settings.languageEnglish": "English",
     "settings.languageSpanish": "Spanish",
     "settings.onboardingTitle": "Tutorial",

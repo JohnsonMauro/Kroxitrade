@@ -102,7 +102,8 @@
   const TEXT_SIZE_SCALE = {
     small: "0.92",
     medium: "1",
-    large: "1.18"
+    large: "1.18",
+    extraLarge: "1.34"
   } as const
   let showShortcuts = $state(false)
 

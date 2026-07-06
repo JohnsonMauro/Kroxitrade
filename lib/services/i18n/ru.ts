@@ -43,6 +43,7 @@ export const russianTranslations: Record<string, TranslationValue> = {
   "settings.textSizeSmall": "Маленький",
   "settings.textSizeMedium": "Средний",
   "settings.textSizeLarge": "Большой",
+  "settings.textSizeExtraLarge": "Экстра",
   "settings.languageEnglish": "Английский",
   "settings.languageSpanish": "Испанский",
   "settings.resultsTitle": "Инструменты результатов",

@@ -48,6 +48,7 @@ export const japaneseTranslations: Record<string, TranslationValue> = {
   "settings.textSizeSmall": "小",
   "settings.textSizeMedium": "中",
   "settings.textSizeLarge": "大",
+  "settings.textSizeExtraLarge": "エクストラ",
   "settings.languageEnglish": "英語",
   "settings.languageSpanish": "スペイン語",
   "settings.resultsTitle": "検索結果ツール",

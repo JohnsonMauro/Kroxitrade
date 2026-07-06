@@ -44,6 +44,7 @@ export const frenchTranslations: Record<string, TranslationValue> = {
   "settings.textSizeSmall": "Petit",
   "settings.textSizeMedium": "Moyen",
   "settings.textSizeLarge": "Grand",
+  "settings.textSizeExtraLarge": "Extra",
   "settings.languageEnglish": "Anglais",
   "settings.languageSpanish": "Espagnol",
   "settings.resultsTitle": "Outils de résultats",

@@ -48,6 +48,7 @@ export const koreanTranslations: Record<string, TranslationValue> = {
   "settings.textSizeSmall": "작게",
   "settings.textSizeMedium": "보통",
   "settings.textSizeLarge": "크게",
+  "settings.textSizeExtraLarge": "엑스트라",
   "settings.languageEnglish": "영어",
   "settings.languageSpanish": "스페인어",
   "settings.resultsTitle": "결과 도구",

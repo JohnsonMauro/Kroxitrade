@@ -91,7 +91,8 @@
   const textSizeOptions: Array<{ id: TextSizePreference; labelKey: string }> = [
     { id: "small", labelKey: "settings.textSizeSmall" },
     { id: "medium", labelKey: "settings.textSizeMedium" },
-    { id: "large", labelKey: "settings.textSizeLarge" }
+    { id: "large", labelKey: "settings.textSizeLarge" },
+    { id: "extraLarge", labelKey: "settings.textSizeExtraLarge" }
   ];
 
   const localizedLanguageNames: Record<AppLanguage, Record<AppLanguage, string>> = {

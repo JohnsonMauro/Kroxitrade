@@ -46,6 +46,7 @@ export const portugueseTranslations: Record<string, TranslationValue> = {
   "settings.textSizeSmall": "Pequeno",
   "settings.textSizeMedium": "Médio",
   "settings.textSizeLarge": "Grande",
+  "settings.textSizeExtraLarge": "Extra",
   "settings.languageEnglish": "Inglês",
   "settings.languageSpanish": "Espanhol",
   "settings.resultsTitle": "Ferramentas de resultados",

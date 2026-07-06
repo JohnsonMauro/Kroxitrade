@@ -6,7 +6,7 @@ import type { TradeSiteVersion } from '../types/trade-location';
 export type SidebarSide = 'left' | 'right';
 export type BookmarkTradeActionId = 'edit' | 'replace' | 'copy' | 'openLive' | 'toggle' | 'delete';
 export type QuickFiltersPlacement = 'page' | 'sidebar';
-export type TextSizePreference = 'small' | 'medium' | 'large';
+export type TextSizePreference = 'small' | 'medium' | 'large' | 'extraLarge';
 
 export interface VersionSettings {
   showEquivalentPricing: boolean;
@@ -57,7 +57,7 @@ const DEFAULT_VERSION_SETTINGS: VersionSettings = {
 };
 
 function normalizeTextSize(textSize: unknown): TextSizePreference {
-  return textSize === 'small' || textSize === 'large' ? textSize : 'medium';
+  return textSize === 'small' || textSize === 'large' || textSize === 'extraLarge' ? textSize : 'medium';
 }
 
 let activeVersion: TradeSiteVersion = inferTradeVersion();

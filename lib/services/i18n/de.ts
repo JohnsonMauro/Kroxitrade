@@ -43,6 +43,7 @@ export const germanTranslations: Record<string, TranslationValue> = {
   "settings.textSizeSmall": "Klein",
   "settings.textSizeMedium": "Mittel",
   "settings.textSizeLarge": "Groß",
+  "settings.textSizeExtraLarge": "Extra",
   "settings.languageEnglish": "Englisch",
   "settings.languageSpanish": "Spanisch",
   "settings.resultsTitle": "Ergebniswerkzeuge",

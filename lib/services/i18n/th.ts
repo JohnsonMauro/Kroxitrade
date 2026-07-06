@@ -43,6 +43,7 @@ export const thaiTranslations: Record<string, TranslationValue> = {
   "settings.textSizeSmall": "เล็ก",
   "settings.textSizeMedium": "กลาง",
   "settings.textSizeLarge": "ใหญ่",
+  "settings.textSizeExtraLarge": "พิเศษ",
   "settings.languageEnglish": "อังกฤษ",
   "settings.languageSpanish": "สเปน",
   "settings.resultsTitle": "เครื่องมือผลลัพธ์",
