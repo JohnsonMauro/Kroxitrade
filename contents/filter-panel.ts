@@ -1,4 +1,8 @@
 import { isFinerFiltersActionMessage } from "~/lib/utilities/finer-filters-bridge"
+import {
+  BUYOUT_CURRENCY_PRESETS,
+  setBuyoutCurrencyPreset
+} from "~/lib/utilities/buyout-currency"
 
 export const initFilterPanel = () => {
   if ((window as any).__KROX_STARTED__) {
@@ -469,53 +473,6 @@ export const initFilterPanel = () => {
     }
   }
 
-  const findBuyoutCurrencySelect = () => {
-    const filters = Array.from(
-      document.querySelectorAll<HTMLElement>(".filter.filter-property")
-    )
-    const buyoutFilter = filters.find((filter) => {
-      const title = filter
-        .querySelector(".filter-title")
-        ?.textContent?.replace(/\s+/g, " ")
-        .trim()
-      return title === "Buyout Price"
-    })
-
-    return buyoutFilter?.querySelector<HTMLElement>(".multiselect") || null
-  }
-
-  const setBuyoutCurrencyPreset = (currency: string) => {
-    const multiselect = findBuyoutCurrencySelect()
-    const input =
-      multiselect?.querySelector<HTMLInputElement>("input.multiselect__input")
-
-    if (!multiselect || !input) return
-
-    input.focus()
-    input.click()
-    setNativeInputValue(input, currency)
-    input.setSelectionRange(currency.length, currency.length)
-    input.dispatchEvent(new Event("input", { bubbles: true }))
-
-    queueMicrotask(() => {
-      const option = Array.from(
-        multiselect.querySelectorAll<HTMLElement>(".multiselect__option")
-      ).find(
-        (candidate) =>
-          candidate.textContent?.replace(/\s+/g, " ").trim() === currency
-      )
-
-      option?.dispatchEvent(
-        new MouseEvent("click", {
-          bubbles: true,
-          cancelable: true,
-          view: window
-        })
-      )
-      input.dispatchEvent(new Event("change", { bubbles: true }))
-    })
-  }
-
   const injectSearchPanelQuickFilters = () => {
     const pane = document.querySelector<HTMLElement>(".search-advanced-pane.brown")
     const existing = pane?.querySelector('[data-krox-filter-presets="true"]')
@@ -581,11 +538,7 @@ export const initFilterPanel = () => {
     currencyLabel.textContent = "Buyout Price"
 
     currencyRow.append(currencyLabel)
-    ;[
-      ["Chaos", "Chaos Orb"],
-      ["Exalted", "Exalted Orb"],
-      ["Divine", "Divine Orb"]
-    ].forEach(([label, currency]) => {
+    BUYOUT_CURRENCY_PRESETS.forEach(({ label, currency }) => {
       const currencyButton = document.createElement("button")
       currencyButton.type = "button"
       currencyButton.className =

@@ -171,6 +171,7 @@ export const germanTranslations: Record<string, TranslationValue> = {
   "finer.explicitResLife": "Explizite Widerstände/Leben",
   "finer.attackWeapon": "Angriffswaffe",
   "finer.spellWeapon": "Zauberwaffe",
+  "finer.buyoutPrice": "Kaufpreis",
   "settings.onboardingTitle": "Tutorial",
   "settings.onboardingDescription":
     "Öffne das Schnell-Tutorial erneut, um die wichtigsten Aktionen und Tabs zu prüfen.",

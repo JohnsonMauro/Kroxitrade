@@ -176,6 +176,7 @@ export const frenchTranslations: Record<string, TranslationValue> = {
   "finer.explicitResLife": "Résistances/Vie explicites",
   "finer.attackWeapon": "Arme d’attaque",
   "finer.spellWeapon": "Arme de sort",
+  "finer.buyoutPrice": "Prix de rachat",
   "settings.onboardingTitle": "Tutoriel",
   "settings.onboardingDescription":
     "Rouvrez le guide rapide pour revoir les actions et onglets principaux.",

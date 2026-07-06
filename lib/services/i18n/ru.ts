@@ -169,6 +169,7 @@ export const russianTranslations: Record<string, TranslationValue> = {
   "finer.explicitResLife": "Явные резы/жизнь",
   "finer.attackWeapon": "Оружие атаки",
   "finer.spellWeapon": "Оружие заклинаний",
+  "finer.buyoutPrice": "Цена выкупа",
   "settings.onboardingTitle": "Обучение",
   "settings.onboardingDescription":
     "Снова откройте быстрый гид, чтобы еще раз посмотреть основные действия и вкладки.",

@@ -176,6 +176,7 @@ export const koreanTranslations: Record<string, TranslationValue> = {
   "finer.explicitResLife": "명시 저항/생명력",
   "finer.attackWeapon": "공격 무기",
   "finer.spellWeapon": "주문 무기",
+  "finer.buyoutPrice": "매입 가격",
   "settings.onboardingTitle": "튜토리얼",
   "settings.onboardingDescription":
     "주요 작업과 탭을 다시 보려면 빠른 가이드를 다시 엽니다.",

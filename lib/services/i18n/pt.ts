@@ -181,6 +181,7 @@ export const portugueseTranslations: Record<string, TranslationValue> = {
   "finer.explicitResLife": "Res/Vida explícita",
   "finer.attackWeapon": "Arma de ataque",
   "finer.spellWeapon": "Arma de feitiços",
+  "finer.buyoutPrice": "Preço de compra",
   "settings.onboardingTitle": "Tutorial",
   "settings.onboardingDescription":
     "Abra o onboarding rápido de novo para rever as ações e abas principais.",

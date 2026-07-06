@@ -169,6 +169,7 @@ export const thaiTranslations: Record<string, TranslationValue> = {
   "finer.modifiers": "ม็อด",
   "finer.attackWeapon": "อาวุธโจมตี",
   "finer.spellWeapon": "อาวุธเวท",
+  "finer.buyoutPrice": "ราคาซื้อคืน",
   "settings.onboardingTitle": "บทช่วยสอน",
   "settings.onboardingDescription":
     "เปิดคู่มือเริ่มต้นอย่างรวดเร็วอีกครั้งเพื่อทบทวนการทำงานและแท็บหลัก",
