@@ -371,7 +371,6 @@
           <div class="toolbar-actions toolbar-actions--secondary">
             <button class="toolbar-button" type="button" title={translate($languageStore, "bookmarks.toolbar.collapseAll")} aria-label={translate($languageStore, "bookmarks.toolbar.collapseAll")} onclick={collapseAll}>
               <span class="toolbar-icon" aria-hidden="true"><SvgIcon svg={toolbarIcons.collapse} size={13} className="toolbar-svg" /></span>
-              <span class="toolbar-label">{translate($languageStore, "bookmarks.toolbar.collapse")}</span>
             </button>
             <button
               class:active={showArchived}
@@ -384,7 +383,6 @@
               <span class="toolbar-icon" aria-hidden="true">
                 <SvgIcon svg={showArchived ? toolbarIcons.active : toolbarIcons.archive} size={13} className="toolbar-svg" />
               </span>
-              <span class="toolbar-label">{showArchived ? translate($languageStore, "bookmarks.toolbar.active") : translate($languageStore, "bookmarks.toolbar.archive")}</span>
             </button>
           </div>
         </div>
@@ -532,6 +530,8 @@
   }
 
   .toolbar-actions--secondary {
+    grid-template-columns: repeat(2, 34px);
+    flex: 0 0 auto;
     opacity: 0.88;
   }
 
@@ -572,6 +572,8 @@
   }
 
   .toolbar-actions--secondary .toolbar-button {
+    width: 34px;
+    padding: 0;
     min-height: 34px;
     border-color: rgba($gold, 0.14);
     background: rgba($black, 0.22);
@@ -620,23 +622,14 @@
     min-height: 14px;
   }
 
-  @container (max-width: 379px) {
+  @container (max-width: 400px) {
     .toolbar-actions--secondary .toolbar-button {
       gap: 0;
-      padding: 0 8px;
-    }
-
-    .toolbar-actions--secondary .toolbar-label {
-      display: none;
     }
   }
 
   @media (min-width: 520px) {
     .toolbar-actions--primary {
-      flex: 1.45 1 0;
-    }
-
-    .toolbar-actions--secondary {
       flex: 1 1 0;
     }
   }

@@ -41,7 +41,7 @@ const DEFAULT_GLOBAL_SETTINGS: GlobalSettings = {
   sidebarSide: 'right',
   sidebarWidth: 360,
   language: 'en',
-  textSize: 'medium'
+  textSize: 'large'
 };
 
 const DEFAULT_VERSION_SETTINGS: VersionSettings = {
