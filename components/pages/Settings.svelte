@@ -583,7 +583,7 @@
 
       <div class="bookmark-layout-preview" aria-label={translate($languageStore, "settings.bookmarkPreviewTitle")}>
         <div class="bookmark-layout-preview__heading">
-          <div>
+          <div class="bookmark-layout-preview__copy">
             <div class="compact-options__title">{translate($languageStore, "settings.bookmarkPreviewTitle")}</div>
             <p class="section-description section-description--compact">
               {translate($languageStore, "settings.bookmarkPreviewDescription")}
@@ -907,6 +907,11 @@
     line-height: 1;
   }
 
+  .settings-row__copy:has(.settings-row__description)::after {
+    grid-column: 2;
+    grid-row: 1;
+  }
+
   .section-description,
   .settings-row__description {
     position: absolute;
@@ -996,13 +1001,19 @@
 
   .settings-row__copy {
     position: relative;
+    flex: 1 1 auto;
     min-width: 0;
-    display: flex;
+    display: grid;
+    grid-template-columns: minmax(0, max-content) auto;
     align-items: center;
-    gap: 8px;
+    justify-content: start;
+    column-gap: 8px;
+    row-gap: 4px;
   }
 
   .settings-row__title {
+    grid-column: 1;
+    grid-row: 1;
     min-width: 0;
     color: rgba($white, 0.94);
     font-family: $primary-font;
@@ -1025,6 +1036,8 @@
   }
 
   .settings-row__hint {
+    grid-column: 1 / -1;
+    grid-row: 2;
     margin-top: 6px;
     color: rgba($gold, 0.72);
     font-size: calc(10px * var(--bt-text-scale, 1));
@@ -1378,6 +1391,13 @@
     justify-content: space-between;
     gap: 12px;
     margin-bottom: 12px;
+  }
+
+  .bookmark-layout-preview__copy {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 0;
   }
 
   .bookmark-layout-preview__mode {
