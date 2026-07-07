@@ -76,25 +76,17 @@ body.bt-dev-poe2-copy-visible .row:hover > .left > button.copy {
 }
 
 .row > .left > button.bt-open-wiki {
-  border: 1px solid rgba($gold, 0.28);
-  border-radius: 2px;
-  background: rgba($black, 0.76);
+  border: 0;
+  background: transparent;
   color: $white;
   font-family: $primary-font;
-  font-size: calc(16px * var(--bt-text-scale, 1));
+  font-size: calc(18px * var(--bt-text-scale, 1));
   font-weight: 700;
   line-height: 1;
   text-decoration: none;
-  transition:
-    border-color 0.15s ease,
-    background 0.15s ease,
-    color 0.15s ease;
+  text-shadow: 0 1px 2px rgba($black, 0.9);
 
-  &:hover,
   &:focus-visible {
-    border-color: rgba($gold, 0.5);
-    background: rgba($gold, 0.12);
-    color: $white;
     outline: none;
   }
 }

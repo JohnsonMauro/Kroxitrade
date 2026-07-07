@@ -150,6 +150,14 @@ const version115Polish: WhatsNewItem[] = [
   }
 ];
 
+const version116Features: WhatsNewItem[] = [
+  {
+    title: "Wiki button for unique items",
+    description:
+      "Results can now show an optional W action on unique items that opens the matching PoE Wiki or PoE2 Wiki page."
+  }
+];
+
 const version110Features: WhatsNewItem[] = [
   {
     title: "Settings are now easier to navigate",
@@ -240,9 +248,18 @@ const version110Changes: WhatsNewItem[] = [
 ];
 
 export const latestWhatsNew: WhatsNewEntry = {
-  version: "1.1.5",
+  version: "1.1.6",
   date: "2026-07-07",
   sections: [
+    {
+      title: "1.1.6",
+      groups: [
+        {
+          titleKey: "whatsNew.section.features",
+          items: version116Features
+        }
+      ]
+    },
     {
       title: "1.1.5",
       groups: [
@@ -326,6 +343,99 @@ export const latestWhatsNew: WhatsNewEntry = {
 
 export const whatsNewEntries: WhatsNewEntry[] = [
   latestWhatsNew,
+  {
+    version: "1.1.6",
+    date: "2026-07-07",
+    sections: [
+      {
+        title: "1.1.6",
+        groups: [
+          {
+            titleKey: "whatsNew.section.features",
+            items: version116Features
+          }
+        ]
+      },
+      {
+        title: "1.1.5",
+        groups: [
+          {
+            titleKey: "whatsNew.section.features",
+            items: version115Features
+          },
+          {
+            titleKey: "whatsNew.section.polish",
+            items: version115Polish
+          }
+        ]
+      },
+      {
+        title: "1.1.4",
+        groups: [
+          {
+            titleKey: "whatsNew.section.features",
+            items: version114Items
+          }
+        ]
+      },
+      {
+        title: "1.1.3",
+        groups: [
+          {
+            titleKey: "whatsNew.section.features",
+            items: version113Items
+          }
+        ]
+      },
+      {
+        title: "1.1.2",
+        groups: [
+          {
+            titleKey: "whatsNew.section.features",
+            items: version112Features
+          },
+          {
+            titleKey: "whatsNew.section.fixes",
+            items: version112Fixes
+          },
+          {
+            titleKey: "whatsNew.section.polish",
+            items: version112Polish
+          }
+        ]
+      },
+      {
+        title: "1.1.1",
+        groups: [
+          {
+            titleKey: "whatsNew.section.fixes",
+            items: version111Items.slice(0, 4)
+          },
+          {
+            titleKey: "whatsNew.section.polish",
+            items: version111Items.slice(4)
+          }
+        ]
+      },
+      {
+        title: "1.1.0",
+        groups: [
+          {
+            titleKey: "whatsNew.section.features",
+            items: version110Features
+          },
+          {
+            titleKey: "whatsNew.section.polish",
+            items: version110Changes
+          },
+          {
+            titleKey: "whatsNew.section.fixes",
+            items: version110Fixes
+          }
+        ]
+      }
+    ]
+  },
   {
     version: "1.1.5",
     date: "2026-07-07",
