@@ -42,7 +42,8 @@ export const portugueseTranslations: Record<string, TranslationValue> = {
   "settings.languageDescription":
     "Escolha o idioma usado pela interface da extensão.",
   "settings.textSizeTitle": "Tamanho do texto",
-  "settings.textSizeDescription": "Ajuste o tamanho do texto da extensão para seu monitor e conforto de leitura.",
+  "settings.textSizeDescription":
+    "Ajuste o tamanho do texto da extensão para seu monitor e conforto de leitura.",
   "settings.textSizeSmall": "Pequeno",
   "settings.textSizeMedium": "Médio",
   "settings.textSizeLarge": "Grande",
@@ -61,13 +62,17 @@ export const portugueseTranslations: Record<string, TranslationValue> = {
   "settings.compactActionsTitle": "Layout de favoritos",
   "settings.compactActionsDescription":
     "Escolha um layout mais compacto para as buscas salvas, com o nome da liga e todas as ações agrupadas em um menu de três pontos.",
+  "settings.bookmarkCategoriesTitle": "Categorias de favoritos",
+  "settings.bookmarkCategoriesDescription":
+    "Agrupe buscas salvas em categorias opcionais dentro de cada pasta. Ao desativar, todos os favoritos voltam a aparecer diretamente na pasta principal.",
   "settings.compactActionsDefault": "Classico",
   "settings.compactActionsCompact": "Compacto",
   "settings.compactTradeActionsTitle": "Ações visíveis fora do menu",
   "settings.compactTradeActionsDescription":
     "Escolha quais ações de cada busca salva continuam visíveis no modo compacto. Se nenhuma for selecionada, apenas o menu de três pontos aparece. Se todas ou todas menos uma forem selecionadas, todas ficam visíveis.",
   "settings.compactTradeActionToggle": "Completa / Pendente",
-  "settings.saveFailed": "Não foi possível salvar as configurações. Tente novamente.",
+  "settings.saveFailed":
+    "Não foi possível salvar as configurações. Tente novamente.",
   "about.eyebrow": "Sobre",
   "about.description":
     "Poe Trade Plus é um complemento para o Path of Exile Trade criado para salvar buscas, organizar pastas, acompanhar o histórico e manter fluxos de trade recorrentes rápidos, visuais e fáceis de gerenciar dentro do site oficial.",
@@ -175,6 +180,21 @@ export const portugueseTranslations: Record<string, TranslationValue> = {
   "folder.deleteTradeError": "Não foi possível excluir o trade.",
   "folder.duplicateTradeError": "Não foi possível duplicar o trade.",
   "folder.duplicateFolderError": "Não foi possível duplicar a pasta.",
+  "folder.addCategory": "Adicionar categoria",
+  "folder.categoryPrompt": "Nome da categoria",
+  "folder.categoryNameRequired": "Digite um nome para a categoria.",
+  "folder.categoryCreated": ({ title }) => `Categoria "${title}" criada`,
+  "folder.categoryRenamed": ({ title }) =>
+    `Categoria renomeada para "${title}"`,
+  "folder.categoryDeleted": ({ title }) => `Categoria "${title}" excluída`,
+  "folder.renameCategory": "Renomear categoria",
+  "folder.deleteCategory": "Excluir categoria",
+  "folder.deleteCategoryConfirm": ({ title }) =>
+    `Excluir a categoria "${title}"? Os favoritos nela continuarão nesta pasta.`,
+  "folder.categorySelect": "Categoria do favorito",
+  "folder.noCategory": "Sem categoria",
+  "folder.uncategorized": "Sem categoria",
+  "folder.newCategoryOption": "Nova categoria...",
   "finer.title": "Adicionar aos filtros",
   "finer.modifiers": "Modificadores",
   "finer.pseudoResLife": "Pseudo Res/Vida",

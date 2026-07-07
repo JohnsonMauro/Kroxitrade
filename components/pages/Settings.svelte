@@ -181,6 +181,12 @@
     }
   }
 
+  async function handleBookmarkCategoriesChange(bookmarkCategoriesEnabled: boolean) {
+    if (!(await settings.updateBookmarkCategoriesVisibility(bookmarkCategoriesEnabled))) {
+      flashMessages.alert(translate($languageStore, "settings.saveFailed"));
+    }
+  }
+
   async function handleCompactTradeActionChange(actionId: BookmarkTradeActionId, checked: boolean) {
     const nextActions = checked
       ? [...$settings.compactBookmarkTradeActions, actionId]
@@ -516,6 +522,26 @@
       </section>
 
     {:else if activeTab === "bookmarks"}
+      <section class="settings-section settings-section--wide">
+        <div class="section-heading">
+          <h3 class="section-title">{translate($languageStore, "settings.bookmarkCategoriesTitle")}</h3>
+        </div>
+        <div class="settings-row-list">
+          <div class="settings-row">
+            <div class="settings-row__copy">
+              <div class="settings-row__title">{translate($languageStore, "settings.bookmarkCategoriesTitle")}</div>
+              <div class="settings-row__description">{translate($languageStore, "settings.bookmarkCategoriesDescription")}</div>
+            </div>
+            <ToggleRow
+              checked={$settings.bookmarkCategoriesEnabled}
+              label={translate($languageStore, "settings.bookmarkCategoriesTitle")}
+              stateLabel={toggleSwitchLabel($settings.bookmarkCategoriesEnabled)}
+              onToggle={() => handleBookmarkCategoriesChange(!$settings.bookmarkCategoriesEnabled)}
+            />
+          </div>
+        </div>
+      </section>
+
       <section class="settings-section settings-section--wide settings-section--bookmarks-layout" data-tutorial="settings-bookmarks">
       <div class="section-heading">
         <h3 class="section-title">{translate($languageStore, "settings.compactActionsTitle")}</h3>

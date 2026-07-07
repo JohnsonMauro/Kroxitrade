@@ -44,7 +44,8 @@ export const koreanTranslations: Record<string, TranslationValue> = {
   "settings.languageDescription":
     "확장 프로그램 인터페이스에 사용할 언어를 선택하세요.",
   "settings.textSizeTitle": "텍스트 크기",
-  "settings.textSizeDescription": "모니터와 읽기 편의에 맞게 확장 프로그램의 텍스트 크기를 조정하세요.",
+  "settings.textSizeDescription":
+    "모니터와 읽기 편의에 맞게 확장 프로그램의 텍스트 크기를 조정하세요.",
   "settings.textSizeSmall": "작게",
   "settings.textSizeMedium": "보통",
   "settings.textSizeLarge": "크게",
@@ -63,6 +64,9 @@ export const koreanTranslations: Record<string, TranslationValue> = {
   "settings.compactActionsTitle": "북마크 레이아웃",
   "settings.compactActionsDescription":
     "저장된 검색을 더 간결하게 표시하고, 리그 이름과 모든 작업을 점 세 개 메뉴 안에 묶습니다.",
+  "settings.bookmarkCategoriesTitle": "북마크 카테고리",
+  "settings.bookmarkCategoriesDescription":
+    "각 폴더 안에서 저장된 검색을 선택적 카테고리로 묶습니다. 끄면 모든 북마크가 다시 상위 폴더 바로 아래에 표시됩니다.",
   "settings.compactActionsDefault": "기본형",
   "settings.compactActionsCompact": "컴팩트",
   "settings.compactTradeActionsTitle": "메뉴 밖에 보일 작업",
@@ -170,6 +174,21 @@ export const koreanTranslations: Record<string, TranslationValue> = {
   "folder.deleteTradeError": "trade를 삭제할 수 없습니다.",
   "folder.duplicateTradeError": "trade를 복제할 수 없습니다.",
   "folder.duplicateFolderError": "폴더를 복제할 수 없습니다.",
+  "folder.addCategory": "카테고리 추가",
+  "folder.categoryPrompt": "카테고리 이름",
+  "folder.categoryNameRequired": "카테고리 이름을 입력하세요.",
+  "folder.categoryCreated": ({ title }) => `카테고리 "${title}" 생성됨`,
+  "folder.categoryRenamed": ({ title }) =>
+    `카테고리 이름이 "${title}"로 변경됨`,
+  "folder.categoryDeleted": ({ title }) => `카테고리 "${title}" 삭제됨`,
+  "folder.renameCategory": "카테고리 이름 변경",
+  "folder.deleteCategory": "카테고리 삭제",
+  "folder.deleteCategoryConfirm": ({ title }) =>
+    `카테고리 "${title}"을 삭제할까요? 안의 북마크는 이 폴더에 남습니다.`,
+  "folder.categorySelect": "북마크 카테고리",
+  "folder.noCategory": "카테고리 없음",
+  "folder.uncategorized": "카테고리 없음",
+  "folder.newCategoryOption": "새 카테고리...",
   "finer.title": "필터에 추가",
   "finer.modifiers": "수정자",
   "finer.pseudoResLife": "의사 저항/생명력",
@@ -181,8 +200,7 @@ export const koreanTranslations: Record<string, TranslationValue> = {
   "settings.onboardingDescription":
     "주요 작업과 탭을 다시 보려면 빠른 가이드를 다시 엽니다.",
   "settings.reopenTutorial": "튜토리얼 열기",
-  "settings.equivalentSource":
-    "15분마다 캐시되는 poe.ninja 환율을 사용합니다.",
+  "settings.equivalentSource": "15분마다 캐시되는 poe.ninja 환율을 사용합니다.",
   "settings.equivalentRefresh": "환율 새로고침",
   "settings.equivalentRefreshLoading": "새로고침 중...",
   "settings.equivalentRefreshSuccess": ({ league }) =>

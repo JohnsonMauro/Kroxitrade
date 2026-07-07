@@ -40,7 +40,8 @@ export const frenchTranslations: Record<string, TranslationValue> = {
   "settings.languageDescription":
     "Choisissez la langue utilisée par l'interface de l'extension.",
   "settings.textSizeTitle": "Taille du texte",
-  "settings.textSizeDescription": "Ajustez la taille du texte de l'extension à votre écran et à votre confort de lecture.",
+  "settings.textSizeDescription":
+    "Ajustez la taille du texte de l'extension à votre écran et à votre confort de lecture.",
   "settings.textSizeSmall": "Petit",
   "settings.textSizeMedium": "Moyen",
   "settings.textSizeLarge": "Grand",
@@ -59,13 +60,17 @@ export const frenchTranslations: Record<string, TranslationValue> = {
   "settings.compactActionsTitle": "Disposition des favoris",
   "settings.compactActionsDescription":
     "Choisissez une disposition plus compacte pour les recherches sauvegardées, avec le nom de la ligue et toutes les actions regroupées dans un menu a trois points.",
+  "settings.bookmarkCategoriesTitle": "Catégories de favoris",
+  "settings.bookmarkCategoriesDescription":
+    "Regroupez les recherches sauvegardées dans des catégories optionnelles à l'intérieur de chaque dossier. En désactivant cette option, tous les favoris réapparaissent directement dans leur dossier principal.",
   "settings.compactActionsDefault": "Classique",
   "settings.compactActionsCompact": "Compact",
   "settings.compactTradeActionsTitle": "Actions visibles hors du menu",
   "settings.compactTradeActionsDescription":
     "Choisissez quelles actions de chaque recherche sauvegardée restent visibles en mode compact. Si aucune n'est sélectionnée, seuls les trois points apparaissent. Si toutes ou toutes sauf une sont sélectionnées, toutes restent visibles.",
   "settings.compactTradeActionToggle": "Terminée / En attente",
-  "settings.saveFailed": "Impossible d’enregistrer les paramètres. Veuillez réessayer.",
+  "settings.saveFailed":
+    "Impossible d’enregistrer les paramètres. Veuillez réessayer.",
   "about.eyebrow": "À propos",
   "about.description":
     "Poe Trade Plus est un compagnon pour Path of Exile Trade conçu pour sauvegarder des recherches, organiser des dossiers, suivre l’historique et garder les routines de trade rapides, visuelles et faciles à gérer directement sur le site officiel.",
@@ -170,6 +175,20 @@ export const frenchTranslations: Record<string, TranslationValue> = {
   "folder.deleteTradeError": "Impossible de supprimer le trade.",
   "folder.duplicateTradeError": "Impossible de dupliquer le trade.",
   "folder.duplicateFolderError": "Impossible de dupliquer le dossier.",
+  "folder.addCategory": "Ajouter une catégorie",
+  "folder.categoryPrompt": "Nom de la catégorie",
+  "folder.categoryNameRequired": "Saisissez un nom de catégorie.",
+  "folder.categoryCreated": ({ title }) => `Catégorie "${title}" créée`,
+  "folder.categoryRenamed": ({ title }) => `Catégorie renommée en "${title}"`,
+  "folder.categoryDeleted": ({ title }) => `Catégorie "${title}" supprimée`,
+  "folder.renameCategory": "Renommer la catégorie",
+  "folder.deleteCategory": "Supprimer la catégorie",
+  "folder.deleteCategoryConfirm": ({ title }) =>
+    `Supprimer la catégorie "${title}" ? Les favoris qu'elle contient resteront dans ce dossier.`,
+  "folder.categorySelect": "Catégorie du favori",
+  "folder.noCategory": "Aucune catégorie",
+  "folder.uncategorized": "Sans catégorie",
+  "folder.newCategoryOption": "Nouvelle catégorie...",
   "finer.title": "Ajouter aux filtres",
   "finer.modifiers": "Modificateurs",
   "finer.pseudoResLife": "Pseudo Résistances/Vie",

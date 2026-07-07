@@ -39,7 +39,8 @@ export const thaiTranslations: Record<string, TranslationValue> = {
   "settings.languageTitle": "ภาษา",
   "settings.languageDescription": "เลือกภาษาที่ใช้ในส่วนติดต่อของส่วนขยาย",
   "settings.textSizeTitle": "ขนาดข้อความ",
-  "settings.textSizeDescription": "ปรับขนาดข้อความของส่วนขยายให้เหมาะกับจอภาพและความสบายในการอ่าน",
+  "settings.textSizeDescription":
+    "ปรับขนาดข้อความของส่วนขยายให้เหมาะกับจอภาพและความสบายในการอ่าน",
   "settings.textSizeSmall": "เล็ก",
   "settings.textSizeMedium": "กลาง",
   "settings.textSizeLarge": "ใหญ่",
@@ -58,6 +59,9 @@ export const thaiTranslations: Record<string, TranslationValue> = {
   "settings.compactActionsTitle": "เลย์เอาต์บุ๊กมาร์ก",
   "settings.compactActionsDescription":
     "เลือกเลย์เอาต์ที่กะทัดรัดยิ่งขึ้นสำหรับการค้นหาที่บันทึกไว้ โดยแสดงชื่อลีกและรวมการทำงานทั้งหมดไว้ในเมนูสามจุด",
+  "settings.bookmarkCategoriesTitle": "หมวดหมู่บุ๊กมาร์ก",
+  "settings.bookmarkCategoriesDescription":
+    "จัดกลุ่มการค้นหาที่บันทึกไว้เป็นหมวดหมู่เสริมภายในแต่ละโฟลเดอร์ เมื่อปิด ตัวบุ๊กมาร์กทั้งหมดจะแสดงในโฟลเดอร์หลักเหมือนเดิม",
   "settings.compactActionsDefault": "คลาสสิก",
   "settings.compactActionsCompact": "กะทัดรัด",
   "settings.compactTradeActionsTitle": "การทำงานที่แสดงนอกเมนู",
@@ -105,8 +109,7 @@ export const thaiTranslations: Record<string, TranslationValue> = {
   "bookmarks.importDescription":
     "วางข้อความโฟลเดอร์ที่ส่งออกไว้ด้านล่างเพื่อกู้คืนเป็นโฟลเดอร์บุ๊กมาร์กที่บันทึกไว้",
   "bookmarks.importPlaceholder": "วางข้อความโฟลเดอร์ที่นี่...",
-  "bookmarks.importHint":
-    "ใช้ข้อความส่งออกแบบเต็มจากโฟลเดอร์ที่เคยส่งออกไว้",
+  "bookmarks.importHint": "ใช้ข้อความส่งออกแบบเต็มจากโฟลเดอร์ที่เคยส่งออกไว้",
   "bookmarks.emptyEyebrow": "บุ๊กมาร์ก",
   "bookmarks.emptyTitle": "สร้างโฟลเดอร์แรกของคุณ",
   "bookmarks.emptyDescription":
@@ -165,6 +168,21 @@ export const thaiTranslations: Record<string, TranslationValue> = {
   "folder.deleteTradeError": "ไม่สามารถลบ trade ได้",
   "folder.duplicateTradeError": "ไม่สามารถคัดลอก trade ได้",
   "folder.duplicateFolderError": "ไม่สามารถคัดลอกโฟลเดอร์ได้",
+  "folder.addCategory": "เพิ่มหมวดหมู่",
+  "folder.categoryPrompt": "ชื่อหมวดหมู่",
+  "folder.categoryNameRequired": "ป้อนชื่อหมวดหมู่",
+  "folder.categoryCreated": ({ title }) => `สร้างหมวดหมู่ "${title}" แล้ว`,
+  "folder.categoryRenamed": ({ title }) =>
+    `เปลี่ยนชื่อหมวดหมู่เป็น "${title}" แล้ว`,
+  "folder.categoryDeleted": ({ title }) => `ลบหมวดหมู่ "${title}" แล้ว`,
+  "folder.renameCategory": "เปลี่ยนชื่อหมวดหมู่",
+  "folder.deleteCategory": "ลบหมวดหมู่",
+  "folder.deleteCategoryConfirm": ({ title }) =>
+    `ลบหมวดหมู่ "${title}"? บุ๊กมาร์กในนั้นจะยังอยู่ในโฟลเดอร์นี้`,
+  "folder.categorySelect": "หมวดหมู่บุ๊กมาร์ก",
+  "folder.noCategory": "ไม่มีหมวดหมู่",
+  "folder.uncategorized": "ไม่มีหมวดหมู่",
+  "folder.newCategoryOption": "หมวดหมู่ใหม่...",
   "finer.title": "เพิ่มไปยังตัวกรอง",
   "finer.modifiers": "ม็อด",
   "finer.attackWeapon": "อาวุธโจมตี",
@@ -174,14 +192,12 @@ export const thaiTranslations: Record<string, TranslationValue> = {
   "settings.onboardingDescription":
     "เปิดคู่มือเริ่มต้นอย่างรวดเร็วอีกครั้งเพื่อทบทวนการทำงานและแท็บหลัก",
   "settings.reopenTutorial": "เปิดบทช่วยสอน",
-  "settings.equivalentSource":
-    "ใช้เรตจาก poe.ninja ที่แคชทุก 15 นาที",
+  "settings.equivalentSource": "ใช้เรตจาก poe.ninja ที่แคชทุก 15 นาที",
   "settings.equivalentRefresh": "รีเฟรชเรต",
   "settings.equivalentRefreshLoading": "กำลังรีเฟรช...",
   "settings.equivalentRefreshSuccess": ({ league }) =>
     `รีเฟรชราคาสมมูลสำหรับ ${league} แล้ว`,
-  "settings.equivalentRefreshError":
-    "ไม่สามารถรีเฟรชเรต poe.ninja ได้ในตอนนี้",
+  "settings.equivalentRefreshError": "ไม่สามารถรีเฟรชเรต poe.ninja ได้ในตอนนี้",
   "settings.equivalentRefreshUnavailable":
     "เปิดลีกเทรดก่อน เพื่อรีเฟรชเรต poe.ninja",
   "settings.bulkTitle": "ผู้ขาย Bulk",

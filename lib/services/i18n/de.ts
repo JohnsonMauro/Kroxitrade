@@ -39,7 +39,8 @@ export const germanTranslations: Record<string, TranslationValue> = {
   "settings.languageDescription":
     "Wähle die Sprache der Erweiterungsoberfläche.",
   "settings.textSizeTitle": "Textgröße",
-  "settings.textSizeDescription": "Passe die Textgröße der Erweiterung an deinen Monitor und Lesekomfort an.",
+  "settings.textSizeDescription":
+    "Passe die Textgröße der Erweiterung an deinen Monitor und Lesekomfort an.",
   "settings.textSizeSmall": "Klein",
   "settings.textSizeMedium": "Mittel",
   "settings.textSizeLarge": "Groß",
@@ -58,13 +59,17 @@ export const germanTranslations: Record<string, TranslationValue> = {
   "settings.compactActionsTitle": "Bookmark-Layout",
   "settings.compactActionsDescription":
     "Wähle ein kompakteres Layout für gespeicherte Suchen, mit Ligaanzeige und allen Aktionen in einem Drei-Punkte-Menü.",
+  "settings.bookmarkCategoriesTitle": "Lesezeichen-Kategorien",
+  "settings.bookmarkCategoriesDescription":
+    "Gruppiere gespeicherte Suchen in optionalen Kategorien innerhalb jedes Ordners. Wenn dies deaktiviert ist, erscheinen alle Lesezeichen wieder direkt im Hauptordner.",
   "settings.compactActionsDefault": "Klassisch",
   "settings.compactActionsCompact": "Kompakt",
   "settings.compactTradeActionsTitle": "Sichtbare Aktionen außerhalb des Menüs",
   "settings.compactTradeActionsDescription":
     "Wähle aus, welche Aktionen gespeicherter Suchen im kompakten Modus sichtbar bleiben. Wenn nichts ausgewählt ist, wird nur das Drei-Punkte-Menü angezeigt. Wenn alle oder alle bis auf eine ausgewählt sind, bleiben alle sichtbar.",
   "settings.compactTradeActionToggle": "Abgeschlossen / Offen",
-  "settings.saveFailed": "Einstellungen konnten nicht gespeichert werden. Bitte versuche es erneut.",
+  "settings.saveFailed":
+    "Einstellungen konnten nicht gespeichert werden. Bitte versuche es erneut.",
   "about.description":
     "Poe Trade Plus ist ein Begleiter für Path of Exile Trade, entwickelt zum Speichern von Suchen, Organisieren von Ordnern, Nachverfolgen des Verlaufs und für schnelle, übersichtliche wiederkehrende Handelsabläufe direkt auf der offiziellen Seite.",
   "about.patreon": "Patreon",
@@ -165,6 +170,20 @@ export const germanTranslations: Record<string, TranslationValue> = {
   "folder.deleteTradeError": "Der Trade konnte nicht gelöscht werden.",
   "folder.duplicateTradeError": "Der Trade konnte nicht dupliziert werden.",
   "folder.duplicateFolderError": "Der Ordner konnte nicht dupliziert werden.",
+  "folder.addCategory": "Kategorie hinzufügen",
+  "folder.categoryPrompt": "Kategoriename",
+  "folder.categoryNameRequired": "Gib einen Kategorienamen ein.",
+  "folder.categoryCreated": ({ title }) => `Kategorie "${title}" erstellt`,
+  "folder.categoryRenamed": ({ title }) => `Kategorie in "${title}" umbenannt`,
+  "folder.categoryDeleted": ({ title }) => `Kategorie "${title}" gelöscht`,
+  "folder.renameCategory": "Kategorie umbenennen",
+  "folder.deleteCategory": "Kategorie löschen",
+  "folder.deleteCategoryConfirm": ({ title }) =>
+    `Kategorie "${title}" löschen? Die Lesezeichen darin bleiben in diesem Ordner.`,
+  "folder.categorySelect": "Lesezeichen-Kategorie",
+  "folder.noCategory": "Keine Kategorie",
+  "folder.uncategorized": "Keine Kategorie",
+  "folder.newCategoryOption": "Neue Kategorie...",
   "finer.title": "Zu Filtern hinzufügen",
   "finer.modifiers": "Modifikatoren",
   "finer.pseudoResLife": "Pseudo Widerstände/Leben",

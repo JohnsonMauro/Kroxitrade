@@ -39,7 +39,8 @@ export const russianTranslations: Record<string, TranslationValue> = {
   "settings.languageTitle": "Язык",
   "settings.languageDescription": "Выберите язык интерфейса расширения.",
   "settings.textSizeTitle": "Размер текста",
-  "settings.textSizeDescription": "Настройте размер текста расширения для вашего монитора и удобства чтения.",
+  "settings.textSizeDescription":
+    "Настройте размер текста расширения для вашего монитора и удобства чтения.",
   "settings.textSizeSmall": "Маленький",
   "settings.textSizeMedium": "Средний",
   "settings.textSizeLarge": "Большой",
@@ -58,6 +59,9 @@ export const russianTranslations: Record<string, TranslationValue> = {
   "settings.compactActionsTitle": "Макет закладок",
   "settings.compactActionsDescription":
     "Выберите более компактный вид для сохраненных поисков: название лиги и все действия будут собраны в меню из трех точек.",
+  "settings.bookmarkCategoriesTitle": "Категории закладок",
+  "settings.bookmarkCategoriesDescription":
+    "Группируйте сохраненные поиски в необязательные категории внутри каждой папки. При отключении все закладки снова отображаются прямо в основной папке.",
   "settings.compactActionsDefault": "Классический",
   "settings.compactActionsCompact": "Компактный",
   "settings.compactTradeActionsTitle": "Видимые действия вне меню",
@@ -163,6 +167,21 @@ export const russianTranslations: Record<string, TranslationValue> = {
   "folder.deleteTradeError": "Не удалось удалить трейд.",
   "folder.duplicateTradeError": "Не удалось дублировать трейд.",
   "folder.duplicateFolderError": "Не удалось дублировать папку.",
+  "folder.addCategory": "Добавить категорию",
+  "folder.categoryPrompt": "Название категории",
+  "folder.categoryNameRequired": "Введите название категории.",
+  "folder.categoryCreated": ({ title }) => `Категория "${title}" создана`,
+  "folder.categoryRenamed": ({ title }) =>
+    `Категория переименована в "${title}"`,
+  "folder.categoryDeleted": ({ title }) => `Категория "${title}" удалена`,
+  "folder.renameCategory": "Переименовать категорию",
+  "folder.deleteCategory": "Удалить категорию",
+  "folder.deleteCategoryConfirm": ({ title }) =>
+    `Удалить категорию "${title}"? Закладки в ней останутся в этой папке.`,
+  "folder.categorySelect": "Категория закладки",
+  "folder.noCategory": "Без категории",
+  "folder.uncategorized": "Без категории",
+  "folder.newCategoryOption": "Новая категория...",
   "finer.title": "Добавить в фильтры",
   "finer.modifiers": "Модификаторы",
   "finer.pseudoResLife": "Псевдо резы/жизнь",
