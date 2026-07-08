@@ -1,6 +1,6 @@
 <script lang="ts">
   import { onMount, onDestroy, tick } from "svelte";
-  import { normalizeIcon } from "~lib/utilities/icons";
+  import SvgIcon from "./SvgIcon.svelte";
 
   type ActionId = string;
 
@@ -197,7 +197,7 @@
           aria-label={getDisplayLabel(action)}
           onclick={stopAndRun(action.handler)}
         >
-          <span class="btn__icon" aria-hidden="true">{@html normalizeIcon(action.icon)}</span>
+          <span class="btn__icon" aria-hidden="true"><SvgIcon svg={action.icon} /></span>
         </button>
       {/each}
 
@@ -211,7 +211,7 @@
           onclick={stopAndRun(toggleMenu)}
           bind:this={triggerRef}
         >
-          <span class="btn__icon" aria-hidden="true">{@html normalizeIcon(dropdownIcon || "")}</span>
+          <span class="btn__icon" aria-hidden="true"><SvgIcon svg={dropdownIcon || ""} /></span>
         </button>
       {/if}
     </div>
@@ -227,7 +227,7 @@
           aria-label={getDisplayLabel(action)}
           onclick={stopAndRun(action.handler)}
         >
-          <span class="btn__icon" aria-hidden="true">{@html normalizeIcon(action.icon)}</span>
+          <span class="btn__icon" aria-hidden="true"><SvgIcon svg={action.icon} /></span>
         </button>
       {/each}
 
@@ -241,7 +241,7 @@
           onclick={stopAndRun(toggleMenu)}
           bind:this={triggerRef}
         >
-          <span class="btn__icon" aria-hidden="true">{@html normalizeIcon(dropdownIcon || "")}</span>
+          <span class="btn__icon" aria-hidden="true"><SvgIcon svg={dropdownIcon || ""} /></span>
         </button>
       {/if}
     </div>
@@ -261,7 +261,7 @@
           class:btn--danger={action.danger}
           onclick={stopAndRun(() => handleAction(action.handler))}
         >
-          <span class="btn__icon" aria-hidden="true">{@html normalizeIcon(action.icon)}</span>
+          <span class="btn__icon" aria-hidden="true"><SvgIcon svg={action.icon} /></span>
           <span class="btn__label">{getDisplayLabel(action)}</span>
         </button>
       {/each}
@@ -301,7 +301,7 @@
 
   .actions-inline__text {
     min-width: 0;
-    font-size: 10px;
+    font-size: calc(10px * var(--bt-text-scale, 1));
     line-height: 1.2;
     color: rgba($gold-alt, 0.52);
     letter-spacing: 0.03em;
@@ -336,7 +336,7 @@
     &--icon {
       width: 24px;
       height: 24px;
-      font-size: 12px;
+      font-size: calc(12px * var(--bt-text-scale, 1));
       line-height: 1;
     }
 
@@ -349,7 +349,7 @@
       background: #0b0b0b;
       border-radius: 4px;
       text-align: left;
-      font-size: 12px;
+      font-size: calc(12px * var(--bt-text-scale, 1));
       line-height: 1.35;
 
       &:hover {

@@ -1,4 +1,6 @@
 <script lang="ts">
+  import SvgIcon from "./SvgIcon.svelte";
+
   let {
     label = "",
     icon = "",
@@ -28,18 +30,18 @@
 
 {#if href}
   <a {href} target="_blank" rel="noopener" class="button is-{theme} {className}">
-    {#if iconHtml}<span class="icon icon-html">{@html iconHtml}</span>{:else if icon}<span class="icon">{icon}</span>{/if}
+    {#if iconHtml}<span class="icon icon-html"><SvgIcon svg={iconHtml} size={14} className="toolbar-svg" /></span>{:else if icon}<span class="icon">{icon}</span>{/if}
     {#if label}<span class="label">{label}</span>{/if}
   </a>
 {:else if onFileChange}
   <label class="button is-{theme} {className}">
     <input type="file" class="file-input" accept={fileAccept} onchange={onFileChange} />
-    {#if iconHtml}<span class="icon icon-html">{@html iconHtml}</span>{:else if icon}<span class="icon">{icon}</span>{/if}
+    {#if iconHtml}<span class="icon icon-html"><SvgIcon svg={iconHtml} size={14} className="toolbar-svg" /></span>{:else if icon}<span class="icon">{icon}</span>{/if}
     {#if label}<span class="label">{label}</span>{/if}
   </label>
 {:else}
   <button type="button" class="button is-{theme} {className}" onclick={handleClick}>
-    {#if iconHtml}<span class="icon icon-html">{@html iconHtml}</span>{:else if icon}<span class="icon">{icon}</span>{/if}
+    {#if iconHtml}<span class="icon icon-html"><SvgIcon svg={iconHtml} size={14} className="toolbar-svg" /></span>{:else if icon}<span class="icon">{icon}</span>{/if}
     {#if label}<span class="label">{label}</span>{/if}
   </button>
 {/if}
@@ -59,7 +61,7 @@
     border-radius: 2px;
     text-decoration: none;
     font-family: $primary-font;
-    font-size: 11px;
+    font-size: calc(11px * var(--bt-text-scale, 1));
     text-transform: uppercase;
     letter-spacing: 0.05em;
     font-weight: 600;
@@ -127,7 +129,7 @@
   }
 
   .file-input { display: none !important; }
-  .icon { margin-right: 8px; font-size: 14px; }
+  .icon { margin-right: 8px; font-size: calc(14px * var(--bt-text-scale, 1)); }
   .icon-html {
     display: inline-flex;
     align-items: center;

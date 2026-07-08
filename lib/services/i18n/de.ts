@@ -29,6 +29,7 @@ export const germanTranslations: Record<string, TranslationValue> = {
   "popup.shortcut.poedb": "PoEDb",
   "popup.shortcut.poe2db": "PoE2Db",
   "popup.shortcut.ninja": "poe.ninja",
+  "settings.tabs.interface": "Allgemein",
   "settings.sidebarTitle": "Position der Seitenleiste",
   "settings.sidebarDescription":
     "Wähle, auf welcher Seite des Bildschirms das Poe Trade Plus-Panel erscheinen soll.",
@@ -38,12 +39,22 @@ export const germanTranslations: Record<string, TranslationValue> = {
   "settings.languageTitle": "Sprache",
   "settings.languageDescription":
     "Wähle die Sprache der Erweiterungsoberfläche.",
+  "settings.textSizeTitle": "Textgröße",
+  "settings.textSizeDescription":
+    "Passe die Textgröße der Erweiterung an deinen Monitor und Lesekomfort an.",
+  "settings.textSizeSmall": "Klein",
+  "settings.textSizeMedium": "Mittel",
+  "settings.textSizeLarge": "Groß",
+  "settings.textSizeExtraLarge": "Extra",
   "settings.languageEnglish": "Englisch",
   "settings.languageSpanish": "Spanisch",
   "settings.resultsTitle": "Ergebniswerkzeuge",
   "settings.equivalentTitle": "Äquivalenzpreis",
   "settings.equivalentDescription":
     "Zeige oder verberge die zusätzliche Zeile mit Chaos/Divine-Äquivalenten in den Ergebnissen.",
+  "settings.wikiTitle": "Wiki-Schaltfläche",
+  "settings.wikiBody":
+    "Fügt einzigartigen Gegenständen eine W-Schaltfläche hinzu, die die passende Seite im PoE-Wiki öffnet.",
   "settings.magebloodLegacyTitle": "Mageblood-Legacy-Beschreibungen",
   "settings.magebloodLegacyBody":
     "Zeige die versteckten Effekte von PoE2-Mageblood-Legacy-Mods unter dem Gegenstand, wie Notable-Beschreibungen.",
@@ -52,13 +63,17 @@ export const germanTranslations: Record<string, TranslationValue> = {
   "settings.compactActionsTitle": "Bookmark-Layout",
   "settings.compactActionsDescription":
     "Wähle ein kompakteres Layout für gespeicherte Suchen, mit Ligaanzeige und allen Aktionen in einem Drei-Punkte-Menü.",
+  "settings.bookmarkCategoriesTitle": "Lesezeichen-Kategorien",
+  "settings.bookmarkCategoriesDescription":
+    "Gruppiere gespeicherte Suchen in optionalen Kategorien innerhalb jedes Ordners. Wenn dies deaktiviert ist, erscheinen alle Lesezeichen wieder direkt im Hauptordner.",
   "settings.compactActionsDefault": "Klassisch",
   "settings.compactActionsCompact": "Kompakt",
   "settings.compactTradeActionsTitle": "Sichtbare Aktionen außerhalb des Menüs",
   "settings.compactTradeActionsDescription":
     "Wähle aus, welche Aktionen gespeicherter Suchen im kompakten Modus sichtbar bleiben. Wenn nichts ausgewählt ist, wird nur das Drei-Punkte-Menü angezeigt. Wenn alle oder alle bis auf eine ausgewählt sind, bleiben alle sichtbar.",
   "settings.compactTradeActionToggle": "Abgeschlossen / Offen",
-  "settings.saveFailed": "Einstellungen konnten nicht gespeichert werden. Bitte versuche es erneut.",
+  "settings.saveFailed":
+    "Einstellungen konnten nicht gespeichert werden. Bitte versuche es erneut.",
   "about.description":
     "Poe Trade Plus ist ein Begleiter für Path of Exile Trade, entwickelt zum Speichern von Suchen, Organisieren von Ordnern, Nachverfolgen des Verlaufs und für schnelle, übersichtliche wiederkehrende Handelsabläufe direkt auf der offiziellen Seite.",
   "about.patreon": "Patreon",
@@ -159,12 +174,27 @@ export const germanTranslations: Record<string, TranslationValue> = {
   "folder.deleteTradeError": "Der Trade konnte nicht gelöscht werden.",
   "folder.duplicateTradeError": "Der Trade konnte nicht dupliziert werden.",
   "folder.duplicateFolderError": "Der Ordner konnte nicht dupliziert werden.",
+  "folder.addCategory": "Kategorie hinzufügen",
+  "folder.categoryPrompt": "Kategoriename",
+  "folder.categoryNameRequired": "Gib einen Kategorienamen ein.",
+  "folder.categoryCreated": ({ title }) => `Kategorie "${title}" erstellt`,
+  "folder.categoryRenamed": ({ title }) => `Kategorie in "${title}" umbenannt`,
+  "folder.categoryDeleted": ({ title }) => `Kategorie "${title}" gelöscht`,
+  "folder.renameCategory": "Kategorie umbenennen",
+  "folder.deleteCategory": "Kategorie löschen",
+  "folder.deleteCategoryConfirm": ({ title }) =>
+    `Kategorie "${title}" löschen? Die Lesezeichen darin bleiben in diesem Ordner.`,
+  "folder.categorySelect": "Lesezeichen-Kategorie",
+  "folder.noCategory": "Keine Kategorie",
+  "folder.uncategorized": "Keine Kategorie",
+  "folder.newCategoryOption": "Neue Kategorie...",
   "finer.title": "Zu Filtern hinzufügen",
   "finer.modifiers": "Modifikatoren",
   "finer.pseudoResLife": "Pseudo Widerstände/Leben",
   "finer.explicitResLife": "Explizite Widerstände/Leben",
   "finer.attackWeapon": "Angriffswaffe",
   "finer.spellWeapon": "Zauberwaffe",
+  "finer.buyoutPrice": "Kaufpreis",
   "settings.onboardingTitle": "Tutorial",
   "settings.onboardingDescription":
     "Öffne das Schnell-Tutorial erneut, um die wichtigsten Aktionen und Tabs zu prüfen.",

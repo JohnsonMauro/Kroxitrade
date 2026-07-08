@@ -7,7 +7,7 @@
   import searchIcon from "lucide-static/icons/search.svg?raw"
   import { languageStore, setLanguage, translate, type AppLanguage } from "./lib/services/i18n"
   import { settings } from "./lib/services/settings"
-  import { normalizeIcon } from "./lib/utilities/icons"
+  import SvgIcon from "./components/SvgIcon.svelte"
 
   const tradeLinks = [
     {
@@ -99,10 +99,21 @@
   import poe2Logo from "./assets/logo-trade2.webp?inline"
 
   const SHORTCUTS_VISIBLE_KEY = "popup-shortcuts-visible"
+  const TEXT_SIZE_SCALE = {
+    small: "0.92",
+    medium: "1",
+    large: "1.18",
+    extraLarge: "1.34"
+  } as const
   let showShortcuts = $state(false)
+
+  function applyTextSize(textSize: keyof typeof TEXT_SIZE_SCALE) {
+    document.documentElement.style.setProperty("--bt-text-scale", TEXT_SIZE_SCALE[textSize])
+  }
 
   onMount(async () => {
     await settings.load()
+    applyTextSize($settings.textSize)
     setLanguage(($settings.language || "en") as AppLanguage)
     const storedVisibility = await chrome.storage.local.get(SHORTCUTS_VISIBLE_KEY)
     showShortcuts = storedVisibility[SHORTCUTS_VISIBLE_KEY] === true
@@ -162,7 +173,7 @@
                   title={translate($languageStore, shortcut.labelKey)}
                 >
                   <span class="shortcut-button__icon" aria-hidden="true">
-                    {@html normalizeIcon(shortcut.icon, { size: 15, className: "shortcut-svg" })}
+                    <SvgIcon svg={shortcut.icon} size={15} className="shortcut-svg" />
                   </span>
                   <span class="shortcut-button__label">{translate($languageStore, shortcut.labelKey)}</span>
                 </a>
@@ -220,7 +231,7 @@
   p {
     margin: 0;
     color: #bca887;
-    font-size: 11px;
+    font-size: calc(11px * var(--bt-text-scale, 1));
     line-height: 1.45;
   }
 
@@ -273,7 +284,7 @@
   .trade-link__label {
     display: block;
     color: #f1e1bf;
-    font-size: 12px;
+    font-size: calc(12px * var(--bt-text-scale, 1));
     font-weight: 700;
     letter-spacing: 0.04em;
     text-transform: uppercase;
@@ -296,7 +307,7 @@
 
   .section-title {
     color: #bca887;
-    font-size: 11px;
+    font-size: calc(11px * var(--bt-text-scale, 1));
     font-weight: 700;
     letter-spacing: 0.12em;
     text-transform: uppercase;
@@ -312,7 +323,7 @@
     color: #d9c79f;
     cursor: pointer;
     font: inherit;
-    font-size: 10px;
+    font-size: calc(10px * var(--bt-text-scale, 1));
     line-height: 1;
   }
 
@@ -337,7 +348,7 @@
   .shortcut-group__title {
     margin-bottom: 5px;
     color: #8f8067;
-    font-size: 9px;
+    font-size: calc(9px * var(--bt-text-scale, 1));
     font-weight: 700;
     letter-spacing: 0.08em;
     text-transform: uppercase;
@@ -398,7 +409,7 @@
     max-width: 100%;
     overflow: hidden;
     color: inherit;
-    font-size: 11px;
+    font-size: calc(11px * var(--bt-text-scale, 1));
     line-height: 1.2;
     text-align: left;
     text-overflow: ellipsis;

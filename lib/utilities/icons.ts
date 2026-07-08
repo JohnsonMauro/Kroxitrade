@@ -27,3 +27,18 @@ export const normalizeIcon = (
     const extra = extraAttrs ? ` ${extraAttrs}` : ""
     return `<svg ${attrsPrefix}viewBox="${viewBox}" class="${className}"${extra} style="width:${size}px;height:${size}px;min-width:${size}px;min-height:${size}px;display:block;overflow:visible;stroke-width:${strokeWidth};">`
   })
+
+export const appendIconElement = (
+  parent: HTMLElement,
+  svg: string,
+  options: NormalizeIconOptions = {}
+) => {
+  const template = document.createElement("template")
+  template.innerHTML = normalizeIcon(svg, options).trim()
+  const icon = template.content.firstElementChild as SVGSVGElement | null
+  if (!icon) return null
+
+  icon.setAttribute("aria-hidden", "true")
+  parent.appendChild(icon)
+  return icon
+}

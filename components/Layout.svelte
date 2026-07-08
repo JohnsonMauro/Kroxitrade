@@ -2,7 +2,6 @@
   import bookmarkIcon from "lucide-static/icons/bookmark.svg?raw";
   import clockIcon from "lucide-static/icons/history.svg?raw";
 import infoIcon from "lucide-static/icons/info.svg?raw";
-import beakerIcon from "lucide-static/icons/beaker.svg?raw";
   import layersIcon from "lucide-static/icons/layers-3.svg?raw";
   import settingsIcon from "lucide-static/icons/settings-2.svg?raw";
   import Header from "./Header.svelte";
@@ -12,8 +11,8 @@ import beakerIcon from "lucide-static/icons/beaker.svg?raw";
   import OnboardingModal from "./OnboardingModal.svelte";
 import Settings from "./pages/Settings.svelte";
 import About from "./pages/About.svelte";
-import Experimental from "./pages/Experimental.svelte";
   import FinerFilters from "./FinerFilters.svelte";
+  import SvgIcon from "./SvgIcon.svelte";
   import WhatsNewDialog from "./WhatsNewDialog.svelte";
   import WelcomeDialog from "./WelcomeDialog.svelte";
   import logoUrl from "~assets/logo.webp?inline";
@@ -25,7 +24,6 @@ import Experimental from "./pages/Experimental.svelte";
   import { storageService } from "../lib/services/storage";
   import { tradeLocationService } from "../lib/services/trade-location";
   import { hasValidExtensionContext } from "../lib/utilities/extension-context";
-  import { normalizeIcon } from "../lib/utilities/icons";
   import type { BookmarksFolderStruct, BookmarksTradeStruct } from "../lib/types/bookmarks";
   import { onDestroy, onMount, tick } from "svelte";
   
@@ -35,7 +33,7 @@ import Experimental from "./pages/Experimental.svelte";
   const ONBOARDING_FOLDER_ID_KEY = "layout-onboarding-folder-id";
   const VERSION_NOTICE_SEEN_KEY = "layout-version-notice-seen";
 
-  let currentPage: 'bookmarks' | 'bulk' | 'history' | 'about' | 'settings' | 'experimental' = $state('bookmarks');
+  let currentPage: 'bookmarks' | 'bulk' | 'history' | 'about' | 'settings' = $state('bookmarks');
   let currentTradeVersion: "1" | "2" = $state(tradeLocationService.current.version);
   let isMinimized = $state(false);
   let isResizing = $state(false);
@@ -44,7 +42,7 @@ import Experimental from "./pages/Experimental.svelte";
   let showOnboarding = $state(false);
   let showWelcome = $state(false);
   let welcomeLanguage = $state("en" as typeof $settings.language);
-  let onboardingHighlightedPage: 'bookmarks' | 'bulk' | 'history' | 'about' | 'settings' | 'experimental' | null = $state(null);
+  let onboardingHighlightedPage: 'bookmarks' | 'bulk' | 'history' | 'about' | 'settings' | null = $state(null);
   let onboardingCurrentStepId:
     | 'create-folder'
     | 'save-search'
@@ -76,24 +74,11 @@ import Experimental from "./pages/Experimental.svelte";
   const getRenderedSidebarWidth = () => clampSidebarWidth(liveSidebarWidth ?? getExpandedSidebarWidth());
 
   const navIcons = {
-    bookmarks: normalizeIcon(bookmarkIcon, {
-      size: 14,
-      className: "nav-svg",
-      extraAttrs: 'aria-hidden="true"'
-    }),
-    bulk: normalizeIcon(layersIcon, { size: 14, className: "nav-svg", extraAttrs: 'aria-hidden="true"' }),
-    history: normalizeIcon(clockIcon, { size: 14, className: "nav-svg", extraAttrs: 'aria-hidden="true"' }),
-    settings: normalizeIcon(settingsIcon, {
-      size: 14,
-      className: "nav-svg",
-      extraAttrs: 'aria-hidden="true"'
-    }),
-    about: normalizeIcon(infoIcon, { size: 14, className: "nav-svg", extraAttrs: 'aria-hidden="true"' }),
-    experimental: normalizeIcon(beakerIcon, {
-      size: 14,
-      className: "nav-svg",
-      extraAttrs: 'aria-hidden="true"'
-    })
+    bookmarks: bookmarkIcon,
+    bulk: layersIcon,
+    history: clockIcon,
+    settings: settingsIcon,
+    about: infoIcon
   };
 
   const getTutorialTradeStruct = (): BookmarksTradeStruct => {
@@ -431,7 +416,7 @@ import Experimental from "./pages/Experimental.svelte";
         data-tutorial="nav-bookmarks"
         onclick={() => currentPage = 'bookmarks'}
     >
-        <span class="nav-item__icon" aria-hidden="true">{@html navIcons.bookmarks}</span>
+        <span class="nav-item__icon" aria-hidden="true"><SvgIcon svg={navIcons.bookmarks} size={14} className="nav-svg" /></span>
         <span class="nav-item__label">{translate($languageStore, "layout.nav.bookmarks")}</span>
     </button>
 
@@ -440,7 +425,7 @@ import Experimental from "./pages/Experimental.svelte";
           class="nav-item {currentPage === 'bulk' ? 'is-active' : ''} {showOnboarding && onboardingHighlightedPage === 'bulk' ? 'is-onboarding-focus' : ''}" 
           onclick={() => currentPage = 'bulk'}
       >
-          <span class="nav-item__icon" aria-hidden="true">{@html navIcons.bulk}</span>
+          <span class="nav-item__icon" aria-hidden="true"><SvgIcon svg={navIcons.bulk} size={14} className="nav-svg" /></span>
           <span class="nav-item__label">{translate($languageStore, "layout.nav.bulk")}</span>
       </button>
     {/if}
@@ -451,7 +436,7 @@ import Experimental from "./pages/Experimental.svelte";
           data-tutorial="nav-history"
           onclick={() => currentPage = 'history'}
       >
-          <span class="nav-item__icon" aria-hidden="true">{@html navIcons.history}</span>
+          <span class="nav-item__icon" aria-hidden="true"><SvgIcon svg={navIcons.history} size={14} className="nav-svg" /></span>
           <span class="nav-item__label">{translate($languageStore, "layout.nav.history")}</span>
       </button>
     {/if}
@@ -462,27 +447,16 @@ import Experimental from "./pages/Experimental.svelte";
         aria-label={translate($languageStore, "layout.nav.settings")}
         onclick={() => currentPage = 'settings'}
     >
-        <span class="nav-item__icon" aria-hidden="true">{@html navIcons.settings}</span>
+        <span class="nav-item__icon" aria-hidden="true"><SvgIcon svg={navIcons.settings} size={14} className="nav-svg" /></span>
         <span class="nav-item__label">{translate($languageStore, "layout.nav.settings")}</span>
     </button>
-    {#if isDevBuild}
-      <button
-          class="nav-item {currentPage === 'experimental' ? 'is-active' : ''}"
-          title={translate($languageStore, "layout.nav.experimental")}
-          aria-label={translate($languageStore, "layout.nav.experimental")}
-          onclick={() => currentPage = 'experimental'}
-      >
-          <span class="nav-item__icon" aria-hidden="true">{@html navIcons.experimental}</span>
-          <span class="nav-item__label">{translate($languageStore, "layout.nav.experimental")}</span>
-      </button>
-    {/if}
     <button 
         class="nav-item nav-item--icon-only {currentPage === 'about' ? 'is-active' : ''} {showOnboarding && onboardingHighlightedPage === 'about' ? 'is-onboarding-focus' : ''}" 
         title={translate($languageStore, "layout.nav.about")}
         aria-label={translate($languageStore, "layout.nav.about")}
         onclick={() => currentPage = 'about'}
     >
-        <span class="nav-item__icon" aria-hidden="true">{@html navIcons.about}</span>
+        <span class="nav-item__icon" aria-hidden="true"><SvgIcon svg={navIcons.about} size={14} className="nav-svg" /></span>
     </button>
   </nav>
 
@@ -509,12 +483,9 @@ import Experimental from "./pages/Experimental.svelte";
         <History />
     {:else if currentPage === 'settings'}
         <Settings
-          onOpenTutorial={openOnboarding}
           tutorialStep={showOnboarding ? onboardingCurrentStepId : null} />
-    {:else if currentPage === 'experimental' && isDevBuild}
-        <Experimental />
     {:else if currentPage === 'about'}
-        <About onOpenWhatsNew={openWhatsNew} />
+        <About onOpenWhatsNew={openWhatsNew} onOpenTutorial={openOnboarding} />
     {/if}
   </main>
 
@@ -725,7 +696,7 @@ import Experimental from "./pages/Experimental.svelte";
 
     .chev-icon {
       color: $gold;
-      font-size: 11px;
+      font-size: calc(11px * var(--bt-text-scale, 1));
     }
   }
 
@@ -761,7 +732,7 @@ import Experimental from "./pages/Experimental.svelte";
     margin-bottom: 2px;
     color: rgba($gold-alt, 0.92);
     font-family: $primary-font;
-    font-size: 9px;
+    font-size: calc(9px * var(--bt-text-scale, 1));
     letter-spacing: 0.18em;
     text-transform: uppercase;
   }
@@ -769,7 +740,7 @@ import Experimental from "./pages/Experimental.svelte";
   .version-notice__text {
     margin: 0;
     color: rgba($white, 0.84);
-    font-size: 10px;
+    font-size: calc(10px * var(--bt-text-scale, 1));
     line-height: 1.35;
   }
 
@@ -782,7 +753,7 @@ import Experimental from "./pages/Experimental.svelte";
     border-radius: 6px;
     background: rgba($black, 0.22);
     color: rgba($gold-alt, 0.88);
-    font-size: 14px;
+    font-size: calc(14px * var(--bt-text-scale, 1));
     line-height: 1;
     cursor: pointer;
     transition:
@@ -808,7 +779,7 @@ import Experimental from "./pages/Experimental.svelte";
     background: rgba($gold, 0.08);
     color: rgba($gold-alt, 0.94);
     font-family: $primary-font;
-    font-size: 10px;
+    font-size: calc(10px * var(--bt-text-scale, 1));
     letter-spacing: 0.04em;
     text-transform: uppercase;
     cursor: pointer;
@@ -839,7 +810,7 @@ import Experimental from "./pages/Experimental.svelte";
     border-radius: 0;
     color: rgba($white, 0.56);
     font-family: $primary-font;
-    font-size: 11px;
+    font-size: calc(11px * var(--bt-text-scale, 1));
     cursor: pointer;
     transition:
       color 0.2s ease,
@@ -945,7 +916,7 @@ import Experimental from "./pages/Experimental.svelte";
     padding: 10px;
     margin: 0;
     color: $white;
-    font-size: 13px;
+    font-size: calc(13px * var(--bt-text-scale, 1));
     border-radius: 4px;
     cursor: pointer;
     box-shadow: 0 2px 10px rgba(0,0,0,0.5);
@@ -1071,7 +1042,7 @@ import Experimental from "./pages/Experimental.svelte";
     }
 
     .chev-icon {
-      font-size: 12px;
+      font-size: calc(12px * var(--bt-text-scale, 1));
       color: rgba($white, 0.4);
       transition:
         color 0.2s ease,

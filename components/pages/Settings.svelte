@@ -5,15 +5,16 @@
   import {
     coeButtonSetting,
     experimentalSettings,
-    poe2CopyButtonSetting
+    poe2CopyButtonSetting,
+    wikiButtonSetting
   } from "../../lib/services/experimental";
   import { flashMessages } from "../../lib/services/flash";
   import { itemResultsService } from "../../lib/services/item-results";
-  import { settings, type BookmarkTradeActionId, type QuickFiltersPlacement, type SidebarSide } from "../../lib/services/settings";
+  import { settings, type BookmarkTradeActionId, type QuickFiltersPlacement, type SidebarSide, type TextSizePreference } from "../../lib/services/settings";
   import { tradeLocationService } from "../../lib/services/trade-location";
   import type { BookmarksTradeStruct } from "../../lib/types/bookmarks";
-  import { normalizeIcon } from "../../lib/utilities/icons";
   import Button from "../Button.svelte";
+  import SvgIcon from "../SvgIcon.svelte";
   import TradeActionsMenu from "../TradeActionsMenu.svelte";
   import ToggleRow from "../ToggleRow.svelte";
   import { onDestroy, onMount } from "svelte";
@@ -34,11 +35,10 @@
   import deleteIcon from "lucide-static/icons/trash-2.svg?raw";
 
   interface Props {
-    onOpenTutorial?: () => void;
     tutorialStep?: string | null;
   }
 
-  let { onOpenTutorial = () => {}, tutorialStep = null }: Props = $props();
+  let { tutorialStep = null }: Props = $props();
 
   const DEFAULT_SIDEBAR_WIDTH = 450;
   type SettingsTab = "interface" | "sidebar" | "results" | "bookmarks";
@@ -52,7 +52,6 @@
   ];
 
   const tutorialStepTabs: Record<string, SettingsTab> = {
-    "settings-tutorial": "interface",
     "settings-sidebar": "interface",
     "settings-language": "interface",
     "settings-equivalent": "results",
@@ -61,12 +60,12 @@
     "settings-bookmarks": "bookmarks"
   };
   const compactTradeActionOptions: Array<{ id: BookmarkTradeActionId; labelKey: string; icon: string }> = [
-    { id: "edit", labelKey: "folder.editSearchName", icon: normalizeIcon(editIcon, { size: 15, className: "settings-option-svg" }) },
-    { id: "replace", labelKey: "folder.replaceCurrentSearch", icon: normalizeIcon(replaceIcon, { size: 15, className: "settings-option-svg" }) },
-    { id: "copy", labelKey: "folder.copyUrl", icon: normalizeIcon(copyIcon, { size: 15, className: "settings-option-svg" }) },
-    { id: "openLive", labelKey: "folder.openLiveSearch", icon: normalizeIcon(liveIcon, { size: 15, className: "settings-option-svg" }) },
-    { id: "toggle", labelKey: "settings.compactTradeActionToggle", icon: normalizeIcon(toggleIcon, { size: 15, className: "settings-option-svg" }) },
-    { id: "delete", labelKey: "folder.deleteTrade", icon: normalizeIcon(deleteIcon, { size: 15, className: "settings-option-svg" }) }
+    { id: "edit", labelKey: "folder.editSearchName", icon: editIcon },
+    { id: "replace", labelKey: "folder.replaceCurrentSearch", icon: replaceIcon },
+    { id: "copy", labelKey: "folder.copyUrl", icon: copyIcon },
+    { id: "openLive", labelKey: "folder.openLiveSearch", icon: liveIcon },
+    { id: "toggle", labelKey: "settings.compactTradeActionToggle", icon: toggleIcon },
+    { id: "delete", labelKey: "folder.deleteTrade", icon: deleteIcon }
   ];
   const previewTrade: BookmarksTradeStruct = {
     id: "settings-preview-trade",
@@ -89,6 +88,12 @@
     { code: "fr", label: "Français", flag: flagFR, emoji: "🇫🇷" },
     { code: "ja", label: "日本語", flag: flagJP, emoji: "🇯🇵" },
     { code: "ko", label: "한국어", flag: flagKR, emoji: "🇰🇷" }
+  ];
+  const textSizeOptions: Array<{ id: TextSizePreference; labelKey: string }> = [
+    { id: "small", labelKey: "settings.textSizeSmall" },
+    { id: "medium", labelKey: "settings.textSizeMedium" },
+    { id: "large", labelKey: "settings.textSizeLarge" },
+    { id: "extraLarge", labelKey: "settings.textSizeExtraLarge" }
   ];
 
   const localizedLanguageNames: Record<AppLanguage, Record<AppLanguage, string>> = {
@@ -177,6 +182,12 @@
     }
   }
 
+  async function handleBookmarkCategoriesChange(bookmarkCategoriesEnabled: boolean) {
+    if (!(await settings.updateBookmarkCategoriesVisibility(bookmarkCategoriesEnabled))) {
+      flashMessages.alert(translate($languageStore, "settings.saveFailed"));
+    }
+  }
+
   async function handleCompactTradeActionChange(actionId: BookmarkTradeActionId, checked: boolean) {
     const nextActions = checked
       ? [...$settings.compactBookmarkTradeActions, actionId]
@@ -207,6 +218,12 @@
 
   async function handleLanguageChange(language: AppLanguage) {
     if (!(await settings.updateLanguage(language))) {
+      flashMessages.alert(translate($languageStore, "settings.saveFailed"));
+    }
+  }
+
+  async function handleTextSizeChange(textSize: TextSizePreference) {
+    if (!(await settings.updateTextSize(textSize))) {
       flashMessages.alert(translate($languageStore, "settings.saveFailed"));
     }
   }
@@ -258,6 +275,10 @@
 
   function handleCoeVisibleChange(value: boolean) {
     experimentalSettings.setCoeVisible(value);
+  }
+
+  function handleWikiVisibleChange(value: boolean) {
+    experimentalSettings.setWikiVisible(value);
   }
 
   function toggleLanguageMenu(event: MouseEvent) {
@@ -381,19 +402,21 @@
       </div>
       </section>
 
-      <section class="settings-section settings-section--feature settings-section--wide" data-tutorial="settings-tutorial">
+      <section class="settings-section settings-section--wide">
         <div class="section-heading">
-          <h3 class="section-title">{translate($languageStore, "settings.onboardingTitle")}</h3>
+          <h3 class="section-title">{translate($languageStore, "settings.textSizeTitle")}</h3>
         </div>
-        <p class="section-description">{translate($languageStore, "settings.onboardingDescription")}</p>
+        <p class="section-description">{translate($languageStore, "settings.textSizeDescription")}</p>
 
-        <div class="section-actions">
-          <Button
-            label={translate($languageStore, "settings.reopenTutorial")}
-            theme="gold"
-            class="side-btn"
-            onClick={onOpenTutorial}
-          />
+        <div class="side-selector">
+          {#each textSizeOptions as option (option.id)}
+            <Button
+              label={translate($languageStore, option.labelKey)}
+              theme={$settings.textSize === option.id ? "gold" : "blue"}
+              class="side-btn"
+              onClick={() => handleTextSizeChange(option.id)}
+            />
+          {/each}
         </div>
       </section>
 
@@ -426,22 +449,19 @@
       </section>
 
       <section class="settings-section settings-section--wide">
-        <div class="section-heading">
-          <h3 class="section-title">{translate($languageStore, "settings.quickFiltersTitle")}</h3>
-        </div>
-        <div class="settings-row-list">
-          <div class="settings-row">
-            <div class="settings-row__copy">
-              <div class="settings-row__title">{translate($languageStore, "settings.quickFiltersTitle")}</div>
-              <div class="settings-row__description">{translate($languageStore, "settings.quickFiltersDescription")}</div>
-            </div>
-            <ToggleRow
-              checked={$settings.showQuickFilters}
-              label={translate($languageStore, "settings.quickFiltersTitle")}
-              stateLabel={toggleSwitchLabel($settings.showQuickFilters)}
-              onToggle={() => handleQuickFiltersChange(!$settings.showQuickFilters)}
-            />
+        <div class="settings-section__header-row">
+          <div class="section-heading">
+            <h3 class="section-title">{translate($languageStore, "settings.quickFiltersTitle")}</h3>
           </div>
+          <ToggleRow
+            checked={$settings.showQuickFilters}
+            label={translate($languageStore, "settings.quickFiltersTitle")}
+            stateLabel={toggleSwitchLabel($settings.showQuickFilters)}
+            onToggle={() => handleQuickFiltersChange(!$settings.showQuickFilters)}
+          />
+        </div>
+        <p class="section-description">{translate($languageStore, "settings.quickFiltersDescription")}</p>
+        <div class="settings-row-list">
           {#if $settings.showQuickFilters}
             <div class="settings-placement">
               <div class="settings-placement__label">
@@ -464,6 +484,29 @@
             </div>
           {/if}
         </div>
+      </section>
+
+      <section class="settings-section settings-section--wide">
+      <div class="section-heading">
+        <h3 class="section-title">{translate($languageStore, "bookmarks.backupTitle")}</h3>
+      </div>
+      <p class="section-description">{translate($languageStore, "bookmarks.backupDescription")}</p>
+
+      <div class="side-selector settings-actions-row">
+        <Button
+          label={translate($languageStore, "bookmarks.saveFile")}
+          theme="gold"
+          class="side-btn"
+          onClick={exportBookmarksBackup}
+        />
+        <Button
+          label={translate($languageStore, "bookmarks.restoreFile")}
+          theme="gold"
+          class="side-btn"
+          onFileChange={restoreBookmarksBackup}
+          fileAccept=".json,.txt"
+        />
+      </div>
       </section>
 
     {:else if activeTab === "sidebar"}
@@ -504,6 +547,21 @@
       </section>
 
     {:else if activeTab === "bookmarks"}
+      <section class="settings-section settings-section--wide">
+        <div class="settings-section__header-row">
+          <div class="section-heading">
+            <h3 class="section-title">{translate($languageStore, "settings.bookmarkCategoriesTitle")}</h3>
+          </div>
+          <ToggleRow
+            checked={$settings.bookmarkCategoriesEnabled}
+            label={translate($languageStore, "settings.bookmarkCategoriesTitle")}
+            stateLabel={toggleSwitchLabel($settings.bookmarkCategoriesEnabled)}
+            onToggle={() => handleBookmarkCategoriesChange(!$settings.bookmarkCategoriesEnabled)}
+          />
+        </div>
+        <p class="section-description">{translate($languageStore, "settings.bookmarkCategoriesDescription")}</p>
+      </section>
+
       <section class="settings-section settings-section--wide settings-section--bookmarks-layout" data-tutorial="settings-bookmarks">
       <div class="section-heading">
         <h3 class="section-title">{translate($languageStore, "settings.compactActionsTitle")}</h3>
@@ -543,7 +601,9 @@
                 onchange={(event) => handleCompactTradeActionInput(event, option.id)}
                 aria-label={translate($languageStore, option.labelKey)}
               />
-              <span class="compact-option__icon" aria-hidden="true">{@html option.icon}</span>
+              <span class="compact-option__icon" aria-hidden="true">
+                <SvgIcon svg={option.icon} size={15} className="settings-option-svg" />
+              </span>
             </label>
           {/each}
         </div>
@@ -551,7 +611,7 @@
 
       <div class="bookmark-layout-preview" aria-label={translate($languageStore, "settings.bookmarkPreviewTitle")}>
         <div class="bookmark-layout-preview__heading">
-          <div>
+          <div class="bookmark-layout-preview__copy">
             <div class="compact-options__title">{translate($languageStore, "settings.bookmarkPreviewTitle")}</div>
             <p class="section-description section-description--compact">
               {translate($languageStore, "settings.bookmarkPreviewDescription")}
@@ -614,29 +674,6 @@
             </div>
           </div>
         </div>
-      </div>
-      </section>
-
-      <section class="settings-section settings-section--wide">
-      <div class="section-heading">
-        <h3 class="section-title">{translate($languageStore, "bookmarks.backupTitle")}</h3>
-      </div>
-      <p class="section-description">{translate($languageStore, "bookmarks.backupDescription")}</p>
-
-      <div class="side-selector settings-actions-row">
-        <Button
-          label={translate($languageStore, "bookmarks.saveFile")}
-          theme="gold"
-          class="side-btn"
-          onClick={exportBookmarksBackup}
-        />
-        <Button
-          label={translate($languageStore, "bookmarks.restoreFile")}
-          theme="gold"
-          class="side-btn"
-          onFileChange={restoreBookmarksBackup}
-          fileAccept=".json,.txt"
-        />
       </div>
       </section>
 
@@ -728,6 +765,19 @@
             onToggle={() => handleCoeVisibleChange(!$coeButtonSetting)}
           />
         </div>
+
+        <div class="settings-row">
+          <div class="settings-row__copy">
+            <div class="settings-row__title">{translate($languageStore, "settings.wikiTitle")}</div>
+            <div class="settings-row__description">{translate($languageStore, "settings.wikiBody")}</div>
+          </div>
+          <ToggleRow
+            checked={$wikiButtonSetting}
+            label={translate($languageStore, "settings.wikiTitle")}
+            stateLabel={toggleSwitchLabel($wikiButtonSetting)}
+            onToggle={() => handleWikiVisibleChange(!$wikiButtonSetting)}
+          />
+        </div>
       </div>
       </section>
     {/if}
@@ -771,7 +821,7 @@
     background: transparent;
     color: rgba($white, 0.62);
     font-family: $primary-font;
-    font-size: 10px;
+    font-size: calc(10px * var(--bt-text-scale, 1));
     letter-spacing: 0.04em;
     text-transform: uppercase;
     cursor: pointer;
@@ -804,6 +854,7 @@
   }
 
   .settings-section {
+    position: relative;
     background:
       linear-gradient(180deg, rgba($white, 0.03), rgba($white, 0.015)),
       rgba($white, 0.02);
@@ -823,37 +874,119 @@
   .section-title {
     margin: 0;
     font-family: $primary-font;
-    font-size: 14px;
+    font-size: calc(14px * var(--bt-text-scale, 1));
     text-transform: uppercase;
     letter-spacing: 0.05em;
     color: $gold;
   }
 
+  .settings-section__header-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 12px;
+  }
+
   .section-heading {
+    position: relative;
+    width: fit-content;
+    max-width: 100%;
     display: flex;
     align-items: center;
     gap: 8px;
-    margin-bottom: 10px;
+    margin-bottom: 12px;
     min-width: 0;
   }
 
-  .section-description {
+  .settings-section__header-row .section-heading {
+    margin-bottom: 0;
+  }
+
+  .section-heading:has(+ .section-description)::after,
+  .settings-section__header-row:has(+ .section-description) .section-heading::after,
+  .compact-options__heading:has(+ .section-description)::after,
+  .bookmark-layout-preview__heading > div:has(.section-description)::after,
+  .settings-row__copy:has(.settings-row__description)::after {
+    content: "?";
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 16px;
+    height: 16px;
+    flex: 0 0 16px;
+    margin-left: 8px;
+    border: 1px solid rgba($gold, 0.22);
+    border-radius: 999px;
+    background: rgba($gold, 0.06);
+    color: rgba($gold-alt, 0.86);
+    font-family: $primary-font;
+    font-size: calc(10px * var(--bt-text-scale, 1));
+    line-height: 1;
+  }
+
+  .settings-row__copy:has(.settings-row__description)::after {
+    grid-column: 2;
+    grid-row: 1;
+  }
+
+  .section-description,
+  .settings-row__description {
+    position: absolute;
+    z-index: 8;
+    width: min(320px, calc(100vw - 44px));
     margin: 0;
-    color: rgba($white, 0.72);
-    font-size: 11px;
-    line-height: 1.55;
+    padding: 10px 12px;
+    border: 1px solid rgba($gold, 0.22);
+    border-radius: 6px;
+    background: #11100d;
+    color: rgba($white, 0.82);
+    box-shadow: 0 12px 26px rgba($black, 0.44);
+    font-size: calc(11px * var(--bt-text-scale, 1));
+    line-height: 1.45;
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(-4px);
+    transition:
+      opacity 0.14s ease,
+      transform 0.14s ease;
+  }
+
+  .section-description {
+    top: 40px;
+    left: 16px;
   }
 
   .section-description--compact {
-    margin-top: 8px;
+    margin: 0;
+  }
+
+  .compact-options,
+  .bookmark-layout-preview__heading > div {
+    position: relative;
+  }
+
+  .compact-options .section-description,
+  .bookmark-layout-preview__heading .section-description {
+    top: calc(100% + 8px);
+    left: 0;
+  }
+
+  .section-heading:hover + .section-description,
+  .section-heading:focus-within + .section-description,
+  .settings-section__header-row:hover + .section-description,
+  .settings-section__header-row:focus-within + .section-description,
+  .compact-options__heading:hover + .section-description,
+  .compact-options__heading:focus-within + .section-description,
+  .bookmark-layout-preview__heading > div:hover .section-description,
+  .bookmark-layout-preview__heading > div:focus-within .section-description {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateY(0);
   }
 
   .settings-section--bookmarks-layout {
     text-align: left;
-  }
-
-  .section-actions {
-    margin-top: 14px;
   }
 
   .settings-row-list {
@@ -885,29 +1018,48 @@
   }
 
   .settings-row__copy {
+    position: relative;
+    flex: 1 1 auto;
     min-width: 0;
+    display: grid;
+    grid-template-columns: minmax(0, max-content) auto;
+    align-items: center;
+    justify-content: start;
+    column-gap: 8px;
+    row-gap: 4px;
   }
 
   .settings-row__title {
+    grid-column: 1;
+    grid-row: 1;
+    min-width: 0;
     color: rgba($white, 0.94);
     font-family: $primary-font;
-    font-size: 12px;
+    font-size: calc(12px * var(--bt-text-scale, 1));
     font-weight: 600;
     letter-spacing: 0.04em;
     text-transform: uppercase;
+    white-space: nowrap;
   }
 
   .settings-row__description {
-    margin-top: 4px;
-    color: rgba($white, 0.66);
-    font-size: 11px;
-    line-height: 1.5;
+    top: calc(100% + 8px);
+    left: 0;
+  }
+
+  .settings-row__copy:hover .settings-row__description,
+  .settings-row__copy:focus-within .settings-row__description {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateY(0);
   }
 
   .settings-row__hint {
+    grid-column: 1 / -1;
+    grid-row: 2;
     margin-top: 6px;
     color: rgba($gold, 0.72);
-    font-size: 10px;
+    font-size: calc(10px * var(--bt-text-scale, 1));
     line-height: 1.45;
   }
 
@@ -929,7 +1081,7 @@
     background: rgba($gold, 0.07);
     color: rgba($gold-alt, 0.92);
     font-family: $primary-font;
-    font-size: 10px;
+    font-size: calc(10px * var(--bt-text-scale, 1));
     letter-spacing: 0.05em;
     text-transform: uppercase;
     cursor: pointer;
@@ -1028,7 +1180,7 @@
     cursor: pointer;
     background-color: rgba($white, 0.03);
     font-family: $primary-font;
-    font-size: 11px;
+    font-size: calc(11px * var(--bt-text-scale, 1));
     font-weight: 600;
     letter-spacing: 0.05em;
     text-transform: uppercase;
@@ -1061,7 +1213,7 @@
     flex: 0 0 auto;
     margin-left: auto;
     color: rgba($gold, 0.72);
-    font-size: 11px;
+    font-size: calc(11px * var(--bt-text-scale, 1));
   }
 
   .language-menu {
@@ -1116,7 +1268,7 @@
     text-overflow: ellipsis;
     white-space: nowrap;
     font-family: $primary-font;
-    font-size: 11px;
+    font-size: calc(11px * var(--bt-text-scale, 1));
     letter-spacing: 0.05em;
   }
 
@@ -1155,7 +1307,7 @@
 
   .compact-options__title {
     font-family: $primary-font;
-    font-size: 11px;
+    font-size: calc(11px * var(--bt-text-scale, 1));
     font-weight: 600;
     letter-spacing: 0.05em;
     text-transform: uppercase;
@@ -1237,7 +1389,7 @@
   .settings-placement__label {
     color: rgba($gold, 0.78);
     font-family: $primary-font;
-    font-size: 10px;
+    font-size: calc(10px * var(--bt-text-scale, 1));
     letter-spacing: 0.08em;
     text-transform: uppercase;
   }
@@ -1260,6 +1412,13 @@
     margin-bottom: 12px;
   }
 
+  .bookmark-layout-preview__copy {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 0;
+  }
+
   .bookmark-layout-preview__mode {
     flex: 0 0 auto;
     min-height: 22px;
@@ -1271,7 +1430,7 @@
     background: rgba($gold, 0.07);
     color: rgba($gold-alt, 0.92);
     font-family: $primary-font;
-    font-size: 10px;
+    font-size: calc(10px * var(--bt-text-scale, 1));
     letter-spacing: 0.05em;
     text-transform: uppercase;
   }
@@ -1319,7 +1478,7 @@
     white-space: nowrap;
     color: rgba($white, 0.96);
     font-family: $primary-font;
-    font-size: 14px;
+    font-size: calc(14px * var(--bt-text-scale, 1));
     font-weight: 700;
     letter-spacing: 0.02em;
     text-transform: uppercase;
@@ -1327,7 +1486,7 @@
 
   .preview-folder__chevron {
     color: rgba($gold-alt, 0.78);
-    font-size: 11px;
+    font-size: calc(11px * var(--bt-text-scale, 1));
   }
 
   .preview-trades-list {
@@ -1351,7 +1510,7 @@
     width: 16px;
     flex: 0 0 16px;
     color: rgba($white, 0.3);
-    font-size: 15px;
+    font-size: calc(15px * var(--bt-text-scale, 1));
     text-align: center;
   }
 
@@ -1385,7 +1544,7 @@
     text-overflow: ellipsis;
     white-space: nowrap;
     color: $white;
-    font-size: 13px;
+    font-size: calc(13px * var(--bt-text-scale, 1));
     line-height: 1.2;
   }
 
@@ -1393,7 +1552,7 @@
     min-width: 0;
     flex: 1;
     color: rgba($gold-alt, 0.52);
-    font-size: 10px;
+    font-size: calc(10px * var(--bt-text-scale, 1));
     line-height: 1.2;
     letter-spacing: 0.03em;
     overflow: hidden;

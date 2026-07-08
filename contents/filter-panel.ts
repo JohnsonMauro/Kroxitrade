@@ -1,4 +1,8 @@
 import { isFinerFiltersActionMessage } from "~/lib/utilities/finer-filters-bridge"
+import {
+  BUYOUT_CURRENCY_PRESETS,
+  setBuyoutCurrencyPreset
+} from "~/lib/utilities/buyout-currency"
 
 export const initFilterPanel = () => {
   if ((window as any).__KROX_STARTED__) {
@@ -45,12 +49,6 @@ export const initFilterPanel = () => {
       handler.call(el, e, el)
     })
   }
-  const h = (html: string) => {
-    const t = document.createElement("template")
-    t.innerHTML = html.trim()
-    return t.content.firstElementChild
-  }
-
   const listModifiers: Array<{
     name: string
     types: string[]
@@ -113,19 +111,45 @@ export const initFilterPanel = () => {
   })
 
   // ---------- overlay/button templates ----------
-  const filteredOverlay = () => h(`<div class="finer-filtered-overlay"></div>`)
-  const buttonsTemplate = () =>
-    h(`
-    <span id="btns-finer">
-      <span class="btn-finer rm"  data-action="rmv-filter"  title="remove this mod from your search results">-</span>
-      <span class="btn-finer add" data-action="add-filter"  title="add this mod to your search filters">+</span>
-    </span>`)
-  const globalPresetsTemplate = () =>
-    h(`
-    <div class="krox-filter-presets" data-krox-filter-presets="true">
-      <div class="krox-filter-presets__title">Quick filter presets</div>
-      <div class="krox-filter-presets__list"></div>
-    </div>`)
+  const filteredOverlay = () => {
+    const overlay = document.createElement("div")
+    overlay.className = "finer-filtered-overlay"
+    return overlay
+  }
+  const buttonsTemplate = () => {
+    const buttons = document.createElement("span")
+    buttons.id = "btns-finer"
+
+    const remove = document.createElement("span")
+    remove.className = "btn-finer rm"
+    remove.dataset.action = "rmv-filter"
+    remove.title = "remove this mod from your search results"
+    remove.textContent = "-"
+
+    const add = document.createElement("span")
+    add.className = "btn-finer add"
+    add.dataset.action = "add-filter"
+    add.title = "add this mod to your search filters"
+    add.textContent = "+"
+
+    buttons.append(remove, add)
+    return buttons
+  }
+  const globalPresetsTemplate = () => {
+    const panel = document.createElement("div")
+    panel.className = "krox-filter-presets"
+    panel.dataset.kroxFilterPresets = "true"
+
+    const title = document.createElement("div")
+    title.className = "krox-filter-presets__title"
+    title.textContent = "Quick filter presets"
+
+    const list = document.createElement("div")
+    list.className = "krox-filter-presets__list"
+
+    panel.append(title, list)
+    return panel
+  }
 
   // ---------- map ----------
   const modMap: Record<string, string> = {
@@ -402,6 +426,14 @@ export const initFilterPanel = () => {
     addOrRemoveFilter(e, false, el)
   })
 
+  const setNativeInputValue = (input: HTMLInputElement, value: string) => {
+    const descriptor = Object.getOwnPropertyDescriptor(
+      window.HTMLInputElement.prototype,
+      "value"
+    )
+    descriptor?.set?.call(input, value)
+  }
+
   const applyFinerFiltersAction = (detail: {
     action: "global-plus" | "global-minus"
     types: string
@@ -497,6 +529,28 @@ export const initFilterPanel = () => {
       list.appendChild(row)
     })
 
+    const currencyRow = document.createElement("div")
+    currencyRow.className =
+      "krox-filter-preset krox-filter-preset--currency"
+
+    const currencyLabel = document.createElement("span")
+    currencyLabel.className = "krox-filter-preset__name"
+    currencyLabel.textContent = "Buyout Price"
+
+    currencyRow.append(currencyLabel)
+    BUYOUT_CURRENCY_PRESETS.forEach(({ label, currency }) => {
+      const currencyButton = document.createElement("button")
+      currencyButton.type = "button"
+      currencyButton.className =
+        "krox-filter-preset__btn krox-filter-preset__btn--currency"
+      currencyButton.textContent = label
+      currencyButton.title = currency
+      currencyButton.dataset.action = "krox-currency-preset"
+      currencyButton.dataset.currency = currency
+      currencyRow.append(currencyButton)
+    })
+    list.appendChild(currencyRow)
+
     const firstExpandedGroup = pane.querySelector(".filter-group.expanded")
     pane.insertBefore(panel, firstExpandedGroup || pane.firstChild)
   }
@@ -504,6 +558,11 @@ export const initFilterPanel = () => {
   on("click", ".krox-filter-preset__btn", (e: any, el: HTMLElement) => {
     e.preventDefault()
     e.stopPropagation()
+
+    if (el.dataset.action === "krox-currency-preset") {
+      setBuyoutCurrencyPreset(el.dataset.currency || "Chaos Orb")
+      return
+    }
 
     applyFinerFiltersAction({
       action:
@@ -553,14 +612,6 @@ export const initFilterPanel = () => {
 
     const input = target.closest("input.multiselect__input")
     return input instanceof HTMLInputElement ? input : null
-  }
-
-  const setNativeInputValue = (input: HTMLInputElement, value: string) => {
-    const descriptor = Object.getOwnPropertyDescriptor(
-      window.HTMLInputElement.prototype,
-      "value"
-    )
-    descriptor?.set?.call(input, value)
   }
 
   const prefixingInputs = new WeakSet<HTMLInputElement>()

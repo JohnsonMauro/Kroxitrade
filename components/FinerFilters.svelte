@@ -1,6 +1,10 @@
 <script lang="ts">
   import { languageStore, translate } from "../lib/services/i18n";
   import { emitFinerFiltersAction } from "../lib/utilities/finer-filters-bridge";
+  import {
+    BUYOUT_CURRENCY_PRESETS,
+    setBuyoutCurrencyPreset
+  } from "../lib/utilities/buyout-currency";
   const listModifiers = [
     {
       key: 'finer.pseudoResLife',
@@ -44,6 +48,10 @@
       prefix
     });
   }
+
+  function handleBuyoutCurrency(currency: string) {
+    setBuyoutCurrencyPreset(currency);
+  }
 </script>
 
 <div class="finer-filters-container">
@@ -68,6 +76,19 @@
             <button class="action-btn minus" onclick={() => handleAction('global-minus', mod.types, mod.prefix)}>-</button>
             <button class="action-btn plus" onclick={() => handleAction('global-plus', mod.types, mod.prefix)}>+</button>
           </div>
+        {/each}
+      </div>
+
+      <div class="section-title buyout-title">- {translate($languageStore, "finer.buyoutPrice")} -</div>
+      <div class="buyout-controls">
+        {#each BUYOUT_CURRENCY_PRESETS as preset}
+          <button
+            type="button"
+            class="action-btn buyout"
+            title={preset.currency}
+            onclick={() => handleBuyoutCurrency(preset.currency)}>
+            {preset.label}
+          </button>
         {/each}
       </div>
     </div>
@@ -101,14 +122,14 @@
 
     span {
       color: $gold;
-      font-size: 11px;
+      font-size: calc(11px * var(--bt-text-scale, 1));
       font-family: $primary-font;
       letter-spacing: 0.1em;
       font-weight: bold;
     }
 
     .chevron {
-      font-size: 10px;
+      font-size: calc(10px * var(--bt-text-scale, 1));
       transition: transform 0.2s;
       &.collapsed {
         transform: rotate(-90deg);
@@ -130,7 +151,7 @@
 
   .section-title {
     color: rgba($white, 0.6);
-    font-size: 10px;
+    font-size: calc(10px * var(--bt-text-scale, 1));
     font-family: $primary-font;
     text-transform: uppercase;
     margin-bottom: 8px;
@@ -155,12 +176,19 @@
     padding: 2px 4px;
   }
 
+  .buyout-controls {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 4px;
+    margin-top: 2px;
+  }
+
   .mod-name {
     grid-area: name;
     display: flex;
     align-items: center;
     color: $white;
-    font-size: 11px;
+    font-size: calc(11px * var(--bt-text-scale, 1));
     font-family: $primary-font;
     padding-left: 2px;
   }
@@ -171,7 +199,7 @@
     justify-content: center;
     border: none;
     color: $white;
-    font-size: 14px;
+    font-size: calc(14px * var(--bt-text-scale, 1));
     border-radius: 2px;
     cursor: pointer;
     padding: 2px 0;
@@ -186,6 +214,11 @@
       grid-area: plus;
       background: rgba(40, 167, 69, 0.3);
       &:hover { background: rgba(40, 167, 69, 0.5); }
+    }
+
+    &.buyout {
+      background: rgba($gold, 0.18);
+      &:hover { background: rgba($gold, 0.28); }
     }
   }
 </style>

@@ -12,7 +12,6 @@
   import { tradeLocationService } from "../../lib/services/trade-location";
   import { flashMessages } from "../../lib/services/flash";
   import { storageService } from "../../lib/services/storage";
-  import { normalizeIcon } from "../../lib/utilities/icons";
   import type { BookmarksFolderStruct } from "../../lib/types/bookmarks";
 
   import BookmarkFolder from "../BookmarkFolder.svelte";
@@ -20,6 +19,7 @@
   import ConfirmDialog from "../ConfirmDialog.svelte";
   import EmptyState from "../EmptyState.svelte";
   import LoadingContainer from "../LoadingContainer.svelte";
+  import SvgIcon from "../SvgIcon.svelte";
 
   const EXPANDED_FOLDERS_STORAGE_KEY = "bookmark-folders-expanded";
 
@@ -220,12 +220,12 @@
   };
 
   const toolbarIcons = {
-    newFolder: normalizeIcon(folderPlusIcon, { size: 13, className: "toolbar-svg" }),
-    import: normalizeIcon(downloadIcon, { size: 13, className: "toolbar-svg" }),
-    cancel: normalizeIcon(xIcon, { size: 13, className: "toolbar-svg" }),
-    collapse: normalizeIcon(chevronsUpIcon, { size: 13, className: "toolbar-svg" }),
-    archive: normalizeIcon(archiveIcon, { size: 13, className: "toolbar-svg" }),
-    active: normalizeIcon(archiveRestoreIcon, { size: 13, className: "toolbar-svg" })
+    newFolder: folderPlusIcon,
+    import: downloadIcon,
+    cancel: xIcon,
+    collapse: chevronsUpIcon,
+    archive: archiveIcon,
+    active: archiveRestoreIcon
   };
 
   const clearToolbarRepairTimers = () => {
@@ -350,7 +350,7 @@
         <div class="toolbar-row">
           <div class="toolbar-actions toolbar-actions--primary">
             <button class="toolbar-button" data-tutorial="new-folder" type="button" title={translate($languageStore, "bookmarks.toolbar.newFolderTitle")} aria-label={translate($languageStore, "bookmarks.toolbar.newFolderTitle")} onclick={createFolder}>
-              <span class="toolbar-icon" aria-hidden="true">{@html toolbarIcons.newFolder}</span>
+              <span class="toolbar-icon" aria-hidden="true"><SvgIcon svg={toolbarIcons.newFolder} size={13} className="toolbar-svg" /></span>
               <span class="toolbar-label">{translate($languageStore, "bookmarks.toolbar.new")}</span>
             </button>
             <button
@@ -362,7 +362,7 @@
               onclick={() => isImportingText = !isImportingText}
             >
               <span class="toolbar-icon" aria-hidden="true">
-                {@html isImportingText ? toolbarIcons.cancel : toolbarIcons.import}
+                <SvgIcon svg={isImportingText ? toolbarIcons.cancel : toolbarIcons.import} size={13} className="toolbar-svg" />
               </span>
               <span class="toolbar-label">{isImportingText ? translate($languageStore, "bookmarks.toolbar.cancel") : translate($languageStore, "bookmarks.toolbar.import")}</span>
             </button>
@@ -370,8 +370,7 @@
 
           <div class="toolbar-actions toolbar-actions--secondary">
             <button class="toolbar-button" type="button" title={translate($languageStore, "bookmarks.toolbar.collapseAll")} aria-label={translate($languageStore, "bookmarks.toolbar.collapseAll")} onclick={collapseAll}>
-              <span class="toolbar-icon" aria-hidden="true">{@html toolbarIcons.collapse}</span>
-              <span class="toolbar-label">{translate($languageStore, "bookmarks.toolbar.collapse")}</span>
+              <span class="toolbar-icon" aria-hidden="true"><SvgIcon svg={toolbarIcons.collapse} size={13} className="toolbar-svg" /></span>
             </button>
             <button
               class:active={showArchived}
@@ -382,9 +381,8 @@
               onclick={() => showArchived = !showArchived}
             >
               <span class="toolbar-icon" aria-hidden="true">
-                {@html showArchived ? toolbarIcons.active : toolbarIcons.archive}
+                <SvgIcon svg={showArchived ? toolbarIcons.active : toolbarIcons.archive} size={13} className="toolbar-svg" />
               </span>
-              <span class="toolbar-label">{showArchived ? translate($languageStore, "bookmarks.toolbar.active") : translate($languageStore, "bookmarks.toolbar.archive")}</span>
             </button>
           </div>
         </div>
@@ -532,6 +530,8 @@
   }
 
   .toolbar-actions--secondary {
+    grid-template-columns: repeat(2, 34px);
+    flex: 0 0 auto;
     opacity: 0.88;
   }
 
@@ -543,7 +543,7 @@
     background: rgba($black, 0.34);
     color: #d7a75f;
     font-family: $primary-font;
-    font-size: 10px;
+    font-size: calc(10px * var(--bt-text-scale, 1));
     letter-spacing: 0.05em;
     text-transform: uppercase;
     cursor: pointer;
@@ -572,6 +572,8 @@
   }
 
   .toolbar-actions--secondary .toolbar-button {
+    width: 34px;
+    padding: 0;
     min-height: 34px;
     border-color: rgba($gold, 0.14);
     background: rgba($black, 0.22);
@@ -620,23 +622,14 @@
     min-height: 14px;
   }
 
-  @container (max-width: 359px) {
+  @container (max-width: 400px) {
     .toolbar-actions--secondary .toolbar-button {
       gap: 0;
-      padding: 0 8px;
-    }
-
-    .toolbar-actions--secondary .toolbar-label {
-      display: none;
     }
   }
 
   @media (min-width: 520px) {
     .toolbar-actions--primary {
-      flex: 1.45 1 0;
-    }
-
-    .toolbar-actions--secondary {
       flex: 1 1 0;
     }
   }
@@ -667,7 +660,7 @@
 
   .import-title {
       font-family: $primary-font;
-      font-size: 11px;
+      font-size: calc(11px * var(--bt-text-scale, 1));
       font-weight: 700;
       letter-spacing: 0.08em;
       text-transform: uppercase;
@@ -677,7 +670,7 @@
   .import-description,
   .import-hint {
       margin: 0;
-      font-size: 11px;
+      font-size: calc(11px * var(--bt-text-scale, 1));
       line-height: 1.4;
   }
 
@@ -702,7 +695,7 @@
           border-radius: 6px;
           color: $white;
           font-family: monospace;
-          font-size: 11px;
+          font-size: calc(11px * var(--bt-text-scale, 1));
           line-height: 1.45;
           padding: 10px;
           resize: vertical;

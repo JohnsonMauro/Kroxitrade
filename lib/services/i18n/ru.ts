@@ -30,6 +30,7 @@ export const russianTranslations: Record<string, TranslationValue> = {
   "popup.shortcut.poedb": "PoEDb",
   "popup.shortcut.poe2db": "PoE2Db",
   "popup.shortcut.ninja": "poe.ninja",
+  "settings.tabs.interface": "Общие",
   "settings.sidebarTitle": "Положение панели",
   "settings.sidebarDescription":
     "Выберите сторону экрана, где будет отображаться панель Poe Trade Plus.",
@@ -38,12 +39,22 @@ export const russianTranslations: Record<string, TranslationValue> = {
   "settings.resetWidth": "Сбросить ширину",
   "settings.languageTitle": "Язык",
   "settings.languageDescription": "Выберите язык интерфейса расширения.",
+  "settings.textSizeTitle": "Размер текста",
+  "settings.textSizeDescription":
+    "Настройте размер текста расширения для вашего монитора и удобства чтения.",
+  "settings.textSizeSmall": "Маленький",
+  "settings.textSizeMedium": "Средний",
+  "settings.textSizeLarge": "Большой",
+  "settings.textSizeExtraLarge": "Экстра",
   "settings.languageEnglish": "Английский",
   "settings.languageSpanish": "Испанский",
   "settings.resultsTitle": "Инструменты результатов",
   "settings.equivalentTitle": "Эквивалентная цена",
   "settings.equivalentDescription":
     "Показывать или скрывать дополнительную строку с эквивалентом в chaos/divine в результатах.",
+  "settings.wikiTitle": "Кнопка wiki",
+  "settings.wikiBody":
+    "Добавляет кнопку W к уникальным предметам, чтобы открыть соответствующую страницу на wiki PoE.",
   "settings.magebloodLegacyTitle": "Описания Legacy для Mageblood",
   "settings.magebloodLegacyBody":
     "Показывать скрытые эффекты PoE2 Legacy-модов Mageblood под предметом, как описания notable-пассивов.",
@@ -52,6 +63,9 @@ export const russianTranslations: Record<string, TranslationValue> = {
   "settings.compactActionsTitle": "Макет закладок",
   "settings.compactActionsDescription":
     "Выберите более компактный вид для сохраненных поисков: название лиги и все действия будут собраны в меню из трех точек.",
+  "settings.bookmarkCategoriesTitle": "Категории закладок",
+  "settings.bookmarkCategoriesDescription":
+    "Группируйте сохраненные поиски в необязательные категории внутри каждой папки. При отключении все закладки снова отображаются прямо в основной папке.",
   "settings.compactActionsDefault": "Классический",
   "settings.compactActionsCompact": "Компактный",
   "settings.compactTradeActionsTitle": "Видимые действия вне меню",
@@ -157,12 +171,28 @@ export const russianTranslations: Record<string, TranslationValue> = {
   "folder.deleteTradeError": "Не удалось удалить трейд.",
   "folder.duplicateTradeError": "Не удалось дублировать трейд.",
   "folder.duplicateFolderError": "Не удалось дублировать папку.",
+  "folder.addCategory": "Добавить категорию",
+  "folder.categoryPrompt": "Название категории",
+  "folder.categoryNameRequired": "Введите название категории.",
+  "folder.categoryCreated": ({ title }) => `Категория "${title}" создана`,
+  "folder.categoryRenamed": ({ title }) =>
+    `Категория переименована в "${title}"`,
+  "folder.categoryDeleted": ({ title }) => `Категория "${title}" удалена`,
+  "folder.renameCategory": "Переименовать категорию",
+  "folder.deleteCategory": "Удалить категорию",
+  "folder.deleteCategoryConfirm": ({ title }) =>
+    `Удалить категорию "${title}"? Закладки в ней останутся в этой папке.`,
+  "folder.categorySelect": "Категория закладки",
+  "folder.noCategory": "Без категории",
+  "folder.uncategorized": "Без категории",
+  "folder.newCategoryOption": "Новая категория...",
   "finer.title": "Добавить в фильтры",
   "finer.modifiers": "Модификаторы",
   "finer.pseudoResLife": "Псевдо резы/жизнь",
   "finer.explicitResLife": "Явные резы/жизнь",
   "finer.attackWeapon": "Оружие атаки",
   "finer.spellWeapon": "Оружие заклинаний",
+  "finer.buyoutPrice": "Цена выкупа",
   "settings.onboardingTitle": "Обучение",
   "settings.onboardingDescription":
     "Снова откройте быстрый гид, чтобы еще раз посмотреть основные действия и вкладки.",

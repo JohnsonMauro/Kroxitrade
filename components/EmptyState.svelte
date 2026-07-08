@@ -1,4 +1,6 @@
 <script lang="ts">
+  import SvgIcon from "./SvgIcon.svelte";
+
   import Button from "./Button.svelte";
 
   let {
@@ -20,7 +22,7 @@
 
 <section class="empty-state">
   {#if iconHtml}
-    <div class="empty-state__icon" aria-hidden="true">{@html iconHtml}</div>
+    <div class="empty-state__icon" aria-hidden="true"><SvgIcon svg={iconHtml} size={19} /></div>
   {/if}
 
   <div class="empty-state__copy">
@@ -98,7 +100,7 @@
     margin-bottom: 6px;
     color: rgba($gold-alt, 0.84);
     font-family: $primary-font;
-    font-size: 10px;
+    font-size: calc(10px * var(--bt-text-scale, 1));
     font-weight: 700;
     letter-spacing: 0.1em;
     text-transform: uppercase;
@@ -108,14 +110,14 @@
     margin: 0;
     color: rgba($white, 0.96);
     font-family: "Fontin", serif;
-    font-size: 19px;
+    font-size: calc(19px * var(--bt-text-scale, 1));
     line-height: 1.15;
   }
 
   .empty-state__description {
     margin: 8px 0 0;
     color: rgba($white, 0.72);
-    font-size: 12px;
+    font-size: calc(12px * var(--bt-text-scale, 1));
     line-height: 1.55;
   }
 

@@ -7,7 +7,7 @@
 
 <div class="alert-message is-{type}" role="status" aria-live="polite">
   <span class="icon">{icon}</span>
-  <span class="text">{@html message}</span>
+  <span class="text">{message}</span>
 </div>
 
 <style lang="scss">
@@ -19,7 +19,7 @@
     align-items: center;
     padding: 8px;
     color: $white;
-    font-size: 13px;
+    font-size: calc(13px * var(--bt-text-scale, 1));
     margin-bottom: 10px;
 
     &.is-alert {

@@ -34,6 +34,7 @@ export const japaneseTranslations: Record<string, TranslationValue> = {
   "popup.shortcut.poedb": "PoEDb",
   "popup.shortcut.poe2db": "PoE2Db",
   "popup.shortcut.ninja": "poe.ninja",
+  "settings.tabs.interface": "一般",
   "settings.sidebarTitle": "パネル位置",
   "settings.sidebarDescription":
     "Poe Trade Plus パネルを画面のどちら側に表示するか選択してください。",
@@ -43,12 +44,22 @@ export const japaneseTranslations: Record<string, TranslationValue> = {
   "settings.languageTitle": "言語",
   "settings.languageDescription":
     "拡張機能のインターフェースで使用する言語を選択してください。",
+  "settings.textSizeTitle": "文字サイズ",
+  "settings.textSizeDescription":
+    "モニターや読みやすさに合わせて拡張機能の文字サイズを調整します。",
+  "settings.textSizeSmall": "小",
+  "settings.textSizeMedium": "中",
+  "settings.textSizeLarge": "大",
+  "settings.textSizeExtraLarge": "エクストラ",
   "settings.languageEnglish": "英語",
   "settings.languageSpanish": "スペイン語",
   "settings.resultsTitle": "検索結果ツール",
   "settings.equivalentTitle": "等価価格",
   "settings.equivalentDescription":
     "検索結果に追加表示される chaos/divine 等価行を表示または非表示にします。",
+  "settings.wikiTitle": "Wiki ボタン",
+  "settings.wikiBody":
+    "ユニークアイテムの結果に W ボタンを追加し、対応する PoE Wiki ページを開きます。",
   "settings.magebloodLegacyTitle": "Mageblood Legacy の説明",
   "settings.magebloodLegacyBody":
     "PoE2 の Mageblood Legacy mod の隠れた効果を、ノータブル説明のようにアイテム下に表示します。",
@@ -57,6 +68,9 @@ export const japaneseTranslations: Record<string, TranslationValue> = {
   "settings.compactActionsTitle": "ブックマークレイアウト",
   "settings.compactActionsDescription":
     "保存した検索をよりコンパクトに表示し、リーグ名とすべての操作を3点メニューにまとめます。",
+  "settings.bookmarkCategoriesTitle": "ブックマークカテゴリ",
+  "settings.bookmarkCategoriesDescription":
+    "各フォルダー内で保存済み検索を任意のカテゴリに分けます。オフにすると、すべてのブックマークは親フォルダー直下に表示されます。",
   "settings.compactActionsDefault": "クラシック",
   "settings.compactActionsCompact": "コンパクト",
   "settings.compactTradeActionsTitle": "メニュー外に表示する操作",
@@ -167,12 +181,28 @@ export const japaneseTranslations: Record<string, TranslationValue> = {
   "folder.deleteTradeError": "tradeを削除できませんでした。",
   "folder.duplicateTradeError": "tradeを複製できませんでした。",
   "folder.duplicateFolderError": "フォルダーを複製できませんでした。",
+  "folder.addCategory": "カテゴリを追加",
+  "folder.categoryPrompt": "カテゴリ名",
+  "folder.categoryNameRequired": "カテゴリ名を入力してください。",
+  "folder.categoryCreated": ({ title }) => `カテゴリ "${title}" を作成しました`,
+  "folder.categoryRenamed": ({ title }) =>
+    `カテゴリ名を "${title}" に変更しました`,
+  "folder.categoryDeleted": ({ title }) => `カテゴリ "${title}" を削除しました`,
+  "folder.renameCategory": "カテゴリ名を変更",
+  "folder.deleteCategory": "カテゴリを削除",
+  "folder.deleteCategoryConfirm": ({ title }) =>
+    `カテゴリ "${title}" を削除しますか？中のブックマークはこのフォルダーに残ります。`,
+  "folder.categorySelect": "ブックマークカテゴリ",
+  "folder.noCategory": "カテゴリなし",
+  "folder.uncategorized": "カテゴリなし",
+  "folder.newCategoryOption": "新しいカテゴリ...",
   "finer.title": "フィルターに追加",
   "finer.modifiers": "モディファイア",
   "finer.pseudoResLife": "疑似耐性/ライフ",
   "finer.explicitResLife": "明示耐性/ライフ",
   "finer.attackWeapon": "攻撃武器",
   "finer.spellWeapon": "スペル武器",
+  "finer.buyoutPrice": "買い取り価格",
   "settings.onboardingTitle": "チュートリアル",
   "settings.onboardingDescription":
     "主要な操作とタブを見直すために、クイックガイドをもう一度開きます。",

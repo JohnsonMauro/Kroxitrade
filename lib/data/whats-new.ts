@@ -111,6 +111,53 @@ const version113Items: WhatsNewItem[] = [
   }
 ];
 
+const version114Items: WhatsNewItem[] = [
+  {
+    title: "Adjustable text size",
+    description:
+      "Interface settings now include Small, Medium, Large, and Extra text sizes, with Large as the default."
+  },
+  {
+    title: "Tutorial access moved to About",
+    description:
+      "The button to reopen the onboarding tutorial now lives in About, keeping Interface settings focused on display and language options."
+  }
+];
+
+const version115Features: WhatsNewItem[] = [
+  {
+    title: "Bookmark categories inside folders",
+    description:
+      "Saved searches can now be grouped into optional categories inside each bookmark folder. The feature is off by default, and turning it off returns every bookmark to the main folder list."
+  },
+  {
+    title: "Cleaner bookmark action menus",
+    description:
+      "Category assignment, category creation, and category deletion now live inside the bookmark action menu, with inline creation and the same delete confirmation modal used elsewhere."
+  }
+];
+
+const version115Polish: WhatsNewItem[] = [
+  {
+    title: "Settings are more compact",
+    description:
+      "Long setting descriptions now appear as hover help, reducing visual clutter while keeping the details available when you need them."
+  },
+  {
+    title: "General settings are clearer",
+    description:
+      "The Interface tab is now General, and Backup & Restore lives there alongside the other extension-wide options."
+  }
+];
+
+const version116Features: WhatsNewItem[] = [
+  {
+    title: "Wiki button for unique items",
+    description:
+      "Results can now show an optional W action on unique items that opens the matching PoE Wiki or PoE2 Wiki page."
+  }
+];
+
 const version110Features: WhatsNewItem[] = [
   {
     title: "Settings are now easier to navigate",
@@ -201,9 +248,40 @@ const version110Changes: WhatsNewItem[] = [
 ];
 
 export const latestWhatsNew: WhatsNewEntry = {
-  version: "1.1.3",
-  date: "2026-06-30",
+  version: "1.1.6",
+  date: "2026-07-07",
   sections: [
+    {
+      title: "1.1.6",
+      groups: [
+        {
+          titleKey: "whatsNew.section.features",
+          items: version116Features
+        }
+      ]
+    },
+    {
+      title: "1.1.5",
+      groups: [
+        {
+          titleKey: "whatsNew.section.features",
+          items: version115Features
+        },
+        {
+          titleKey: "whatsNew.section.polish",
+          items: version115Polish
+        }
+      ]
+    },
+    {
+      title: "1.1.4",
+      groups: [
+        {
+          titleKey: "whatsNew.section.features",
+          items: version114Items
+        }
+      ]
+    },
     {
       title: "1.1.3",
       groups: [
@@ -265,6 +343,193 @@ export const latestWhatsNew: WhatsNewEntry = {
 
 export const whatsNewEntries: WhatsNewEntry[] = [
   latestWhatsNew,
+  {
+    version: "1.1.6",
+    date: "2026-07-07",
+    sections: [
+      {
+        title: "1.1.6",
+        groups: [
+          {
+            titleKey: "whatsNew.section.features",
+            items: version116Features
+          }
+        ]
+      },
+      {
+        title: "1.1.5",
+        groups: [
+          {
+            titleKey: "whatsNew.section.features",
+            items: version115Features
+          },
+          {
+            titleKey: "whatsNew.section.polish",
+            items: version115Polish
+          }
+        ]
+      },
+      {
+        title: "1.1.4",
+        groups: [
+          {
+            titleKey: "whatsNew.section.features",
+            items: version114Items
+          }
+        ]
+      },
+      {
+        title: "1.1.3",
+        groups: [
+          {
+            titleKey: "whatsNew.section.features",
+            items: version113Items
+          }
+        ]
+      },
+      {
+        title: "1.1.2",
+        groups: [
+          {
+            titleKey: "whatsNew.section.features",
+            items: version112Features
+          },
+          {
+            titleKey: "whatsNew.section.fixes",
+            items: version112Fixes
+          },
+          {
+            titleKey: "whatsNew.section.polish",
+            items: version112Polish
+          }
+        ]
+      },
+      {
+        title: "1.1.1",
+        groups: [
+          {
+            titleKey: "whatsNew.section.fixes",
+            items: version111Items.slice(0, 4)
+          },
+          {
+            titleKey: "whatsNew.section.polish",
+            items: version111Items.slice(4)
+          }
+        ]
+      },
+      {
+        title: "1.1.0",
+        groups: [
+          {
+            titleKey: "whatsNew.section.features",
+            items: version110Features
+          },
+          {
+            titleKey: "whatsNew.section.polish",
+            items: version110Changes
+          },
+          {
+            titleKey: "whatsNew.section.fixes",
+            items: version110Fixes
+          }
+        ]
+      }
+    ]
+  },
+  {
+    version: "1.1.5",
+    date: "2026-07-07",
+    sections: [
+      {
+        title: "1.1.5",
+        groups: [
+          {
+            titleKey: "whatsNew.section.features",
+            items: version115Features
+          },
+          {
+            titleKey: "whatsNew.section.polish",
+            items: version115Polish
+          }
+        ]
+      },
+      {
+        title: "1.1.4",
+        groups: [
+          {
+            titleKey: "whatsNew.section.features",
+            items: version114Items
+          }
+        ]
+      },
+      {
+        title: "1.1.3",
+        groups: [
+          {
+            titleKey: "whatsNew.section.features",
+            items: version113Items
+          }
+        ]
+      },
+      {
+        title: "1.1.2",
+        groups: [
+          {
+            titleKey: "whatsNew.section.features",
+            items: version112Features
+          },
+          {
+            titleKey: "whatsNew.section.fixes",
+            items: version112Fixes
+          },
+          {
+            titleKey: "whatsNew.section.polish",
+            items: version112Polish
+          }
+        ]
+      },
+      {
+        title: "1.1.1",
+        groups: [
+          {
+            titleKey: "whatsNew.section.fixes",
+            items: version111Items.slice(0, 4)
+          },
+          {
+            titleKey: "whatsNew.section.polish",
+            items: version111Items.slice(4)
+          }
+        ]
+      },
+      {
+        title: "1.1.0",
+        groups: [
+          {
+            titleKey: "whatsNew.section.features",
+            items: version110Features
+          },
+          {
+            titleKey: "whatsNew.section.polish",
+            items: version110Changes
+          },
+          {
+            titleKey: "whatsNew.section.fixes",
+            items: version110Fixes
+          }
+        ]
+      }
+    ]
+  },
+  {
+    version: "1.1.4",
+    date: "2026-07-05",
+    sections: [
+      {
+        titleKey: "whatsNew.section.features",
+        items: version114Items
+      }
+    ]
+  },
   {
     version: "1.1.3",
     date: "2026-06-30",
