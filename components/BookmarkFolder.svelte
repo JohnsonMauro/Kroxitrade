@@ -1520,6 +1520,11 @@
       font-size: calc(10px * var(--bt-text-scale, 1));
     }
 
+    .category-row {
+      padding-top: 4px;
+      padding-bottom: 4px;
+    }
+
     .trade-item {
       gap: 6px;
       min-height: 29px;
