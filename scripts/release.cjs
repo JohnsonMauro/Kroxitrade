@@ -230,7 +230,25 @@ const publish = () => {
   const releaseArgs = ["release", "create", tag, ...assetPaths(), "--title", tag, "--notes-file", releaseNotesPath()]
   run("gh", [...releaseArgs, "--repo", originRepository])
   run("gh", [...releaseArgs, "--repo", upstreamRepository])
+
+  const currentBranch = run("git", ["branch", "--show-current"], {
+    capture: true
+  })
+  const localBranch = run("git", ["branch", "--list", releaseBranch], {
+    capture: true
+  })
+  if (currentBranch === releaseBranch) run("git", ["switch", "main"])
+
+  const remoteBranch = run(
+    "git",
+    ["ls-remote", "--heads", "origin", releaseBranch],
+    { capture: true }
+  )
+  if (remoteBranch) run("git", ["push", "origin", "--delete", releaseBranch])
+  if (localBranch) run("git", ["branch", "-D", releaseBranch])
+
   console.log(`Published ${tag} to ${originRepository} and ${upstreamRepository}.`)
+  console.log(`Deleted release branch: ${releaseBranch}`)
 }
 
 const action = process.argv[2]
