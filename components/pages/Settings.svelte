@@ -10,7 +10,7 @@
   } from "../../lib/services/experimental";
   import { flashMessages } from "../../lib/services/flash";
   import { itemResultsService } from "../../lib/services/item-results";
-  import { settings, type BookmarkTradeActionId, type QuickFiltersPlacement, type SidebarSide, type TextSizePreference } from "../../lib/services/settings";
+  import { settings, type BookmarkLayout, type BookmarkTradeActionId, type QuickFiltersPlacement, type SidebarSide, type TextSizePreference } from "../../lib/services/settings";
   import { tradeLocationService } from "../../lib/services/trade-location";
   import type { BookmarksTradeStruct } from "../../lib/types/bookmarks";
   import Button from "../Button.svelte";
@@ -191,12 +191,29 @@
     }
   }
 
-  async function handleCompactTradeActionChange(actionId: BookmarkTradeActionId, checked: boolean) {
-    const nextActions = checked
-      ? [...$settings.compactBookmarkTradeActions, actionId]
-      : $settings.compactBookmarkTradeActions.filter((id) => id !== actionId);
+  function getActiveBookmarkLayout(): BookmarkLayout {
+    if ($settings.ultraCompactBookmarks) return "ultra";
+    return $settings.compactActionsMenu ? "compact" : "classic";
+  }
 
-    const saved = await settings.updateCompactBookmarkTradeActions(
+  function getVisibleBookmarkTradeActions(): BookmarkTradeActionId[] {
+    const layout = getActiveBookmarkLayout();
+    return layout === "classic"
+      ? $settings.classicBookmarkTradeActions
+      : layout === "compact"
+        ? $settings.compactBookmarkTradeActions
+        : $settings.ultraCompactBookmarkTradeActions;
+  }
+
+  async function handleCompactTradeActionChange(actionId: BookmarkTradeActionId, checked: boolean) {
+    const layout = getActiveBookmarkLayout();
+    const visibleActions = getVisibleBookmarkTradeActions();
+    const nextActions = checked
+      ? [...visibleActions, actionId]
+      : visibleActions.filter((id) => id !== actionId);
+
+    const saved = await settings.updateBookmarkTradeActions(
+      layout,
       compactTradeActionOptions
         .map((option) => option.id)
         .filter((id) => nextActions.includes(id))
@@ -601,12 +618,12 @@
           {#each compactTradeActionOptions as option (option.id)}
             <label
               class="compact-option"
-              class:is-selected={$settings.compactBookmarkTradeActions.includes(option.id)}
+              class:is-selected={getVisibleBookmarkTradeActions().includes(option.id)}
               title={translate($languageStore, option.labelKey)}
             >
               <input
                 type="checkbox"
-                checked={$settings.compactBookmarkTradeActions.includes(option.id)}
+                checked={getVisibleBookmarkTradeActions().includes(option.id)}
                 onchange={(event) => handleCompactTradeActionInput(event, option.id)}
                 aria-label={translate($languageStore, option.labelKey)}
               />
