@@ -101,12 +101,10 @@ const assertReleaseNotes = () => {
 }
 
 const releaseNotesPath = () => path.join(buildDir, `release-notes-${tag}.md`)
-const sourceArchivePath = () =>
-  path.join(buildDir, `${packageJson.displayName}-${version}-source.zip`)
 const assetPaths = () => [
-  path.join(buildDir, `${packageJson.displayName}-${version}.zip`),
-  path.join(buildDir, `${packageJson.displayName}-${version}-firefox.zip`),
-  sourceArchivePath()
+  path.join(buildDir, `${packageJson.name}-${version}-chrome.zip`),
+  path.join(buildDir, `${packageJson.name}-${version}-firefox.zip`),
+  path.join(buildDir, `${packageJson.name}-${version}-sources.zip`)
 ]
 
 const writeReleaseNotes = ({ latestWhatsNew, englishTranslations }) => {
@@ -146,8 +144,8 @@ const prepare = () => {
 
   ensureCleanOrCommit()
   writeReleaseNotes(releaseData)
-  run("npm", ["run", "package"])
-  run("git", ["archive", "--format=zip", `--output=${sourceArchivePath()}`, "HEAD"])
+  const packageOutput = run("npm", ["run", "package"], { capture: true })
+  process.stdout.write(`${packageOutput}\n`)
 
   for (const assetPath of assetPaths()) {
     if (!fs.existsSync(assetPath)) throw new Error(`Missing release asset: ${assetPath}`)
