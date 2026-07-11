@@ -686,6 +686,7 @@
     ? 'is-archived'
     : ''}"
   class:is-ultra-compact={$settings.ultraCompactBookmarks}
+  class:is-editing={editingFolder}
   class:is-folder-dragging={isFolderDragging}
   class:is-folder-drag-over={isFolderDragOver}
   draggable="true"
@@ -1038,6 +1039,10 @@
     font-family: $primary-font;
     border-bottom: 1px solid rgba($gold, 0.1);
     border-radius: 8px 8px 0 0;
+  }
+
+  .folder:not(.is-expanded):not(.is-editing) .folder-header {
+    border-radius: 8px;
   }
 
   .folder-drag-handle {
