@@ -200,6 +200,13 @@ export const russianTranslations: Record<string, TranslationValue> = {
   "finer.attackWeapon": "Оружие атаки",
   "finer.spellWeapon": "Оружие заклинаний",
   "finer.buyoutPrice": "Цена выкупа",
+  "finer.clearBuyoutPrice": "Очистить",
+  "whatsNew.item.activeRealmBookmarksTitle": "Закладки следуют активному миру trade",
+  "whatsNew.item.activeRealmBookmarksDescription":
+    "Сохранённые поиски теперь открываются в текущей лиге и мире активной вкладки Trade, сохраняя сохранённую лигу как резервный вариант.",
+  "whatsNew.item.buyoutClearTitle": "Быстрая очистка цены выкупа",
+  "whatsNew.item.buyoutClearDescription":
+    "В быстрых фильтрах теперь есть кнопка «Очистить», которая переключает цену выкупа на эквивалент сферы хаоса и работает с поддерживаемыми языками сайта trade.",
   "settings.onboardingTitle": "Обучение",
   "settings.onboardingDescription":
     "Снова откройте быстрый гид, чтобы еще раз посмотреть основные действия и вкладки.",

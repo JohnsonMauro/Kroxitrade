@@ -16,11 +16,21 @@ const upstreamRepository = "KroxiLabs/Kroxitrade"
 const languages = ["en", "es", "pt", "ru", "th", "de", "fr", "ja", "ko"]
 
 const run = (command, args, options = {}) => {
-  const isWindowsNpm = process.platform === "win32" && command === "npm"
-  const executable = isWindowsNpm ? process.env.ComSpec || "cmd.exe" : command
-  const commandArgs = isWindowsNpm
-    ? ["/d", "/s", "/c", [command, ...args].join(" ")]
-    : args
+  const useNpmCli = command === "npm" && !!process.env.npm_execpath
+  const useWindowsNpmShell =
+    command === "npm" && !useNpmCli && process.platform === "win32"
+  const quoteCommandArg = (value) =>
+    /[\s"]/u.test(value) ? `"${value.replace(/"/g, '\\"')}"` : value
+  const executable = useNpmCli
+    ? process.execPath
+    : useWindowsNpmShell
+      ? process.env.ComSpec || "cmd.exe"
+      : command
+  const commandArgs = useNpmCli
+    ? [process.env.npm_execpath, ...args]
+    : useWindowsNpmShell
+      ? ["/d", "/s", "/c", [command, ...args].map(quoteCommandArg).join(" ")]
+      : args
   const result = childProcess.spawnSync(executable, commandArgs, {
     cwd: root,
     encoding: "utf8",
@@ -107,10 +117,12 @@ const assertReleaseNotes = () => {
 }
 
 const releaseNotesPath = () => path.join(buildDir, `release-notes-${tag}.md`)
+const sourceArchivePath = () =>
+  path.join(buildDir, `${packageJson.name}-${version}-sources.zip`)
 const assetPaths = () => [
   path.join(buildDir, `${packageJson.name}-${version}-chrome.zip`),
   path.join(buildDir, `${packageJson.name}-${version}-firefox.zip`),
-  path.join(buildDir, `${packageJson.name}-${version}-sources.zip`)
+  sourceArchivePath()
 ]
 
 const writeReleaseNotes = ({ latestWhatsNew, englishTranslations }) => {
@@ -218,7 +230,25 @@ const publish = () => {
   const releaseArgs = ["release", "create", tag, ...assetPaths(), "--title", tag, "--notes-file", releaseNotesPath()]
   run("gh", [...releaseArgs, "--repo", originRepository])
   run("gh", [...releaseArgs, "--repo", upstreamRepository])
+
+  const currentBranch = run("git", ["branch", "--show-current"], {
+    capture: true
+  })
+  const localBranch = run("git", ["branch", "--list", releaseBranch], {
+    capture: true
+  })
+  if (currentBranch === releaseBranch) run("git", ["switch", "main"])
+
+  const remoteBranch = run(
+    "git",
+    ["ls-remote", "--heads", "origin", releaseBranch],
+    { capture: true }
+  )
+  if (remoteBranch) run("git", ["push", "origin", "--delete", releaseBranch])
+  if (localBranch) run("git", ["branch", "-D", releaseBranch])
+
   console.log(`Published ${tag} to ${originRepository} and ${upstreamRepository}.`)
+  console.log(`Deleted release branch: ${releaseBranch}`)
 }
 
 const action = process.argv[2]

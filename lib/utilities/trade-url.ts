@@ -21,12 +21,22 @@ export interface TradeUrlLike {
 export const resolveTradeLeague = (league: string | null | undefined, currentLeague: string | null | undefined = tradeLocationService.current.league) =>
   league || currentLeague || "Standard";
 
-export const resolveTradeUrl = (trade: TradeUrlLike, suffix: string = "") => {
+export const resolveTradeUrl = (
+  trade: TradeUrlLike,
+  suffix: string = "",
+  useActiveLeague: boolean = false
+) => {
+  const activeLocation = tradeLocationService.current;
+  const activeLeague =
+    useActiveLeague && activeLocation.version === trade.version
+      ? activeLocation.league
+      : null;
+
   return getTradeUrl(
     trade.version,
     trade.type,
     trade.slug,
-    resolveTradeLeague(trade.league),
+    resolveTradeLeague(activeLeague || trade.league),
     suffix
   );
 };

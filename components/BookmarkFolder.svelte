@@ -25,8 +25,7 @@
     BookmarksTradeStruct
   } from "../lib/types/bookmarks"
   import { copyToClipboard } from "../lib/utilities/copy-to-clipboard"
-  import { resolveTradeLeague, resolveTradeUrl } from "../lib/utilities/trade-url"
-  import { formatLeagueLabel } from "../lib/utilities/league"
+  import { resolveTradeUrl } from "../lib/utilities/trade-url"
   import Button from "./Button.svelte"
   import ConfirmDialog from "./ConfirmDialog.svelte"
   import FolderActionsMenu from "./FolderActionsMenu.svelte"
@@ -153,15 +152,6 @@
   onDestroy(() => {
     unsubscribeBookmarksChange()
   })
-
-  const formatTradeMeta = (trade: BookmarksTradeStruct) => {
-    const meta: string[] = []
-    const league = resolveTradeLeague(trade.location.league)
-
-    meta.push(formatLeagueLabel(league))
-
-    return meta.join(translate($languageStore, "folder.metaSeparator"))
-  }
 
   const normalizeCategoryTitle = (title: string) => title.trim()
 
@@ -344,7 +334,7 @@
   }
 
   const copyTrade = (trade: BookmarksTradeStruct) => {
-    const url = resolveTradeUrl(trade.location)
+    const url = resolveTradeUrl(trade.location, "", true)
     void copyToClipboard(url)
       .then(() => {
         flashMessages.success(
@@ -360,7 +350,7 @@
 
   const openTradeLive = async (trade: BookmarksTradeStruct) => {
     await openUrlInActiveTab(
-      resolveTradeUrl(trade.location, "/live")
+      resolveTradeUrl(trade.location, "/live", true)
     )
   }
 
@@ -487,7 +477,7 @@
   }
 
   const openTrade = async (trade: BookmarksTradeStruct) => {
-    await openUrlInActiveTab(resolveTradeUrl(trade.location))
+    await openUrlInActiveTab(resolveTradeUrl(trade.location, "", true))
   }
 
   const exportFolder = () => {
@@ -900,7 +890,6 @@
                         <div class="trade-actions trade-actions--compact">
                           <TradeActionsMenu
                             {trade}
-                            compactText={formatTradeMeta(trade)}
                             onEdit={() => void startEditingTrade(trade)}
                             onReplace={() => void replaceSearchWithCurrent(trade)}
                             onCopy={() => copyTrade(trade)}
@@ -916,23 +905,20 @@
                       {/if}
                     </div>
                     {#if !$settings.compactActionsMenu}
-                      <div class="trade-bottom">
-                        <div class="trade-meta">{formatTradeMeta(trade)}</div>
-                        <div class="trade-actions">
-                          <TradeActionsMenu
-                            {trade}
-                            onEdit={() => void startEditingTrade(trade)}
-                            onReplace={() => void replaceSearchWithCurrent(trade)}
-                            onCopy={() => copyTrade(trade)}
-                            onOpenLive={() => void openTradeLive(trade)}
-                            onToggle={() => void toggleTrade(trade)}
-                            onDelete={() => requestTradeDelete(trade)}
-                            categoriesEnabled={$settings.bookmarkCategoriesEnabled}
-                            {categoryOptions}
-                            selectedCategoryId={categoryIdForTrade(trade)}
-                            onCategorySelect={(categoryId) => void selectTradeCategory(trade, categoryId)}
-                            onCategoryCreate={(title) => void createCategoryForTrade(trade, title)} />
-                        </div>
+                      <div class="trade-actions">
+                        <TradeActionsMenu
+                          {trade}
+                          onEdit={() => void startEditingTrade(trade)}
+                          onReplace={() => void replaceSearchWithCurrent(trade)}
+                          onCopy={() => copyTrade(trade)}
+                          onOpenLive={() => void openTradeLive(trade)}
+                          onToggle={() => void toggleTrade(trade)}
+                          onDelete={() => requestTradeDelete(trade)}
+                          categoriesEnabled={$settings.bookmarkCategoriesEnabled}
+                          {categoryOptions}
+                          selectedCategoryId={categoryIdForTrade(trade)}
+                          onCategorySelect={(categoryId) => void selectTradeCategory(trade, categoryId)}
+                          onCategoryCreate={(title) => void createCategoryForTrade(trade, title)} />
                       </div>
                     {/if}
                   </div>
@@ -1440,14 +1426,6 @@
     gap: 8px;
   }
 
-  .trade-bottom {
-    display: flex;
-    align-items: center;
-    justify-content: flex-start;
-    gap: 8px;
-    width: 100%;
-  }
-
   .trade-copy {
     min-width: 0;
     display: flex;
@@ -1466,18 +1444,6 @@
     text-overflow: ellipsis;
     white-space: nowrap;
     display: block;
-  }
-
-  .trade-meta {
-    min-width: 0;
-    flex: 1;
-    font-size: calc(10px * var(--bt-text-scale, 1));
-    line-height: 1.2;
-    color: rgba($gold-alt, 0.52);
-    letter-spacing: 0.03em;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
   }
 
   .trade-actions {
