@@ -344,7 +344,7 @@
   }
 
   const copyTrade = (trade: BookmarksTradeStruct) => {
-    const url = resolveTradeUrl(trade.location)
+    const url = resolveTradeUrl(trade.location, "", true)
     void copyToClipboard(url)
       .then(() => {
         flashMessages.success(
@@ -360,7 +360,7 @@
 
   const openTradeLive = async (trade: BookmarksTradeStruct) => {
     await openUrlInActiveTab(
-      resolveTradeUrl(trade.location, "/live")
+      resolveTradeUrl(trade.location, "/live", true)
     )
   }
 
@@ -487,7 +487,7 @@
   }
 
   const openTrade = async (trade: BookmarksTradeStruct) => {
-    await openUrlInActiveTab(resolveTradeUrl(trade.location))
+    await openUrlInActiveTab(resolveTradeUrl(trade.location, "", true))
   }
 
   const exportFolder = () => {
