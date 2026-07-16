@@ -100,7 +100,7 @@ popup.svelte         Shared popup Svelte component
 wxt.config.ts        WXT build and manifest configuration
 ```
 
-See `docs/ARCHITECTURE.md` for a deeper architectural overview if you want to explore the internal services and messaging flow.
+See `docs/ARCHITECTURE.md` for a deeper architectural overview, `docs/EXTENSION-BEST-PRACTICES.md` for the project's engineering guidelines, and `docs/DEPENDENCY-AUDIT.md` for the direct-dependency audit.
 
 ## Development
 
