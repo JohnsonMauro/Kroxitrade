@@ -90,13 +90,13 @@ assets/              Branding assets and imported media
 components/          Svelte UI components and panel pages
 contents/            Shared content-script logic and mounted Svelte app
 lib/services/        Bookmarks, trade tracking, settings, result enhancements, poe.ninja
+lib/background.ts    Background bridge logic used by the WXT background entrypoint
 lib/styles/          Base and enhancement styles for the site and sidebar
 lib/types/           Shared TypeScript models
 lib/utilities/       Small helpers for URLs, IDs, clipboard, dates, and parsing
 public/              Static extension assets copied as-is into the bundle
 scripts/             Build/version helper scripts
-background.ts        Background bridge logic used by the WXT background entrypoint
-popup.svelte         Shared popup Svelte component
+components/pages/Popup.svelte  Shared popup Svelte component
 wxt.config.ts        WXT build and manifest configuration
 ```
 
