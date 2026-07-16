@@ -160,6 +160,13 @@ const ensureCleanOrCommit = () => {
   run("git", ["commit", "-m", `release: ${tag}`])
 }
 
+const assertCleanWorkingTree = () => {
+  const status = run("git", ["status", "--porcelain"], { capture: true })
+  if (status) {
+    throw new Error("Commit or stash local changes before publishing a release.")
+  }
+}
+
 const prepare = () => {
   const releaseData = assertReleaseNotes()
   const currentBranch = run("git", ["branch", "--show-current"], { capture: true })
@@ -215,7 +222,8 @@ const prepare = () => {
 
 const publish = () => {
   const releaseData = assertReleaseNotes()
-  const releaseBranch = process.argv[3]
+  assertCleanWorkingTree()
+  const releaseBranch = process.argv.slice(3).find((argument) => argument !== "--")
   if (!releaseBranch) {
     throw new Error("Pass merged release branch: pnpm run release:publish -- release-vX.Y.Z")
   }
