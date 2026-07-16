@@ -171,7 +171,7 @@ const prepare = () => {
 
   ensureCleanOrCommit()
   writeReleaseNotes(releaseData)
-  const packageOutput = run("npm", ["run", "package"], { capture: true })
+  const packageOutput = run("pnpm", ["run", "package"], { capture: true })
   process.stdout.write(`${packageOutput}\n`)
 
   for (const assetPath of assetPaths()) {
@@ -210,14 +210,14 @@ const prepare = () => {
     ], { capture: true })
 
   console.log(`Prepared ${tag}. Upstream PR: ${prUrl}`)
-  console.log(`After merge: npm run release:publish -- ${branch}`)
+  console.log(`After merge: pnpm run release:publish -- ${branch}`)
 }
 
 const publish = () => {
   const releaseData = assertReleaseNotes()
   const releaseBranch = process.argv[3]
   if (!releaseBranch) {
-    throw new Error("Pass merged release branch: npm run release:publish -- release-vX.Y.Z")
+    throw new Error("Pass merged release branch: pnpm run release:publish -- release-vX.Y.Z")
   }
   for (const assetPath of assetPaths()) {
     if (!fs.existsSync(assetPath)) throw new Error(`Missing release asset: ${assetPath}. Run release:prepare again.`)
