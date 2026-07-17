@@ -84,7 +84,7 @@ export const experimentalSettings = {
     document.body?.classList.toggle(POE2_BODY_CLASS, version === "2");
     apply(storageService.getLocalValue(storageKey(version)) === "true");
     applyPoe2CopyVisibility(
-      storageService.getLocalValue(POE2_COPY_STORAGE_KEY) === "true"
+      storageService.getLocalValue(POE2_COPY_STORAGE_KEY) !== "false"
     );
     applyCoeVisibility(
       storageService.getLocalValue(COE_STORAGE_KEY) === "true"

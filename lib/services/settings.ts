@@ -14,6 +14,7 @@ export type BookmarkTradeActionId =
   | "delete"
 export type QuickFiltersPlacement = "page" | "sidebar"
 export type TextSizePreference = "small" | "medium" | "large" | "extraLarge"
+export const DEFAULT_TEXT_SIZE: TextSizePreference = "large"
 export type BookmarkLayout = "classic" | "compact" | "ultra"
 
 const DEFAULT_CLASSIC_BOOKMARK_TRADE_ACTIONS: BookmarkTradeActionId[] = [
@@ -53,19 +54,20 @@ interface GlobalSettings {
 }
 
 const GLOBAL_SETTINGS_KEY = "app-settings"
+export const DEFAULT_SIDEBAR_WIDTH = 450
 const versionSettingsKey = (version: TradeSiteVersion) =>
   `app-settings-poe${version}`
 
 const DEFAULT_GLOBAL_SETTINGS: GlobalSettings = {
   sidebarSide: "right",
-  sidebarWidth: 360,
+  sidebarWidth: DEFAULT_SIDEBAR_WIDTH,
   language: "en",
-  textSize: "large"
+  textSize: DEFAULT_TEXT_SIZE
 }
 
 const DEFAULT_VERSION_SETTINGS: VersionSettings = {
   showEquivalentPricing: false,
-  showMagebloodLegacyDescriptions: false,
+  showMagebloodLegacyDescriptions: true,
   showBulkSellers: false,
   showHistory: true,
   showFinerFilters: true,
@@ -84,7 +86,7 @@ function normalizeTextSize(textSize: unknown): TextSizePreference {
     textSize === "large" ||
     textSize === "extraLarge"
     ? textSize
-    : "medium"
+    : DEFAULT_TEXT_SIZE
 }
 
 let activeVersion: TradeSiteVersion = inferTradeVersion()
