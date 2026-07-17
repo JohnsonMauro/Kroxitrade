@@ -19,7 +19,7 @@ import About from "./pages/About.svelte";
   import { flashMessages } from "../lib/services/flash";
   import { bookmarksService } from "../lib/services/bookmarks";
   import { languageStore, translate } from "../lib/services/i18n";
-  import { settings } from "../lib/services/settings";
+  import { DEFAULT_SIDEBAR_WIDTH, settings } from "../lib/services/settings";
   import { experimentalSettings } from "../lib/services/experimental";
   import { storageService } from "../lib/services/storage";
   import { tradeLocationService } from "../lib/services/trade-location";
@@ -70,7 +70,7 @@ import About from "./pages/About.svelte";
   const clampSidebarWidth = (value: number) =>
     Math.max(MIN_SIDEBAR_WIDTH, Math.min(MAX_SIDEBAR_WIDTH, Math.round(value)));
 
-  const getExpandedSidebarWidth = () => clampSidebarWidth($settings.sidebarWidth || 450);
+  const getExpandedSidebarWidth = () => clampSidebarWidth($settings.sidebarWidth || DEFAULT_SIDEBAR_WIDTH);
   const getRenderedSidebarWidth = () => clampSidebarWidth(liveSidebarWidth ?? getExpandedSidebarWidth());
 
   const navIcons = {
@@ -531,9 +531,9 @@ import About from "./pages/About.svelte";
   position: absolute;
   left: 0;
   top: 0;
-  width: var(--bt-sidebar-width, 360px) !important;
-  min-width: var(--bt-sidebar-width, 360px) !important;
-  max-width: var(--bt-sidebar-width, 360px) !important;
+  width: var(--bt-sidebar-width, 450px) !important;
+  min-width: var(--bt-sidebar-width, 450px) !important;
+  max-width: var(--bt-sidebar-width, 450px) !important;
   height: 100vh;
   min-height: 100vh;
   max-height: 100vh;

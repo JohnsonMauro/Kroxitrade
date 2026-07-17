@@ -11,7 +11,7 @@
   } from "../../lib/services/experimental";
   import { flashMessages } from "../../lib/services/flash";
   import { itemResultsService } from "../../lib/services/item-results";
-  import { settings, type BookmarkLayout, type BookmarkTradeActionId, type QuickFiltersPlacement, type SidebarSide, type TextSizePreference } from "../../lib/services/settings";
+  import { DEFAULT_SIDEBAR_WIDTH, settings, type BookmarkLayout, type BookmarkTradeActionId, type QuickFiltersPlacement, type SidebarSide, type TextSizePreference } from "../../lib/services/settings";
   import { tradeLocationService } from "../../lib/services/trade-location";
   import type { BookmarksTradeStruct } from "../../lib/types/bookmarks";
   import Button from "../Button.svelte";
@@ -41,7 +41,6 @@
 
   let { tutorialStep = null }: Props = $props();
 
-  const DEFAULT_SIDEBAR_WIDTH = 450;
   type SettingsTab = "interface" | "sidebar" | "results" | "bookmarks";
   let activeTab = $state<SettingsTab>("interface");
 
