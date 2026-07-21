@@ -67,13 +67,6 @@ const version1111Features: WhatsNewItem[] = [
   }
 ];
 
-const version1110Features: WhatsNewItem[] = [
-  {
-    titleKey: "whatsNew.item.version1110Title",
-    descriptionKey: "whatsNew.item.version1110Description"
-  }
-];
-
 const version112Features: WhatsNewItem[] = [
   {
     title: "External reference links in the popup",
@@ -304,6 +297,24 @@ const version110Changes: WhatsNewItem[] = [
     title: "Result cards are easier to use",
     description:
       "Card click handling and seller panel accessibility were tightened for repeated trade workflows."
+  }
+];
+
+const version1110Features: WhatsNewItem[] = [
+  {
+    title: "Open saved searches in new tabs",
+    description:
+      "Middle-click a saved search to open it in a background tab, so you can queue several searches without leaving the current one."
+  },
+  {
+    title: "Bookmark icons are easier to browse",
+    description:
+      "The folder icon picker now groups currency and ascendancy icons, making the right icon faster to find."
+  },
+  {
+    title: "Sidebar preferences are more reliable",
+    description:
+      "Sidebar defaults are shared consistently, and the Path of Building copy action remains visible where it is available on PoE2."
   }
 ];
 
