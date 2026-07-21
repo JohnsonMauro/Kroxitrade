@@ -3,6 +3,8 @@ import type { TranslationValue } from "./types"
 
 export const portugueseTranslations: Record<string, TranslationValue> = {
   ...englishTranslations,
+  "whatsNew.item.version1110Title": "Mais ícones de pasta e cópia PoE2 restaurada",
+  "whatsNew.item.version1110Description": "Os ícones de pasta são organizados por moedas e ascendências de PoE1 e PoE2, e a cópia para Path of Building voltou aos resultados de PoE2.",
   "whatsNew.item.tutorialRefreshTitle": "Tutorial guiado renovado",
   "whatsNew.item.tutorialRefreshDescription": "O tutorial agora segue os fluxos principais, agrupa definições relacionadas e não cobre os controlos que explica.",
   "whatsNew.item.bookmarkPreviewRealTitle": "A pré-visualização de favoritos corresponde à lista real",

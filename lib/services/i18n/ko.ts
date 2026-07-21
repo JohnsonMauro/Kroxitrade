@@ -3,6 +3,8 @@ import type { TranslationValue } from "./types"
 
 export const koreanTranslations: Record<string, TranslationValue> = {
   ...englishTranslations,
+  "whatsNew.item.version1110Title": "폴더 아이콘 확장 및 PoE2 복사 복원",
+  "whatsNew.item.version1110Description": "폴더 아이콘을 PoE1 및 PoE2 화폐와 전직별로 정리했고, Path of Building용 복사를 PoE2 결과에서 다시 사용할 수 있습니다.",
   "whatsNew.item.tutorialRefreshTitle": "안내형 튜토리얼 새로 고침",
   "whatsNew.item.tutorialRefreshDescription": "튜토리얼은 이제 주요 흐름을 따르고 관련 설정을 묶으며, 설명하는 컨트롤을 가리지 않습니다.",
   "whatsNew.item.bookmarkPreviewRealTitle": "북마크 미리 보기가 실제 목록과 일치",

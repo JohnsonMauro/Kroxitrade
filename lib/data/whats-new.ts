@@ -67,6 +67,13 @@ const version1111Features: WhatsNewItem[] = [
   }
 ];
 
+const version1110Features: WhatsNewItem[] = [
+  {
+    titleKey: "whatsNew.item.version1110Title",
+    descriptionKey: "whatsNew.item.version1110Description"
+  }
+];
+
 const version112Features: WhatsNewItem[] = [
   {
     title: "External reference links in the popup",
@@ -310,6 +317,15 @@ export const latestWhatsNew: WhatsNewEntry = {
         {
           titleKey: "whatsNew.section.features",
           items: version1111Features
+        }
+      ]
+    },
+    {
+      title: "1.1.10",
+      groups: [
+        {
+          titleKey: "whatsNew.section.features",
+          items: version1110Features
         }
       ]
     },

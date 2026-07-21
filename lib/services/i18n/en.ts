@@ -60,6 +60,9 @@ export const englishTranslations: Record<string, TranslationValue> = {
   "whatsNew.item.bookmarkPreviewRealTitle": "Bookmark Layout preview matches the real list",
   "whatsNew.item.bookmarkPreviewRealDescription":
     "The live preview now uses the real folder and bookmark components, including categories, two example searches, and the layout-specific action placement.",
+  "whatsNew.item.version1110Title": "Expanded folder icons and restored PoE2 copy",
+  "whatsNew.item.version1110Description":
+    "Folder icons are now organized by PoE1 and PoE2 currencies and ascendancies, while the Path of Building copy option is available again on PoE2 results.",
   "welcome.title": "Welcome to Poe Trade Plus",
   "welcome.message":
     "Choose the language you want to use for the extension before you start.",

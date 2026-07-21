@@ -59,6 +59,9 @@ export const spanishTranslations: Record<string, TranslationValue> = {
   "whatsNew.item.bookmarkPreviewRealTitle": "La vista previa de Favoritos coincide con la lista real",
   "whatsNew.item.bookmarkPreviewRealDescription":
     "La vista previa ahora usa los componentes reales de carpeta y bookmark, con categorías, dos búsquedas de ejemplo y la posición de acciones de cada diseño.",
+  "whatsNew.item.version1110Title": "Más iconos de carpeta y copia de PoE2 restaurada",
+  "whatsNew.item.version1110Description":
+    "Los iconos de carpeta ahora se organizan por monedas y ascendencias de PoE1 y PoE2, y la opción de copia para Path of Building vuelve a estar disponible en resultados de PoE2.",
   "welcome.title": "Bienvenido a Poe Trade Plus",
   "welcome.message":
     "Elegí el idioma que querés usar para la extensión antes de empezar.",

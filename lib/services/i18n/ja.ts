@@ -3,6 +3,8 @@ import type { TranslationValue } from "./types"
 
 export const japaneseTranslations: Record<string, TranslationValue> = {
   ...englishTranslations,
+  "whatsNew.item.version1110Title": "フォルダーアイコンの拡充と PoE2 コピーの復元",
+  "whatsNew.item.version1110Description": "フォルダーアイコンを PoE1 と PoE2 の通貨・アセンダンシーごとに整理し、Path of Building 用コピーを PoE2 の結果で再び利用できるようにしました。",
   "whatsNew.item.tutorialRefreshTitle": "ガイド付きチュートリアルを刷新",
   "whatsNew.item.tutorialRefreshDescription": "チュートリアルは主要な操作の流れに沿い、関連する設定をまとめ、説明中のコントロールを覆いません。",
   "whatsNew.item.bookmarkPreviewRealTitle": "ブックマークのプレビューが実際のリストと一致",

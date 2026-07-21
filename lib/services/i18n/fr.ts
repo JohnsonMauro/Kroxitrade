@@ -3,6 +3,8 @@ import type { TranslationValue } from "./types"
 
 export const frenchTranslations: Record<string, TranslationValue> = {
   ...englishTranslations,
+  "whatsNew.item.version1110Title": "Plus d’icônes de dossier et copie PoE2 restaurée",
+  "whatsNew.item.version1110Description": "Les icônes de dossier sont organisées par monnaies et ascendances PoE1 et PoE2, et la copie Path of Building est de nouveau disponible dans les résultats PoE2.",
   "whatsNew.item.tutorialRefreshTitle": "Tutoriel guidé renouvelé",
   "whatsNew.item.tutorialRefreshDescription": "Le tutoriel suit désormais les principaux parcours, regroupe les réglages liés et ne masque pas les contrôles qu’il explique.",
   "whatsNew.item.bookmarkPreviewRealTitle": "L’aperçu des favoris correspond à la liste réelle",

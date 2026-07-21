@@ -3,6 +3,8 @@ import type { TranslationValue } from "./types"
 
 export const germanTranslations: Record<string, TranslationValue> = {
   ...englishTranslations,
+  "whatsNew.item.version1110Title": "Mehr Ordnersymbole und PoE2-Kopie wiederhergestellt",
+  "whatsNew.item.version1110Description": "Ordnersymbole sind nach PoE1- und PoE2-Währungen sowie Aszendenzen organisiert; die Path-of-Building-Kopie ist wieder in PoE2-Ergebnissen verfügbar.",
   "whatsNew.item.tutorialRefreshTitle": "Geführtes Tutorial überarbeitet",
   "whatsNew.item.tutorialRefreshDescription": "Das Tutorial folgt jetzt den wichtigsten Abläufen, fasst verwandte Einstellungen zusammen und verdeckt die erklärten Bedienelemente nicht.",
   "whatsNew.item.bookmarkPreviewRealTitle": "Lesezeichen-Vorschau entspricht der echten Liste",

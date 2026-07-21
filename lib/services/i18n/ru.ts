@@ -3,6 +3,8 @@ import type { TranslationValue } from "./types"
 
 export const russianTranslations: Record<string, TranslationValue> = {
   ...englishTranslations,
+  "whatsNew.item.version1110Title": "Больше иконок папок и восстановленная копия PoE2",
+  "whatsNew.item.version1110Description": "Иконки папок упорядочены по валютам и возвышениям PoE1 и PoE2, а копирование для Path of Building снова доступно в результатах PoE2.",
   "whatsNew.item.tutorialRefreshTitle": "Обновлённое пошаговое руководство",
   "whatsNew.item.tutorialRefreshDescription": "Руководство теперь следует основным сценариям, объединяет связанные настройки и не закрывает элементы управления, которые объясняет.",
   "whatsNew.item.bookmarkPreviewRealTitle": "Предпросмотр закладок соответствует реальному списку",

@@ -3,6 +3,8 @@ import type { TranslationValue } from "./types"
 
 export const thaiTranslations: Record<string, TranslationValue> = {
   ...englishTranslations,
+  "whatsNew.item.version1110Title": "เพิ่มไอคอนโฟลเดอร์และคืนค่าการคัดลอก PoE2",
+  "whatsNew.item.version1110Description": "ไอคอนโฟลเดอร์จัดตามสกุลเงินและสายอาชีพ PoE1 และ PoE2 และการคัดลอกสำหรับ Path of Building กลับมาใช้ได้ในผลลัพธ์ PoE2.",
   "whatsNew.item.tutorialRefreshTitle": "ปรับปรุงคู่มือแบบแนะนำแล้ว",
   "whatsNew.item.tutorialRefreshDescription": "คู่มือตอนนี้ทำตามขั้นตอนหลัก จัดกลุ่มการตั้งค่าที่เกี่ยวข้อง และไม่บังตัวควบคุมที่กำลังอธิบาย.",
   "whatsNew.item.bookmarkPreviewRealTitle": "ตัวอย่างบุ๊กมาร์กตรงกับรายการจริง",
